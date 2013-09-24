@@ -25,7 +25,7 @@
 #     help                     print help mesage
 #  
 #  Targets .build-impl, .clean-impl, .clobber-impl, .all-impl, and
-#  .help-impl are implemented in nbproject/makefile-impl.mk.
+#  .help-impl are implemented in Makes/makefile-impl.mk.
 #
 #  Available make variables:
 #
@@ -122,7 +122,7 @@ help: .help-post
 
 
 # include project implementation makefile
-include nbproject/Makefile-impl.mk
+include Makes/Makefile-impl.mk
 
 # include project make variables
-include nbproject/Makefile-variables.mk
+include Makes/Makefile-variables.mk
