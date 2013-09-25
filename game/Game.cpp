@@ -7,7 +7,7 @@
 
 #include "Game.h"
 
-Game::Game(bool _verbose = false) {
+Game::Game(bool _verbose) {
         verbose = _verbose;
         log = new LogHandler;
 }

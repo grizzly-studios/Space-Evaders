@@ -11,6 +11,8 @@
 #include <iostream>
 #include <string>
 
+#include <SFML/Graphics/RenderWindow.hpp>
+
 #include "LogHandler.h"
 
 class Game {
@@ -18,7 +20,7 @@ public:
         Game(bool _verbose = false);
         virtual ~Game();
         
-        bool run();
+        bool run(sf::RenderWindow *window);
         void before();
         void after();
         

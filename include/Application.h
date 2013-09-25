@@ -11,6 +11,8 @@
 #include <iostream>
 #include <string>
 
+#include <SFML/Window.hpp>
+
 #include "../game/Game.h"
 #include "LogHandler.h"
 
@@ -19,12 +21,16 @@ public:
         Application(int argc, char** argv);
         virtual ~Application();
         
+        void init();
         void run();
 
 private:
         bool verbose;
         bool flush;
+        unsigned int FR;
         Game *game;
+        sf::ContextSettings settings;
+        sf::RenderWindow *window;
 };
 
 #endif	/* APPLICATION_H */
