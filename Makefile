@@ -1,13 +1,14 @@
-EXEC = SpaceEvaders
-SOURCES = $(shell find . -type f -name '*.cpp')
-HEADERS = $(wildcard *.h*)
-OBJECTS = $(SOURCES:.cpp=.o)
+EXEC = Engine
 LIBRARIES = /usr/local/lib/libsfml-audio.2.1.dylib /usr/local/lib/libsfml-graphics.2.1.dylib /usr/local/lib/libsfml-network.2.1.dylib /usr/local/lib/libsfml-system.2.1.dylib /usr/local/lib/libsfml-window.2.1.dylib 
 INCLUDES = include/
 LIBS = /usr/local/lib/
 CXXFLAGS = -c -Wall -I$(INCLUDES)
 OBJDIR = build/
 OUT = bin/
+
+SOURCES = $(shell find . -type f -name '*.cpp')
+HEADERS = $(wildcard *.h*)
+OBJECTS = $(SOURCES:.cpp=.o)
 
 ifeq ($(mode),release)
 	OBJDIR := $(OBJDIR)Release/
