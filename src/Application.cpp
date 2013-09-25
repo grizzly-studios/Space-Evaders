@@ -25,9 +25,8 @@ Application::~Application() {
 }
 
 void Application::run() {
+        game = new Game(verbose);
         
-        game = new Game;
-        game->verbose(verbose);
         game->before();
         while(game->run()) {
                 std::cout << game;

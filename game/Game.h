@@ -15,23 +15,18 @@
 
 class Game {
 public:
-        Game();
+        Game(bool _verbose = false);
         virtual ~Game();
         
-        void verbose(bool verbositiy);
-        bool verbose();
-        
         bool run();
-        
         void before();
-        void update();
         void after();
         
         friend std::ostream &operator<<(std::ostream &out, const Game &g);
         
 private:
 
-        bool vbs;
+        bool verbose;
         LogHandler *log;
 };
 

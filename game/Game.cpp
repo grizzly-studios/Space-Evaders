@@ -7,20 +7,12 @@
 
 #include "Game.h"
 
-Game::Game() {
-        vbs = false;
+Game::Game(bool _verbose = false) {
+        verbose = _verbose;
         log = new LogHandler;
 }
 
 Game::~Game() {
-}
-
-void Game::verbose(bool verbositiy) {
-        vbs = verbositiy;
-}
-
-bool Game::verbose() {
-        return vbs;
 }
 
 std::ostream &operator<<(std::ostream &out, const Game &g) {

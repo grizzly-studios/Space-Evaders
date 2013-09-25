@@ -11,7 +11,8 @@
 #include <iostream>
 #include <string>
 
-#include "Game.h"
+#include "../game/Game.h"
+#include "LogHandler.h"
 
 class Application {
 public:
