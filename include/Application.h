@@ -8,13 +8,22 @@
 #ifndef APPLICATION_H
 #define	APPLICATION_H
 
+#include <iostream>
+#include <string>
+
+#include "Game.h"
+
 class Application {
 public:
-        Application();
+        Application(int argc, char** argv);
         virtual ~Application();
+        
+        void run();
 
 private:
-        
+        bool verbose;
+        bool flush;
+        Game *game;
 };
 
 #endif	/* APPLICATION_H */

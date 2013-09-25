@@ -6,7 +6,6 @@
  */
 
 #include <cstdlib>
-#include <iostream>
 
 #include "include/Application.h"
 
@@ -17,9 +16,9 @@ using namespace std;
  */
 int main(int argc, char** argv) {
         
-        Application *app = new Application;
+        Application *app = new Application(argc, argv);
         
-        std::cout << "All is well" << std::endl;
+        app->run();
 
         return 0;
 }
