@@ -42,28 +42,5 @@ Application::~Application() {
 }
 
 void Application::run() {
-        game = new Game(verbose);
-        
-        game->before();
-        while(game->run(window) && window->isOpen()) {
-                
-                sf::Event event;
-                while (window->pollEvent(event)) {
-                    if (event.type == sf::Event::Closed) {
-                        window->close();
-                    }
-                    if (event.type == sf::Event::KeyPressed) {
-                            if (event.key.code == sf::Keyboard::Escape) {
-                                    window->close();
-                            }
-                    }
-                }
-                
-                std::cout << *game;
-                if (flush) {
-                        std::cout.flush();
-                }
-        }
-        game->after();
-        delete game;
+
 }

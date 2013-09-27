@@ -7,7 +7,7 @@
 
 #include <cstdlib>
 
-#include "include/Application.h"
+#include "Application.h"
 
 using namespace std;
 

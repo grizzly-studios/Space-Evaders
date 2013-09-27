@@ -12,9 +12,7 @@
 #include <string>
 
 #include <SFML/Window.hpp>
-
-#include "../game/Game.h"
-#include "LogHandler.h"
+#include <SFML/Graphics.hpp>
 
 class Application {
 public:
@@ -28,7 +26,6 @@ private:
         bool verbose;
         bool flush;
         unsigned int FR;
-        Game *game;
         sf::ContextSettings settings;
         sf::RenderWindow *window;
 };
