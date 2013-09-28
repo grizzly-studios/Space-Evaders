@@ -26,6 +26,8 @@ private:
         bool verbose;
         bool flush;
         unsigned int FR;
+        unsigned int AL;
+        unsigned int WIDTH, HEIGHT;
         sf::ContextSettings settings;
         sf::RenderWindow *window;
 };
