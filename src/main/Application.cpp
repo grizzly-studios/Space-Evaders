@@ -15,7 +15,7 @@ Application::Application(int argc, char** argv) {
         flush = false;
         
         FR = 50;
-        AL = 8;
+        AL = 4;
         WIDTH = 1024; HEIGHT = 640;
         
         for (int i = 1; i < argc; i++) {
@@ -58,6 +58,21 @@ Application::~Application() {
 void Application::run() {
         
         while(window->isOpen()) {
+                sf::Event event;
+                while (window->pollEvent(event)) {
+                        
+                    if (event.type == sf::Event::Closed) {
+                        window->close();
+                    }
+                    if (event.type == sf::Event::KeyPressed) {
+                            if (event.key.code == sf::Keyboard::Escape) {
+                                window->close();
+                            }
+                    }
+                }
                 
+                window->clear();
+                //window->draw();
+                window->display();
         }
 }
