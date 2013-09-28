@@ -36,11 +36,15 @@ void Application::init() {
         settings.antialiasingLevel = 8;
         
         window = new sf::RenderWindow(sf::VideoMode(1024,640),"Space Evaders",sf::Style::Fullscreen, settings);
+        window->setVerticalSyncEnabled(true);
 }
 
 Application::~Application() {
 }
 
 void Application::run() {
-
+        
+        while(window->isOpen()) {
+                
+        }
 }
