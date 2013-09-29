@@ -47,7 +47,8 @@ $(OUT)$(EXEC): $(OBJECTS)
 
 clean:
 	@echo "<<< Cleaning >>>"
-	rm -f $(OUT)$(EXEC) $(patsubst %,$(OBJDIR)/%,$(notdir $(OBJECTS)))
+	rm -r build
+	rm -r bin
 
 clobber:
 	@make clean mode=debug
