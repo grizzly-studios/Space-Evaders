@@ -1,7 +1,11 @@
-EXEC = "Space-Evaders" 
-LIBRARIES = /usr/local/lib/libsfml-audio.2.1.dylib /usr/local/lib/libsfml-graphics.2.1.dylib /usr/local/lib/libsfml-network.2.1.dylib /usr/local/lib/libsfml-system.2.1.dylib /usr/local/lib/libsfml-window.2.1.dylib 
-INCLUDES = include/
-LIBS = /usr/local/lib/
+# Define the following in Makefile.config:
+# SFML_DIR - SFML installation directory
+# LIBRARIES - libraries to link against
+include Makefile.config
+
+EXEC = SpaceEvaders
+INCLUDES = $(SFML_DIR)/include/
+LIBS = $(SFML_DIR)/lib/
 CXXFLAGS = -c -Wall -I$(INCLUDES)
 OBJDIR = build/
 OUT = bin/
@@ -10,7 +14,7 @@ rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 
 SOURCES := $(call rwildcard,src/,*.cpp)
-HEADERS := $(call rwildcard,src/,*.h*)	
+HEADERS := $(call rwildcard,src/,*.h*)
 OBJECTS = $(SOURCES:.cpp=.o)
 	
 
@@ -33,7 +37,7 @@ all:
 $(OUT)$(EXEC): $(OBJECTS)
 	@mkdir -p $(OUT)
 	@echo "<<< Linking >>>"
-	g++ -L$(LIBS) -I$(INCLUDES) $(LIBRARIES) $(patsubst %,$(OBJDIR)/%,$(notdir $(OBJECTS))) -o $@
+	g++ $(patsubst %,$(OBJDIR)%,$(notdir $(OBJECTS))) -o $@ -L$(LIBS) $(LIBRARIES)
 
 %.o: %.cpp $(HEADERS)
 	@mkdir -p $(OBJDIR)
