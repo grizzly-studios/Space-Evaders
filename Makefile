@@ -15,7 +15,7 @@ rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 SOURCES := $(call rwildcard,src/,*.cpp)
 HEADERS := $(call rwildcard,src/,*.h*)
-OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS := $(patsubst %,$(OBJDIR)%,$(notdir $(SOURCES:.cpp=.o)))
 	
 
 ifeq ($(mode),release)
@@ -39,10 +39,10 @@ $(OUT)$(EXEC): $(OBJECTS)
 	@echo "<<< Linking >>>"
 	g++ $(patsubst %,$(OBJDIR)%,$(notdir $(OBJECTS))) -o $@ -L$(LIBS) $(LIBRARIES)
 
-%.o: %.cpp $(HEADERS)
+$(OBJECTS): $(SOURCES) $(HEADERS)
 	@mkdir -p $(OBJDIR)
 	@echo "<<< Compiling >>> "$<
-	g++ $(CXXFLAGS) $< -o $(OBJDIR)$(notdir $@)
+	g++ $(CXXFLAGS) $< -o $@
 	@echo ""
 
 clean:
