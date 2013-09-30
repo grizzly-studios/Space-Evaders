@@ -12,12 +12,6 @@ OUT = bin/
 
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
-
-SOURCES := $(call rwildcard,src/,*.cpp)
-HEADERS := $(call rwildcard,src/,*.h*)
-OBJECTS = $(SOURCES:.cpp=.o)
-	
-
 ifeq ($(mode),release)
 	OBJDIR := $(OBJDIR)Release/
 	OUT := $(OUT)Release/
@@ -28,23 +22,27 @@ else
 	CXXFLAGS += -g
 endif
 
+SOURCES := $(call rwildcard,src/,*.cpp)
+HEADERS := $(call rwildcard,src/,*.h*)
+OBJECTS := $(patsubst %,$(OBJDIR)%,$(notdir $(SOURCES:.cpp=.o)))
+
 build: $(OUT)$(EXEC)
 
 all:
 	@make build mode=debug
 	@make build mode=release
-
+	
 $(OUT)$(EXEC): $(OBJECTS)
 	@mkdir -p $(OUT)
 	@echo "<<< Linking >>>"
 	g++ $(patsubst %,$(OBJDIR)%,$(notdir $(OBJECTS))) -o $@ -L$(LIBS) $(LIBRARIES)
 
-%.o: %.cpp $(HEADERS)
+$(OBJDIR)%.o: src/main/%.cpp $(HEADERS)
 	@mkdir -p $(OBJDIR)
 	@echo "<<< Compiling >>> "$<
-	g++ $(CXXFLAGS) $< -o $(OBJDIR)$(notdir $@)
+	g++ $(CXXFLAGS) $< -o $@
 	@echo ""
-
+	
 clean:
 	@echo "<<< Cleaning >>>"
 	rm -r build
