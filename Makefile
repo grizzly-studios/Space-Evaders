@@ -33,18 +33,18 @@ build: $(OUT)$(EXEC)
 all:
 	@make build mode=debug
 	@make build mode=release
-
+	
 $(OUT)$(EXEC): $(OBJECTS)
 	@mkdir -p $(OUT)
 	@echo "<<< Linking >>>"
 	g++ $(patsubst %,$(OBJDIR)%,$(notdir $(OBJECTS))) -o $@ -L$(LIBS) $(LIBRARIES)
 
-$(OBJECTS): $(SOURCES) $(HEADERS)
+$(OBJDIR)%.o: src/main/%.cpp $(HEADERS)
 	@mkdir -p $(OBJDIR)
 	@echo "<<< Compiling >>> "$<
 	g++ $(CXXFLAGS) $< -o $@
 	@echo ""
-
+	
 clean:
 	@echo "<<< Cleaning >>>"
 	rm -r build
