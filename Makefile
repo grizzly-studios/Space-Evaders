@@ -45,8 +45,8 @@ $(OBJDIR)%.o: src/main/%.cpp $(HEADERS)
 	
 clean:
 	@echo "<<< Cleaning >>>"
-	rm -r build
-	rm -r bin
+	rm -rf build
+	rm -rf bin
 
 clobber:
 	@make clean mode=debug
