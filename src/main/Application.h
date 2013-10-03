@@ -12,7 +12,7 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include "logger.h"
+#include "../util/logger.h"
 
 class Application {
 public:
