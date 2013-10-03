@@ -13,6 +13,7 @@
 class logger {
 public:
         logger(int argc, char** argv);
+		virtual ~logger();
 		
 		void init();
         void log();
