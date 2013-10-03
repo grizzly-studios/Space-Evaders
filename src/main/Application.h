@@ -12,10 +12,11 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include "logger.h"
 
 class Application {
 public:
-        Application(int argc, char** argv);
+        Application(int argc, char** argv, logger* loge);
         virtual ~Application();
         
         void init();

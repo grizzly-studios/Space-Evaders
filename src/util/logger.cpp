@@ -6,18 +6,29 @@
  */
  
 #include "logger.h"
-logger::logger(int argc, char** argv){
-	fileOut = false;
-	consoleOut = false;
+
+void logger::changeLogging(bool file, bool console){
+	fileOut = new bool(file);
+	consoleOut = new bool(console);
 }
 
 void logger::init(){
 
 } 
 
-void logger::log(){
-
+void logger::log(std::string message){
+	if(*consoleOut){
+		std::cout << message << std::endl;
+	}
+	if(*fileOut){
+		//Nothing for now
+	}
 }
 
 logger::~logger() {
+}
+
+logger::logger(){
+	fileOut = new bool(false);
+	consoleOut = new bool(false);
 }

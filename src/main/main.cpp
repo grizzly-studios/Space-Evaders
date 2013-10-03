@@ -8,6 +8,7 @@
 #include <cstdlib>
 
 #include "Application.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -15,8 +16,11 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-        
-        Application *app = new Application(argc, argv);
+        logger *loge = new logger();
+		
+		loge->log("Shouldn't come out");
+        Application *app = new Application(argc, argv, loge);
+		
         
         app->init();
         

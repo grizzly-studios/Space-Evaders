@@ -9,18 +9,21 @@
 #define	LOGGER_H
 
 #include <string>
+#include <iostream>
 
 class logger {
 public:
-        logger(int argc, char** argv);
-		virtual ~logger();
 		
+        logger();
+		virtual ~logger();
+
 		void init();
-        void log();
+        void log(std::string message);
+		void changeLogging(bool file, bool console);
 
 private:
-        bool fileOut;
-		bool consoleOut;
+        bool *fileOut;
+		bool *consoleOut;
 };
 
 #endif	/* LOGGER_H */
