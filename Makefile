@@ -24,7 +24,7 @@ endif
 
 SOURCES := $(call rwildcard,src/,*.cpp)
 HEADERS := $(call rwildcard,src/,*.h*)
-OBJECTS := $(patsubst %,$(OBJDIR)%,$(notdir $(SOURCES:.cpp=.o)))
+OBJECTS := $(patsubst src/main/%,$(OBJDIR)%,$(SOURCES:.cpp=.o))
 
 build: $(OUT)$(EXEC)
 
@@ -35,10 +35,10 @@ all:
 $(OUT)$(EXEC): $(OBJECTS)
 	@mkdir -p $(OUT)
 	@echo "<<< Linking >>>"
-	g++ $(patsubst %,$(OBJDIR)%,$(notdir $(OBJECTS))) -o $@ -L$(LIBS) $(LIBRARIES)
+	g++ $(OBJECTS) -o $@ -L$(LIBS) $(LIBRARIES)
 
 $(OBJDIR)%.o: src/main/%.cpp $(HEADERS)
-	@mkdir -p $(OBJDIR)
+	@mkdir -p $(dir $@)
 	@echo "<<< Compiling >>> "$<
 	g++ $(CXXFLAGS) $< -o $@
 	@echo ""
