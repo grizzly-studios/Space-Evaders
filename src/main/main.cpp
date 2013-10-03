@@ -18,7 +18,6 @@ using namespace std;
 int main(int argc, char** argv) {
         logger *loge = new logger();
 		
-		loge->log("Shouldn't come out");
         Application *app = new Application(argc, argv, loge);
 		
         

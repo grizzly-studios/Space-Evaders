@@ -12,10 +12,6 @@ void logger::changeLogging(bool file, bool console){
 	consoleOut = new bool(console);
 }
 
-void logger::init(){
-
-} 
-
 void logger::log(std::string message){
 	if(*consoleOut){
 		std::cout << message << std::endl;

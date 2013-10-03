@@ -63,7 +63,7 @@ Application::Application(int argc, char** argv, logger* loge) {
 		if(!verbose){
 				loge->changeLogging(false,false);
 		}
-		loge->log("Hello!");
+		loge->log("Application successfully created");
 }
 
 void Application::init() {

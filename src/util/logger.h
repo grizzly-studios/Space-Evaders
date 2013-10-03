@@ -17,7 +17,6 @@ public:
         logger();
 		virtual ~logger();
 
-		void init();
         void log(std::string message);
 		void changeLogging(bool file, bool console);
 
