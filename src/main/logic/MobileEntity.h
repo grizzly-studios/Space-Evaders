@@ -8,14 +8,20 @@
 #ifndef MOBILEENTITY_H
 #define	MOBILEENTITY_H
 
-class MobileEntity {
-public:
-	MobileEntity();
-	MobileEntity(const MobileEntity& orig);
-	virtual ~MobileEntity();
-private:
+#include "Entity.h"
 
-};
+namespace gs {
+
+	class MobileEntity : public Entity {
+	public:
+		MobileEntity();
+		MobileEntity(const MobileEntity& orig);
+		virtual ~MobileEntity();
+	private:
+
+	};
+
+}
 
 #endif	/* MOBILEENTITY_H */
 

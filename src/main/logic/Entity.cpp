@@ -13,6 +13,7 @@ Entity::Entity() {
 }
 
 Entity::Entity(const Entity& orig) {
+    position = orig.getPosition();
 }
 
 Entity::~Entity() {
@@ -27,6 +28,6 @@ void Entity::setPosition(float x, float y) {
         position.y = y;
 }
 
-sf::Vector2f Entity::getPosition() {
+sf::Vector2f Entity::getPosition() const {
         return position;
 }

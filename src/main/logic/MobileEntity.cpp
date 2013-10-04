@@ -7,10 +7,12 @@
 
 #include "MobileEntity.h"
 
+using namespace gs;
+
 MobileEntity::MobileEntity() {
 }
 
-MobileEntity::MobileEntity(const MobileEntity& orig) {
+MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
 }
 
 MobileEntity::~MobileEntity() {

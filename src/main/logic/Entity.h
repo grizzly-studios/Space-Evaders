@@ -20,9 +20,10 @@ namespace gs {
 
 		void setPosition(const sf::Vector2f &pos);
 		void setPosition(float x, float y);
-		sf::Vector2f getPosition();
-	private:
+		sf::Vector2f getPosition() const;
+	protected:
 		sf::Vector2f position;
+		
 	};
 
 }
