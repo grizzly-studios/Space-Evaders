@@ -17,6 +17,8 @@ namespace gs {
 		MobileEntity();
 		MobileEntity(const MobileEntity& orig);
 		virtual ~MobileEntity();
+		
+		virtual void move(const double & dt)=0;
 	private:
 
 	};

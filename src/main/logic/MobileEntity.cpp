@@ -9,7 +9,7 @@
 
 using namespace gs;
 
-MobileEntity::MobileEntity() {
+MobileEntity::MobileEntity() : Entity() {
 }
 
 MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
