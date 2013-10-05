@@ -12,6 +12,8 @@
 
 namespace gs {
 	
+	enum Direction {NONE, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT};
+	
 	/**
 	 * Base class for all moving objects
      */
@@ -28,6 +30,11 @@ namespace gs {
 		MobileEntity(const MobileEntity& orig);
 		virtual ~MobileEntity();
 		
+		float getMagnitude() const;
+		void setMagnitude(float _mag);
+		Direction getDirection() const;
+		void setDirection(Direction _dir);
+		
 		/**
 		 * Movement function
 		 * This is the key function of a mobile object. The time elapsed since
@@ -35,13 +42,12 @@ namespace gs {
 		 * the object.
          * @param dt Time interval since last move call
          */
-		virtual void move(const double & dt)=0;
-	private:
-
+		virtual void move(const double & dt);
+	protected:
+		float mag;
+		Direction dir;
 	};
 	
-	enum Direction {UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT};
-
 }
 
 #endif	/* MOBILEENTITY_H */

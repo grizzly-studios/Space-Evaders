@@ -15,19 +15,11 @@ namespace gs {
 	class Bullets : public MobileEntity {
 	public:
 		Bullets();
+		Bullets(Direction _dir, float _mag);
 		Bullets(const Bullets& orig);
 		virtual ~Bullets();
-		
-		float getMagnitude() const;
-		void setMagnitude(float _mag);
-		Direction getDirection() const;
-		void setDirection(Direction _dir);
-		
-		void move(const double & dt);
-		
+				
 	private:
-		float mag;
-		Direction dir;
 	};
 
 }
