@@ -21,16 +21,52 @@ namespace gs {
 	 */
 	class Entity {
 	public:
+		/**
+		 * Default constructor
+         */
 		Entity();
+		/**
+		 * Copy constructor
+         * @param orig Original Entity to be deep copied
+         */
 		Entity(const Entity& orig);
 		virtual ~Entity();
-
+		
+		/**
+		 * Set Entities position
+         * @param pos New position for entity
+         */
 		void setPosition(const sf::Vector2f &pos);
+		/**
+		 * Set Entities position
+         * @param x New x coordinate for entity
+         * @param y New y coordinate for entity
+         */
 		void setPosition(float x, float y);
+		/**
+		 * Get Entities position
+         * @return Current position
+         */
 		sf::Vector2f getPosition() const;
-		virtual void setSkin(const gs::Skin &_skin);
-		virtual gs::Skin getSkin() const;
+		/**
+		 * Set Entities new view object
+         * @param _skin New skin for entity
+         */
+		virtual void setSkin(const Skin &_skin);
+		/**
+		 * Get Entities current view object
+         * @return Current view object
+         */
+		virtual Skin getSkin() const;
+		/**
+		 * Set Entities name
+         * @param _name New name for entity
+         */
 		void setName(const std::string &_name);
+		/**
+		 * Get Entities current name
+         * @return Current name
+         */
 		std::string getName() const;
 		
 	protected:
