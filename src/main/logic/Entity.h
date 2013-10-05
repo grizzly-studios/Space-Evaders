@@ -16,6 +16,9 @@
 
 namespace gs {
 
+	/**
+	 * Base class for logical objects within the game.
+	 */
 	class Entity {
 	public:
 		Entity();
@@ -31,8 +34,24 @@ namespace gs {
 		std::string getName() const;
 		
 	protected:
+		/**
+		 * Position of the entity on the screen.
+		 * Holds the x and y coordinate that the top left corner of the object
+		 * should appear in the window.
+		 */
 		sf::Vector2f position;
+		
+		/**
+		 * View object to represent Entity of the screen.
+		 * Details to come.
+		 */
 		Skin *skin;
+		
+		/**
+		 * Name of the Entity
+		 * Holds the given name of the entity for logging and writing to the 
+		 * user.
+		 */
 		std::string name;
 	};
 
