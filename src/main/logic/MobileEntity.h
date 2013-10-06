@@ -43,9 +43,12 @@ namespace gs {
          * @param dt Time interval since last move call
          */
 		virtual void move(const double & dt);
+		virtual void integrate(const double &dt);
+		virtual void interpolate(const double &alpha);
 	protected:
 		float mag;
 		Direction dir;
+		sf::Vector2f state[2];
 	};
 	
 }
