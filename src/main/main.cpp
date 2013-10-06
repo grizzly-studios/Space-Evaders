@@ -6,22 +6,30 @@
  */
 
 #include <cstdlib>
+#include <tr1/memory>
 
+#include "event/EventManager.hpp"
+#include "logic/Logic.hpp"
+#include "view/View.hpp"
 #include "app/Application.h"
 
 using namespace std;
+using namespace gs;
 
 /*
  * 
  */
 int main(int argc, char** argv) {
-        
-        Application *app = new Application(argc, argv);
-        
-        app->init();
-        
-        app->run();
+	IEventManagerPtr eventManager(new EventManager);
+	ILogicPtr logic(new Logic(eventManager));
+	IViewPtr view(new View(eventManager));
 
-        return 0;
+	Application *app = new Application(argc, argv, logic, view);
+
+        // app->init();
+        
+        // app->run();
+
+    return 0;
 }
 

@@ -13,15 +13,22 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "../logic/Logic.hpp"
+#include "../view/View.hpp"
+
+namespace gs {
+
 class Application {
 public:
-        Application(int argc, char** argv);
+        Application(int argc, char** argv, ILogicPtr _logic, IViewPtr _view);
         virtual ~Application();
         
         void init();
         void run();
 
 private:
+        ILogicPtr logic;
+        IViewPtr view;
         bool verbose;
         bool flush;
         unsigned int FR;
@@ -30,6 +37,8 @@ private:
         sf::ContextSettings settings;
         sf::RenderWindow *window;
 };
+
+}
 
 #endif	/* APPLICATION_H */
 
