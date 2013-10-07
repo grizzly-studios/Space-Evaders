@@ -25,12 +25,17 @@ void GameLogic::evaluate() {
     sf::Time elapsed = clock->restart();
     accumulator += elapsed.asMicroseconds();
     
+	//Move objects
     while(accumulator >= dt) {
 		integrate();
 		accumulator -= dt;
     }
-    
     interpolate(accumulator);
+	
+	//Detect collisions
+	for (players::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+		
+	}
 }
 
 void GameLogic::integrate() {

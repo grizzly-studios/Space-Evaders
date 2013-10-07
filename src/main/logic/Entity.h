@@ -48,6 +48,11 @@ namespace gs {
          * @return Current position
          */
 		sf::Vector2f getPosition() const;
+		
+		void setDimensions(const sf::Vector2f &dim);
+		void setDimensions(float w, float h);
+		sf::Vector2f getDimensions() const;
+		
 		/**
 		 * Set Entities new view object
          * @param _skin New skin for entity
@@ -77,6 +82,8 @@ namespace gs {
 		 */
 		sf::Vector2f position;
 		
+		sf::Vector2f dimensions;
+		
 		/**
 		 * View object to represent Entity of the screen.
 		 * Details to come.
@@ -89,8 +96,11 @@ namespace gs {
 		 * user.
 		 */
 		std::string name;
+		
+		static int counter;
+		int ID;
 	};
-
+	
 }
 
 #endif	/* ENTITY_H */

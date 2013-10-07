@@ -9,31 +9,50 @@
 
 using namespace gs;
 
+int Entity::counter = 0;
+
 Entity::Entity() {
     position.x = 0;
     position.y = 0;
+	counter++;
+	ID = counter;
 }
 
 Entity::Entity(const Entity& orig) {
     position = orig.getPosition();
     *skin = orig.getSkin();
     name = orig.getName();
+	counter++;
+	ID = counter;
 }
 
 Entity::~Entity() {
 }
 
 void Entity::setPosition(const sf::Vector2f &pos) {
-        position = pos;
+	position = pos;
 }
 
 void Entity::setPosition(float x, float y) {
-        position.x = x;
-        position.y = y;
+	position.x = x;
+	position.y = y;
 }
 
 sf::Vector2f Entity::getPosition() const {
-        return position;
+	return position;
+}
+
+void Entity::setDimensions(const sf::Vector2f &dim) {
+	dimensions = dim;
+}
+
+void Entity::setDimensions(float w, float h) {
+	dimensions.x = w;
+	dimensions.y = h;
+}
+
+sf::Vector2f Entity::getDimensions() const {
+	return dimensions;
 }
 
 void Entity::setSkin(const Skin &_skin) {

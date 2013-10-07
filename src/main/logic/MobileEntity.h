@@ -45,6 +45,7 @@ namespace gs {
 		virtual void move(const double & dt);
 		virtual void integrate(const double &dt);
 		virtual void interpolate(const double &alpha);
+		virtual bool detectCollision(const Entity &entity);
 	protected:
 		float mag;
 		Direction dir;

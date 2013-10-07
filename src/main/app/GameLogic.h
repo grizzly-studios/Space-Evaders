@@ -14,10 +14,14 @@
 #include <SFML/System/Time.hpp>
 
 #include "../logic/MobileEntity.h"
+#include "../logic/Player.h"
+#include "../logic/Bullets.h"
 
 namespace gs {
 
-	typedef std::list<MobileEntity*> mobs;	
+	typedef std::list<MobileEntity*> mobs;
+	typedef std::list<Player*> players;
+	typedef std::list<Bullets*> bullets;
 	
 	class GameLogic {
 	public:
@@ -32,6 +36,8 @@ namespace gs {
 		double dt;
 		
 		mobs mobileObjects;
+		players allPlayers;
+		bullets allBullets;
 		
 		void integrate();
 		void interpolate(const double &remainder);
