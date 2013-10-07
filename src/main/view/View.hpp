@@ -2,15 +2,18 @@
 #define	VIEW_H
 
 #include "IView.hpp"
+#include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 
 namespace gs {
 
-class View : public IView {
+class View : public IView, public IEventListener {
 public:
-	View(IEventManagerPtr _eventManager) : eventManager(_eventManager) {}
-	virtual void update() {}
-	virtual void render() {}
+	View(IEventManagerPtr _eventManager);
+	~View();
+	virtual void update();
+	virtual void render();
+	virtual void onEvent(Event& event);
 private:
 	IEventManagerPtr eventManager;
 };
