@@ -52,6 +52,8 @@ namespace gs {
 		sf::Vector2f state[2];
 	};
 	
+	typedef std::tr1::shared_ptr<MobileEntity> MobileEntityShPtr;
+	
 }
 
 #endif	/* MOBILEENTITY_H */

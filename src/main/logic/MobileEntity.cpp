@@ -71,8 +71,8 @@ void MobileEntity::move(const double& dt) {
 	    break;
     }
     
-    position.x = x_mag * dt;
-    position.y = y_mag * dt;
+    geo.left = x_mag * dt;
+    geo.top = y_mag * dt;
 }
 
 void MobileEntity::integrate(const double& dt) {
@@ -117,31 +117,10 @@ void MobileEntity::integrate(const double& dt) {
 }
 
 void MobileEntity::interpolate(const double& alpha) {
-	position.x = state[1].x * alpha + state[0].x * (1. - alpha);
-	position.y = state[1].y * alpha + state[0].y * (1. - alpha);
+	geo.left = state[1].x * alpha + state[0].x * (1. - alpha);
+	geo.top = state[1].y * alpha + state[0].y * (1. - alpha);
 }
 
 bool MobileEntity::detectCollision(const Entity &entity) {
-	Entity const *left, *right, *top, *bottom;
-	if (position.x <= entity.getPosition().x) {
-		left = this;
-		right = &entity;
-	} else {
-		left = &entity;
-		right = this;
-	}
-	if (position.y <= entity.getPosition().y) {
-		top = this;
-		bottom = &entity;
-	} else {
-		top = &entity;
-		bottom = this;
-	}
-	
-	bool x_inter(false), y_inter(false);
-	
-	x_inter = ((left->getPosition().x + left->getDimensions().x) >= right->getPosition().x);
-	y_inter = ((top->getPosition().y + top->getDimensions().y) >= bottom->getPosition().y);
-	
-	return (x_inter && y_inter);
+	return geo.intersects(entity.getGeo());
 } 

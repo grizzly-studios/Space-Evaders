@@ -9,19 +9,21 @@
 #define	GAMELOGIC_H
 
 #include <list>
+#include <algorithm>
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
 
-#include "../logic/MobileEntity.h"
-#include "../logic/Player.h"
-#include "../logic/Bullets.h"
+#include "MobileEntity.h"
+#include "Player.h"
+#include "Bullets.h"
 
 namespace gs {
 
-	typedef std::list<MobileEntity*> mobs;
-	typedef std::list<Player*> players;
-	typedef std::list<Bullets*> bullets;
+	typedef std::list<EntityShPtr> EntityList;
+	typedef std::list<MobileEntityShPtr> MobileEntityList;
+	typedef std::list<PlayerShPtr> PlayerList;
+	typedef std::list<BulletsShPtr> BulletsList;
 	
 	class GameLogic {
 	public:
@@ -29,15 +31,16 @@ namespace gs {
 		~GameLogic();
 		
 		void init();
-		void evaluate();
+		void update();
 	private:
 		sf::Clock *clock;
 		double accumulator;
 		double dt;
 		
-		mobs mobileObjects;
-		players allPlayers;
-		bullets allBullets;
+		EntityList allObjects;
+		MobileEntityList mobileObjects;
+		PlayerList allPlayers;
+		BulletsList allBullets;
 		
 		void integrate();
 		void interpolate(const double &remainder);
