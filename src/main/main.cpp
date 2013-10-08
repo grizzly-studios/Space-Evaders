@@ -6,9 +6,8 @@
  */
 
 #include <cstdlib>
-
-#include "Application.h"
-#include "../util/logger.h"
+#include "app/Application.h".
+#include "util/logger.h"
 
 using namespace std;
 
