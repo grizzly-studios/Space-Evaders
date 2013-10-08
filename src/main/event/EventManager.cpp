@@ -9,6 +9,7 @@ EventManager::~EventManager() {
 	std::cout << __FILE__ << " destroyed" << std::endl;
 }
 
+bool EventManager::addListener(EventEnum eventType, IEventListenerShPtr listener) {
 bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) {
 	bool success = false;
 

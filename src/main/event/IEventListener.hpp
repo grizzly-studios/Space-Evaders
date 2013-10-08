@@ -12,7 +12,7 @@ public:
 	virtual void onEvent(Event& event) = 0;
 };
 
-typedef std::tr1::weak_ptr<IEventListener> IEventListenerPtr;
+typedef std::tr1::weak_ptr<IEventListener> IEventListenerShPtr;
 
 }
 
