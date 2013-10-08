@@ -10,34 +10,43 @@ EventManager::~EventManager() {
 }
 
 bool EventManager::addListener(EventEnum eventType, IEventListenerShPtr listener) {
-bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) {
 	bool success = false;
+	// TODO: Check for NULL pointers (assert/log?)
+	// TODO: Typedef a shared_ptr for IEventListener
 
-	// TODO: Check for double registering (weak_ptrs dont have operator==)
+	// Get the listeners associated with the given event type
 	EventListenerList& listenerList = listeners[eventType];
-	//EventListenerList::iterator it = std::find(listenerList.begin(),
-		//listenerList.end(), listener);
+	EventListenerList::iterator it;
 
-	// if (it == listenerList.end()) {
-	listenerList.push_back(listener);
-	// 	success = true;
-	// 	// TODO: Log success, listener added
-	// } else {
-	// 	// TODO: Log failure, attempting to double register listener
-	// }
+	// Check the listener being added is not already registered
+	for (it = listenerList.begin(); it != listenerList.end(); ++it) {
+		if (it->lock() == listener.lock()) {
+			// TODO: Log failure, attempting to double register listener
+			break;
+		}
+	}
+
+	if (it == listenerList.end()) {
+		listenerList.push_back(listener);
+		success = true;
+		// TODO: Log success, listener added
+	}
 
 	return success;
 }
 
-bool EventManager::fireEvent(Event& event) {
+bool EventManager::fireEvent(Event& event) const {
 	bool success = false;
+	// TODO: Check for NULL pointers (assert/log?)
 
-	EventListenerMap::iterator mapIt = listeners.find(event.getType());
+	// Get the listeners associated with event type
+	EventListenerMap::const_iterator mapIt = listeners.find(event.getType());
 	if (mapIt != listeners.end()) {
-		EventListenerList& listenerList = mapIt->second;
+		const EventListenerList& listenerList = mapIt->second;
 
 		if (!listenerList.empty()) {
-			for (EventListenerList::iterator listIt = listenerList.begin();
+			// Execute each listener, passing the event
+			for (EventListenerList::const_iterator listIt = listenerList.begin();
 				listIt != listenerList.end(); ++listIt) {
 				(*listIt).lock()->onEvent(event);
 			}
