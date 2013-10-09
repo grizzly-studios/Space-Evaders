@@ -10,7 +10,7 @@ namespace gs {
 
 class IEventManager {
 public:
-	virtual bool addListener(EventEnum eventType, IEventListenerShPtr listener) = 0;
+	virtual bool addListener(EventEnum eventType, IEventListenerPtr listener) = 0;
 	virtual bool fireEvent(Event& event) const = 0;
 };
 

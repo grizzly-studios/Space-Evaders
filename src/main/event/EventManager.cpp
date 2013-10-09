@@ -9,7 +9,7 @@ EventManager::~EventManager() {
 	std::cout << __FILE__ << " destroyed" << std::endl;
 }
 
-bool EventManager::addListener(EventEnum eventType, IEventListenerShPtr listener) {
+bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) {
 	bool success = false;
 	// TODO: Check for NULL pointers (assert/log?)
 	// TODO: Typedef a shared_ptr for IEventListener

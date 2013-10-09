@@ -8,13 +8,13 @@
 
 namespace gs {
 
-typedef std::list<IEventListenerShPtr> EventListenerList;
+typedef std::list<IEventListenerPtr> EventListenerList;
 typedef std::map<EventEnum, EventListenerList> EventListenerMap;
 
 class EventManager : public IEventManager {
 public:
 	~EventManager();
-	virtual bool addListener(EventEnum eventType, IEventListenerShPtr listener);
+	virtual bool addListener(EventEnum eventType, IEventListenerPtr listener);
 	virtual bool fireEvent(Event& event) const;
 private:
 	/** Map of listeners */
