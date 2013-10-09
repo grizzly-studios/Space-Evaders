@@ -50,6 +50,8 @@ namespace gs {
 		float mag;
 		Direction dir;
 		sf::Vector2f state[2];
+		
+		virtual sf::Vector2f getVector(const double & dt) const;
 	};
 	
 	typedef std::tr1::shared_ptr<MobileEntity> MobileEntityShPtr;
