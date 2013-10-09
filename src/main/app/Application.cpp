@@ -8,6 +8,11 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "Application.h"
+#include "../event/EventManager.hpp"
+#include "../logic/Logic.hpp"
+#include "../view/View.hpp"
+
+namespace gs {
 
 Application::Application(int argc, char** argv) {
         
@@ -45,11 +50,16 @@ Application::Application(int argc, char** argv) {
 }
 
 void Application::init() {
-        
-        settings.antialiasingLevel = AL;
-        
-        window = new sf::RenderWindow(sf::VideoMode(WIDTH,HEIGHT),"Space Evaders",sf::Style::Fullscreen, settings);
-        window->setVerticalSyncEnabled(true);
+	eventManager = IEventManagerPtr(new EventManager);
+
+	logic = ILogicPtr(new Logic(eventManager));
+	view = IViewPtr(new View(eventManager));
+
+	settings.antialiasingLevel = AL;
+
+	window = new sf::RenderWindow(sf::VideoMode(WIDTH,HEIGHT),"Space Evaders",sf::Style::Fullscreen, settings);
+	window->setVerticalSyncEnabled(true);
+
 }
 
 Application::~Application() {
@@ -75,4 +85,6 @@ void Application::run() {
                 //window->draw();
                 window->display();
         }
+}
+
 }
