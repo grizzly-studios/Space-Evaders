@@ -13,6 +13,12 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "../event/IEventManager.hpp"
+#include "../logic/ILogic.hpp"
+#include "../view/IView.hpp"
+
+namespace gs {
+
 class Application {
 public:
         Application(int argc, char** argv);
@@ -22,6 +28,9 @@ public:
         void run();
 
 private:
+        IEventManagerPtr eventManager;
+        ILogicPtr logic;
+        IViewPtr view;
         bool verbose;
         bool flush;
         unsigned int FR;
@@ -30,6 +39,8 @@ private:
         sf::ContextSettings settings;
         sf::RenderWindow *window;
 };
+
+}
 
 #endif	/* APPLICATION_H */
 
