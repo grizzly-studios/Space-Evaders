@@ -17,12 +17,7 @@ using namespace gs;
  * 
  */
 int main(int argc, char** argv) {
-	IEventManagerPtr eventManager(new EventManager);
-
-	ILogicPtr logic(new Logic(eventManager));
-	IViewPtr view(new View(eventManager));
-
-	Application *app = new Application(argc, argv, logic, view);
+	Application *app = new Application(argc, argv);
 	app->init();
 	app->run();
 

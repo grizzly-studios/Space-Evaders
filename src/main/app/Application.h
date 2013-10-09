@@ -13,20 +13,22 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "../logic/Logic.hpp"
-#include "../view/View.hpp"
+#include "../event/IEventManager.hpp"
+#include "../logic/ILogic.hpp"
+#include "../view/IView.hpp"
 
 namespace gs {
 
 class Application {
 public:
-        Application(int argc, char** argv, ILogicPtr _logic, IViewPtr _view);
+        Application(int argc, char** argv);
         virtual ~Application();
         
         void init();
         void run();
 
 private:
+        IEventManagerPtr eventManager;
         ILogicPtr logic;
         IViewPtr view;
         bool verbose;
