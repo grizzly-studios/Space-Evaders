@@ -48,7 +48,7 @@ bool EventManager::fireEvent(Event& event) const {
 			// Execute each listener, passing the event
 			for (EventListenerList::const_iterator listIt = listenerList.begin();
 				listIt != listenerList.end(); ++listIt) {
-				(*listIt).lock()->onEvent(event);
+				listIt->lock()->onEvent(event);
 			}
 			success = true;
 			// TODO: Log success, listeners called

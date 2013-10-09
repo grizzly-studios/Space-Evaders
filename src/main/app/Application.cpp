@@ -11,7 +11,8 @@
 
 namespace gs {
 
-Application::Application(int argc, char** argv, ILogicPtr _logic, IViewPtr _view) : logic(_logic), view(_view) {
+Application::Application(int argc, char** argv, ILogicPtr _logic, IViewPtr _view)
+	: logic(_logic), view(_view) {
         
         verbose = false;
         flush = false;
