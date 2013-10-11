@@ -49,5 +49,6 @@ clean:
 	rm -rf $(OUT)
 
 clobber:
-	@make clean mode=debug
-	@make clean mode=release 
+	@echo "<<< Clobbering >>>"
+	rm -rf build/
+	rm -rf bin/
