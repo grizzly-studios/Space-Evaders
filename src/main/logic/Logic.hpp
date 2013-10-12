@@ -48,6 +48,8 @@ private:
 
 	void integrate();
 	void interpolate(const double &remainder);
+	
+	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
 };
 
 }

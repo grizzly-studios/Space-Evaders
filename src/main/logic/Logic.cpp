@@ -73,3 +73,10 @@ void Logic::interpolate(const double &remainder) {
 		(*it)->interpolate(alpha);
 	}
 }
+
+void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
+	allBullets.push_back(BulletsShPtr(new Bullets(dir, mag)));
+	allBullets.back()->setGeo(geo);
+	mobileObjects.push_back(allBullets.back());
+	allObjects.push_back(allBullets.back());
+}
