@@ -18,7 +18,13 @@ void View::update() {
 }
 
 void View::render() {
+	window->clear();
 
+	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
+		window->draw(*it->second);
+	}
+
+	window->display();
 }
 
 void View::onEvent(Event& event) {
