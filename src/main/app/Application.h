@@ -16,6 +16,8 @@
 #include "../event/IEventManager.hpp"
 #include "../logic/ILogic.hpp"
 #include "../view/IView.hpp"
+#include "../view/KeyboardListener.h"
+#include "../view/UserInput.h"
 
 namespace gs {
 

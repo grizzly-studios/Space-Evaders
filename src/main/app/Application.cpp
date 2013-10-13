@@ -53,7 +53,10 @@ void Application::init() {
 	eventManager = IEventManagerPtr(new EventManager);
 
 	logic = ILogicPtr(new Logic(eventManager));
-	view = IViewPtr(new View(eventManager));
+	
+	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
+	IUserInputShPtr userInput(new UserInput(keyboard));
+	view = IViewPtr(new View(eventManager, userInput));
 
 	settings.antialiasingLevel = AL;
 
