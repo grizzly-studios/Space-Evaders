@@ -29,7 +29,7 @@ public:
 	Logic(IEventManagerPtr _eventManager);
 	~Logic();
 	virtual void update();
-	virtual void onEvent(Event& event);
+	virtual void onEvent(IEvent& event);
 private:
 	IEventManagerPtr eventManager;
 	
