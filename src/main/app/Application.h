@@ -14,6 +14,12 @@
 #include <SFML/Graphics.hpp>
 #include "../util/logger.h"
 
+#include "../event/IEventManager.hpp"
+#include "../logic/ILogic.hpp"
+#include "../view/IView.hpp"
+
+namespace gs {
+
 class Application {
 public:
         Application(int argc, char** argv, logger* loge);
@@ -23,6 +29,9 @@ public:
         void run();
 
 private:
+        IEventManagerPtr eventManager;
+        ILogicPtr logic;
+        IViewPtr view;
         bool verbose;
         bool flush;
 		logger *loge;
@@ -32,6 +41,8 @@ private:
         sf::ContextSettings settings;
         sf::RenderWindow *window;
 };
+
+}
 
 #endif	/* APPLICATION_H */
 

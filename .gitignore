@@ -22,3 +22,10 @@ Makefile.config
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Editor projects & settings #
+##############################
+.cproject
+.project
+.settings/
+*.sublime*
