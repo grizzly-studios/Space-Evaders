@@ -13,14 +13,15 @@
 
 class logger {
 public:
-		
-        logger();
-		virtual ~logger();
-
+		static logger* getInstance();
         void log(std::string message);
 		void changeLogging(bool file, bool console);
 
 private:
+        logger();
+		virtual ~logger();
+		
+		static logger* pLogger;
         bool *fileOut;
 		bool *consoleOut;
 };

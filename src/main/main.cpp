@@ -15,7 +15,7 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-        logger *loge = new logger();
+        logger *loge = logger::getInstance();
 		
         Application *app = new Application(argc, argv, loge);
 		
