@@ -15,7 +15,7 @@ void Logic::update() {
 }
 
 void Logic::onEvent(Event& event) {
-	std::cout << "Logic: event: " << EventEnumToString(event.getType()) << std::endl;
+	std::cout << "Logic: event: " << event.getType() << std::endl;
 }
 
 }
