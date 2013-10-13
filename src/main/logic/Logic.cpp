@@ -1,5 +1,5 @@
 #include "Logic.hpp"
-#include "../event/EntityMovedEvent.h"
+
 using namespace gs;
 
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
@@ -23,7 +23,6 @@ void Logic::update() {
 		
 	move();
 	collisionDetection();
-	EntityMovedEvent ev(88);
 }
 
 void Logic::onEvent(IEvent& event) {
@@ -80,3 +79,4 @@ void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
 	mobileObjects.push_back(allBullets.back());
 	allObjects.push_back(allBullets.back());
 }
+
