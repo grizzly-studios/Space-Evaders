@@ -58,6 +58,8 @@ void Application::init() {
 		sf::Style::Default, settings));
 	window->setVerticalSyncEnabled(true);
 
+	logic = ILogicPtr(new Logic(eventManager));
+	view = IViewPtr(new View(eventManager, window));
 }
 
 Application::~Application() {
@@ -78,10 +80,9 @@ void Application::run() {
                             }
                     }
                 }
-                
-                window->clear();
-                //window->draw();
-                window->display();
+
+                logic->update();
+                view->render();
         }
 }
 
