@@ -6,24 +6,9 @@
 namespace gs {
 
 enum EventEnum {
-	BISCUIT_EVENT,
-	CHEESE_EVENT
+	ENTITY_MOVED_EVENT,
+	ENTITY_CREATED_EVENT
 };
-
-inline std::string EventEnumToString(EventEnum eventEnum) {
-	std::string str = "UNKNOWN_EVENT";
-
-	switch (eventEnum) {
-	case BISCUIT_EVENT:
-		str = "BISCUIT";
-		break;
-	case CHEESE_EVENT:
-		str = "CHEESE";
-		break;
-	}
-
-	return str;
-}
 
 }
 

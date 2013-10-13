@@ -52,20 +52,28 @@ Application::Application(int argc, char** argv) {
 void Application::init() {
 	eventManager = IEventManagerPtr(new EventManager);
 
+	settings.antialiasingLevel = AL;
+
+	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
+		sf::Style::Default, settings));
+	window->setVerticalSyncEnabled(true);
+
 	logic = ILogicPtr(new Logic(eventManager));
 	
 	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
 	IUserInputShPtr userInput(new UserInput(keyboard));
-	view = IViewPtr(new View(eventManager, userInput));
+	view = IViewPtr(new View(eventManager, window, userInput));
+	view->init();
 
-	settings.antialiasingLevel = AL;
-
-	window = new sf::RenderWindow(sf::VideoMode(WIDTH,HEIGHT),"Space Evaders",sf::Style::Fullscreen, settings);
-	window->setVerticalSyncEnabled(true);
-
+	// TODO: How best to handle this cast?
+	eventManager->addListener(ENTITY_MOVED_EVENT,
+		std::tr1::dynamic_pointer_cast<IEventListener>(view));
+	eventManager->addListener(ENTITY_CREATED_EVENT,
+		std::tr1::dynamic_pointer_cast<IEventListener>(view));
 }
 
 Application::~Application() {
+	std::cout << __FILE__ << " destroyed" << std::endl;
 }
 
 void Application::run() {
@@ -73,7 +81,7 @@ void Application::run() {
         while(window->isOpen()) {
                 sf::Event event;
                 while (window->pollEvent(event)) {
-                        
+
                     if (event.type == sf::Event::Closed) {
                         window->close();
                     }
@@ -83,10 +91,9 @@ void Application::run() {
                             }
                     }
                 }
-                
-                window->clear();
-                //window->draw();
-                window->display();
+
+                logic->update();
+                view->render();
         }
 }
 

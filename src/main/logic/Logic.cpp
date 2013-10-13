@@ -23,11 +23,10 @@ void Logic::update() {
 		
 	move();
 	collisionDetection();
-	
 }
 
-void Logic::onEvent(Event& event) {
-	std::cout << "Logic: event: " << EventEnumToString(event.getType()) << std::endl;
+void Logic::onEvent(IEvent& event) {
+	std::cout << "Logic: event: " << event.getType() << std::endl;
 }
 
 void Logic::move() {
@@ -80,3 +79,4 @@ void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
 	mobileObjects.push_back(allBullets.back());
 	allObjects.push_back(allBullets.back());
 }
+
