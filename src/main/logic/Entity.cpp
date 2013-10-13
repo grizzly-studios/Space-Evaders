@@ -9,39 +9,68 @@
 
 using namespace gs;
 
+unsigned int Entity::counter = 0;
+
 Entity::Entity() {
-    position.x = 0;
-    position.y = 0;
+    geo.left = 0;
+    geo.top = 0;
+	geo.width = 0;
+	geo.height = 0;
+	counter++;
+	ID = counter;
 }
 
 Entity::Entity(const Entity& orig) {
-    position = orig.getPosition();
-    *skin = orig.getSkin();
+    geo = orig.getGeo();
     name = orig.getName();
+	counter++;
+	ID = counter;
 }
 
 Entity::~Entity() {
 }
 
 void Entity::setPosition(const sf::Vector2f &pos) {
-        position = pos;
+	geo.left = pos.x;
+	geo.top = pos.y;
 }
 
 void Entity::setPosition(float x, float y) {
-        position.x = x;
-        position.y = y;
+	geo.left = x;
+	geo.top = y;
 }
 
 sf::Vector2f Entity::getPosition() const {
-        return position;
+	return sf::Vector2f(geo.left,geo.top);
 }
 
-void Entity::setSkin(const Skin &_skin) {
-    *skin = _skin;
+void Entity::setDimensions(const sf::Vector2f &dim) {
+	geo.width = dim.x;
+	geo.height = dim.y;
 }
 
-Skin Entity::getSkin() const {
-    return *skin;
+void Entity::setDimensions(float w, float h) {
+	geo.width = w;
+	geo.height = h;
+}
+
+sf::Vector2f Entity::getDimensions() const {
+	return sf::Vector2f(geo.width,geo.height);
+}
+
+void Entity::setGeo(const sf::FloatRect& _geo) {
+	geo = _geo;
+}
+
+void Entity::setGeo(float x, float y, float w, float h) {
+	geo.left = x;
+	geo.top = y;
+	geo.width = w;
+	geo.height = h;
+}
+
+sf::FloatRect Entity::getGeo() const {
+	return geo;
 }
 
 void Entity::setName(const std::string& _name) {
@@ -50,4 +79,8 @@ void Entity::setName(const std::string& _name) {
 
 std::string Entity::getName() const {
     return name;
+}
+
+unsigned int Entity::getID() const {
+	return ID;
 }

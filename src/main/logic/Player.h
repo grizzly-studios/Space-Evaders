@@ -20,6 +20,8 @@ namespace gs {
 	private:
 
 	};
+	
+	typedef std::tr1::shared_ptr<Player> PlayerShPtr;
 
 }
 

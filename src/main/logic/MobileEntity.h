@@ -43,10 +43,18 @@ namespace gs {
          * @param dt Time interval since last move call
          */
 		virtual void move(const double & dt);
+		virtual void integrate(const double &dt);
+		virtual void interpolate(const double &alpha);
+		virtual bool detectCollision(const Entity &entity);
 	protected:
 		float mag;
 		Direction dir;
+		sf::Vector2f state[2];
+		
+		virtual sf::Vector2f getVector(const double & dt) const;
 	};
+	
+	typedef std::tr1::shared_ptr<MobileEntity> MobileEntityShPtr;
 	
 }
 

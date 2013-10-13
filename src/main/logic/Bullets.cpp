@@ -16,6 +16,7 @@ Bullets::Bullets() : MobileEntity() {
 }
 
 Bullets::Bullets(Direction _dir, float _mag) : MobileEntity() {
+	name = "Bullets";
     dir = _dir;
     mag = _mag;
 }
