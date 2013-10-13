@@ -12,21 +12,6 @@ enum EventEnum {
 	CHEESE_EVENT
 };
 
-inline std::string EventEnumToString(EventEnum eventEnum) {
-	std::string str = "UNKNOWN_EVENT";
-
-	switch (eventEnum) {
-	case BISCUIT_EVENT:
-		str = "BISCUIT";
-		break;
-	case CHEESE_EVENT:
-		str = "CHEESE";
-		break;
-	}
-
-	return str;
-}
-
 }
 
 #endif	/* EVENT_ENUM_H */
