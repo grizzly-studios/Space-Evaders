@@ -4,6 +4,7 @@
 
 #define SPRITE_SHEET "assets/sprites.png"
 #define SPRITE_SHEET_SPRITE_WIDTH 16
+#define SCREEN_SPRITE_WIDTH 16
 
 namespace gs {
 
@@ -71,8 +72,12 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 	}
 
 	SpriteShPtr sprite(new sf::Sprite);
+	sprite->setPosition(event.getPosition());
+	// Logic dimensions map to screen pixels 1:1
+	sprite->setScale(event.getDimensions() / (float) SCREEN_SPRITE_WIDTH);
 	sprite->setTexture(texture);
 	sprite->setTextureRect(sf::IntRect(0, 0, SPRITE_SHEET_SPRITE_WIDTH, SPRITE_SHEET_SPRITE_WIDTH));
+
 	spriteMap[event.getEntityId()] = sprite;
 }
 
@@ -83,8 +88,7 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
 	if (it != spriteMap.end()) {
-		// TODO: Refactor EntityMovedEvent to include new position in payload
-		it->second->setPosition(it->second->getPosition().x +1, it->second->getPosition().y +1);
+		it->second->setPosition(event.getPosition());
 	} else {
 		// TODO: Log error, no sprite for this id
 		std::cout << "no sprite for this id: " << entityId << std::endl;
