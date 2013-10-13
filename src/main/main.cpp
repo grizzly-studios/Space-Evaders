@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
 	Application *app = new Application(argc, argv);
 	app->init();
 	app->run();
+	delete app;
 
     return 0;
 }
