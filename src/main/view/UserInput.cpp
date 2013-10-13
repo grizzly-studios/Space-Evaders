@@ -9,8 +9,7 @@
 
 using namespace gs;
 
-UserInput::UserInput(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
-	keyboard = IKeyboardListenerShrPtr(new KeyboardListener(_eventManager));
+UserInput::UserInput(IKeyboardListenerShrPtr _keyboard) : keyboard(_keyboard) {
 }
 
 UserInput::~UserInput() {

@@ -19,7 +19,7 @@ namespace gs {
 
 class UserInput : public IUserInput {
 public:
-	UserInput(IEventManagerPtr _eventManager);
+	UserInput(IKeyboardListenerShrPtr _keyboard);
 	virtual ~UserInput();
 	
 	virtual void update();
