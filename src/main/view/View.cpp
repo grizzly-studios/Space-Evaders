@@ -37,7 +37,7 @@ void View::render() {
 	window->display();
 }
 
-void View::onEvent(Event& event) {
+void View::onEvent(IEvent& event) {
 	std::cout << "View: event: ";
 
 	switch (event.getType()) {

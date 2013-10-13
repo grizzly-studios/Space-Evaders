@@ -1,5 +1,5 @@
 #include "Logic.hpp"
-
+#include "../event/EntityMovedEvent.h"
 using namespace gs;
 
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
@@ -23,10 +23,10 @@ void Logic::update() {
 		
 	move();
 	collisionDetection();
-	
+	EntityMovedEvent ev(88);
 }
 
-void Logic::onEvent(Event& event) {
+void Logic::onEvent(IEvent& event) {
 	std::cout << "Logic: event: " << event.getType() << std::endl;
 }
 

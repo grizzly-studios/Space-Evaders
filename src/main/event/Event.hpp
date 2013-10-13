@@ -1,15 +1,15 @@
-#ifndef EVENT_H
-#define	EVENT_H
+#ifndef EVENT_HPP
+#define	EVENT_HPP
 
 #include "EventEnum.hpp"
 
 namespace gs {
 
-class Event {
+class IEvent {
 public:
-	virtual EventEnum getType() = 0;
+	virtual EventEnum getType() const = 0;
 };
 
 }
 
-#endif	/* EVENT_H */
+#endif	/* EVENT_HPP */

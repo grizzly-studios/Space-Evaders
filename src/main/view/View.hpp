@@ -30,7 +30,7 @@ public:
 	virtual void init();
 	virtual void update();
 	virtual void render();
-	virtual void onEvent(Event& event);
+	virtual void onEvent(IEvent& event);
 private:
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
