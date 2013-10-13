@@ -4,7 +4,8 @@
 
 namespace gs {
 
-View::View(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
+View::View(IEventManagerPtr _eventManager, 
+		IUserInputShPtr _userInput) : eventManager(_eventManager, _userInput) {
 	
 }
 
