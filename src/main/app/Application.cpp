@@ -52,12 +52,10 @@ Application::Application(int argc, char** argv) {
 void Application::init() {
 	eventManager = IEventManagerPtr(new EventManager);
 
-	logic = ILogicPtr(new Logic(eventManager));
-	view = IViewPtr(new View(eventManager));
-
 	settings.antialiasingLevel = AL;
 
-	window = new sf::RenderWindow(sf::VideoMode(WIDTH,HEIGHT),"Space Evaders",sf::Style::Fullscreen, settings);
+	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
+		sf::Style::Default, settings));
 	window->setVerticalSyncEnabled(true);
 
 }

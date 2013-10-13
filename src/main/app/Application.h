@@ -8,6 +8,7 @@
 #ifndef APPLICATION_H
 #define	APPLICATION_H
 
+#include <tr1/memory>
 #include <string>
 
 #include <SFML/Window.hpp>
@@ -18,6 +19,8 @@
 #include "../view/IView.hpp"
 
 namespace gs {
+
+typedef std::tr1::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
 
 class Application {
 public:
@@ -37,7 +40,7 @@ private:
         unsigned int AL;
         unsigned int WIDTH, HEIGHT;
         sf::ContextSettings settings;
-        sf::RenderWindow *window;
+        RenderWindowShPtr window;
 };
 
 }
