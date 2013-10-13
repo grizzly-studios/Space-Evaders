@@ -4,8 +4,9 @@
 
 namespace gs {
 
-View::View(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
-	
+View::View(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventManager(_eventManager),
+	window(_window) {
+
 }
 
 View::~View() {
