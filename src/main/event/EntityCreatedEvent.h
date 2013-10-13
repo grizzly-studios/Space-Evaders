@@ -20,8 +20,12 @@ public:
 		return entityId;
 	}
 
-	sf::FloatRect getGeo() const {
-		return geo;
+	sf::Vector2f getPosition() const {
+		return sf::Vector2f(geo.left, geo.top);
+	}
+
+	sf::Vector2f getDimensions() const {
+		return sf::Vector2f(geo.width, geo.height);
 	}
 
 private:
