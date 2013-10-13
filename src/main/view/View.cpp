@@ -3,7 +3,7 @@
 #include <iostream>
 
 #define SPRITE_SHEET "assets/sprites.png"
-#define SPRITE_WIDTH 16
+#define SPRITE_SHEET_SPRITE_WIDTH 16
 
 namespace gs {
 
@@ -18,6 +18,7 @@ View::~View() {
 
 void View::init() {
 	if (!texture.loadFromFile(SPRITE_SHEET)) {
+		// TODO: Log error
 		std::cout << __FILE__ << "failed to load texture" << std::endl;
 	}
 }
@@ -30,7 +31,7 @@ void View::render() {
 	window->clear();
 
 	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
-		window->draw(*it->second);
+		window->draw(*(it->second));
 	}
 
 	window->display();
@@ -71,7 +72,7 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 
 	SpriteShPtr sprite(new sf::Sprite);
 	sprite->setTexture(texture);
-	sprite->setTextureRect(sf::IntRect(0, 0, SPRITE_WIDTH, SPRITE_WIDTH));
+	sprite->setTextureRect(sf::IntRect(0, 0, SPRITE_SHEET_SPRITE_WIDTH, SPRITE_SHEET_SPRITE_WIDTH));
 	spriteMap[event.getEntityId()] = sprite;
 }
 
