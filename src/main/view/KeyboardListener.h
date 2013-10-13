@@ -8,6 +8,8 @@
 #ifndef KEYBOARDLISTENER_H
 #define	KEYBOARDLISTENER_H
 
+#include "IKeyboardListener.h"
+
 namespace gs {
 
 class KeyboardListener : public IKeyboardListener {

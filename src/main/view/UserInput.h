@@ -13,6 +13,8 @@
 #include "IUserInput.h"
 #include "../event/IEventManager.hpp"
 
+#include "KeyboardListener.h"
+
 namespace gs {
 
 class UserInput : public IUserInput {
@@ -23,6 +25,9 @@ public:
 	virtual void update();
 private:
 	IEventManagerPtr eventManager;
+	
+	//Listeners
+	IKeyboardListenerShrPtr keyboard;
 };
 
 }
