@@ -76,7 +76,18 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 }
 
 void View::onEntityMoved(EntityMovedEvent& event) {
-	std::cout << "entity moved with id: " << event.getEntityId() << std::endl;
+	const short entityId = event.getEntityId();
+	std::cout << "entity moved with id: " << entityId << std::endl;
+
+	// Check we have a sprite associated with this id
+	SpriteMap::iterator it = spriteMap.find(entityId);
+	if (it != spriteMap.end()) {
+		// TODO: Refactor EntityMovedEvent to include new position in payload
+		it->second->setPosition(it->second->getPosition().x +1, it->second->getPosition().y +1);
+	} else {
+		// TODO: Log error, no sprite for this id
+		std::cout << "no sprite for this id: " << entityId << std::endl;
+	}
 }
 
 }
