@@ -8,6 +8,9 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "IView.hpp"
+
+#include "../event/EntityCreatedEvent.h"
+#include "../event/EntityMovedEvent.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 
@@ -26,6 +29,9 @@ public:
 	virtual void render();
 	virtual void onEvent(Event& event);
 private:
+	void onEntityCreated(EntityCreatedEvent& event);
+	void onEntityMoved(EntityMovedEvent& event);
+
 	IEventManagerPtr eventManager;
 	RenderWindowShPtr window;
 	sf::Texture texture;
