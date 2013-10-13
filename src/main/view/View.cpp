@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#define SPRITE_SHEET "assets/sprites.png"
+#define SPRITE_WIDTH 16
+
 namespace gs {
 
 View::View(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventManager(_eventManager),
@@ -11,6 +14,12 @@ View::View(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventMan
 
 View::~View() {
 	std::cout << __FILE__ << " destroyed" << std::endl;
+}
+
+void View::init() {
+	if (!texture.loadFromFile(SPRITE_SHEET)) {
+		std::cout << __FILE__ << "failed to load texture" << std::endl;
+	}
 }
 
 void View::update() {

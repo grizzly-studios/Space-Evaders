@@ -5,6 +5,7 @@
 #include <map>
 
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "IView.hpp"
@@ -25,6 +26,8 @@ class View : public IView, public IEventListener {
 public:
 	View(IEventManagerPtr _eventManager, RenderWindowShPtr _window);
 	virtual ~View();
+
+	virtual void init();
 	virtual void update();
 	virtual void render();
 	virtual void onEvent(Event& event);
