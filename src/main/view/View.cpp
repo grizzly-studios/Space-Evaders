@@ -60,7 +60,14 @@ void View::onEvent(Event& event) {
 }
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
-	std::cout << "entity created with id: " << event.getEntityId() << std::endl;
+	const short entityId = event.getEntityId();
+	std::cout << "entity created with id: " << entityId << std::endl;
+
+	// Check if we already have a sprite associated with this id
+	if (spriteMap.find(entityId) != spriteMap.end()) {
+		// TODO Log warning about sprite already present, why was it not destroyed?
+		std::cout << "warning sprite already present" << std::endl;
+	}
 
 	SpriteShPtr sprite(new sf::Sprite);
 	sprite->setTexture(texture);
