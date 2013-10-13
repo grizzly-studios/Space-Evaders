@@ -6,6 +6,8 @@
 namespace gs {
 
 enum EventEnum {
+	ENTITY_MOVED_EVENT,
+	ENTITY_CREATED_EVENT,
 	BISCUIT_EVENT,
 	CHEESE_EVENT
 };
