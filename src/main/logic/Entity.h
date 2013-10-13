@@ -9,8 +9,9 @@
 #define	ENTITY_H
 
 #include <string>
+#include <tr1/memory>
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "../view/Skin.h"
 
@@ -48,16 +49,13 @@ namespace gs {
          * @return Current position
          */
 		sf::Vector2f getPosition() const;
-		/**
-		 * Set Entities new view object
-         * @param _skin New skin for entity
-         */
-		virtual void setSkin(const Skin &_skin);
-		/**
-		 * Get Entities current view object
-         * @return Current view object
-         */
-		virtual Skin getSkin() const;
+		
+		void setDimensions(const sf::Vector2f &dim);
+		void setDimensions(float w, float h);
+		sf::Vector2f getDimensions() const;
+		void setGeo(const sf::FloatRect &_geo);
+		void setGeo(float x, float y, float w, float h);
+		sf::FloatRect getGeo() const;
 		/**
 		 * Set Entities name
          * @param _name New name for entity
@@ -68,20 +66,16 @@ namespace gs {
          * @return Current name
          */
 		std::string getName() const;
+		unsigned int getID() const;
 		
 	protected:
 		/**
-		 * Position of the entity on the screen.
+		 * Position and dimensions of the entity on the screen.
 		 * Holds the x and y coordinate that the top left corner of the object
-		 * should appear in the window.
+		 * should appear in the window. Also contains the width and height of
+		 * the object.
 		 */
-		sf::Vector2f position;
-		
-		/**
-		 * View object to represent Entity of the screen.
-		 * Details to come.
-		 */
-		Skin *skin;
+		sf::FloatRect geo;
 		
 		/**
 		 * Name of the Entity
@@ -89,8 +83,14 @@ namespace gs {
 		 * user.
 		 */
 		std::string name;
+		
+	private:
+		static unsigned int counter;
+		unsigned int ID;
 	};
-
+	
+	typedef std::tr1::shared_ptr<Entity> EntityShPtr;
+	
 }
 
 #endif	/* ENTITY_H */
