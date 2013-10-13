@@ -16,7 +16,7 @@ class IUserInput {
 	virtual void update() = 0;
 };
 
-typedef std::tr1::shared_ptr<IUserInput> IUserInputPtr;
+typedef std::tr1::shared_ptr<IUserInput> IUserInputShPtr;
 	
 }
 
