@@ -10,6 +10,8 @@
 
 #include "IKeyboardListener.h"
 
+#include "../event/IEventManager.hpp"
+
 namespace gs {
 
 class KeyboardListener : public IKeyboardListener {
