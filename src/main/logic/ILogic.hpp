@@ -1,5 +1,5 @@
-#ifndef I_LOGIC_H
-#define	I_LOGIC_H
+#ifndef I_LOGIC_HPP
+#define	I_LOGIC_HPP
 
 #include <tr1/memory>
 
@@ -14,4 +14,4 @@ typedef std::tr1::shared_ptr<ILogic> ILogicPtr;
 
 }
 
-#endif	/* I_LOGIC_H */
+#endif	/* I_LOGIC_HPP */

@@ -1,5 +1,5 @@
-#ifndef ENTITY_MOVED_EVENT_H
-#define	ENTITY_MOVED_EVENT_H
+#ifndef ENTITY_MOVED_EVENT_HPP
+#define	ENTITY_MOVED_EVENT_HPP
 
 #include <SFML/System/Vector2.hpp>
 
@@ -31,4 +31,4 @@ private:
 
 }
 
-#endif	/* ENTITY_MOVED_EVENT_H */
+#endif	/* ENTITY_MOVED_EVENT_HPP */

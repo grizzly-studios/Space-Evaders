@@ -10,8 +10,8 @@
 
 #include "IView.hpp"
 
-#include "../event/EntityCreatedEvent.h"
-#include "../event/EntityMovedEvent.h"
+#include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityMovedEvent.hpp"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 

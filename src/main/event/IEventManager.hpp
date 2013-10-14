@@ -1,5 +1,5 @@
-#ifndef I_EVENT_MANAGER_H
-#define	I_EVENT_MANAGER_H
+#ifndef I_EVENT_MANAGER_HPP
+#define	I_EVENT_MANAGER_HPP
 
 #include <tr1/memory>
 
@@ -18,4 +18,4 @@ typedef std::tr1::shared_ptr<IEventManager> IEventManagerPtr;
 
 }
 
-#endif	/* I_EVENT_MANAGER_H */
+#endif	/* I_EVENT_MANAGER_HPP */

@@ -1,5 +1,5 @@
-#ifndef EVENT_ENUM_H
-#define	EVENT_ENUM_H
+#ifndef EVENT_ENUM_HPP
+#define	EVENT_ENUM_HPP
 
 namespace gs {
 
@@ -10,4 +10,4 @@ enum EventEnum {
 
 }
 
-#endif	/* EVENT_ENUM_H */
+#endif	/* EVENT_ENUM_HPP */

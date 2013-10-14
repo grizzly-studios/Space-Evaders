@@ -1,5 +1,5 @@
-#ifndef ENTITY_CREATED_EVENT_H
-#define	ENTITY_CREATED_EVENT_H
+#ifndef ENTITY_CREATED_EVENT_HPP
+#define	ENTITY_CREATED_EVENT_HPP
 
 #include <SFML/Graphics/Rect.hpp>
 
@@ -35,4 +35,4 @@ private:
 
 }
 
-#endif	/* ENTITY_CREATED_EVENT_H */
+#endif	/* ENTITY_CREATED_EVENT_HPP */

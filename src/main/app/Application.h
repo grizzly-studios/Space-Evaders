@@ -14,9 +14,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "../event/EventManager.hpp"
-#include "../logic/Logic.hpp"
-#include "../view/View.hpp"
+#include "../event/EventManager.h"
+#include "../logic/Logic.h"
+#include "../view/View.h"
 
 namespace gs {
 

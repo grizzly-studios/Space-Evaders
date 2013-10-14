@@ -1,5 +1,5 @@
-#ifndef I_EVENT_LISTENER_H
-#define	I_EVENT_LISTENER_H
+#ifndef I_EVENT_LISTENER_HPP
+#define	I_EVENT_LISTENER_HPP
 
 #include <tr1/memory>
 
@@ -16,4 +16,4 @@ typedef std::tr1::weak_ptr<IEventListener> IEventListenerPtr;
 
 }
 
-#endif	/* I_EVENT_LISTENER_H */
+#endif	/* I_EVENT_LISTENER_HPP */
