@@ -6,23 +6,25 @@
  */
 
 #include <cstdlib>
-#include "event/EventManager.hpp"
-#include "logic/Logic.hpp"
-#include "view/View.hpp"
+#include "event/EventManager.h"
+#include "logic/Logic.h"
+#include "view/View.h"
 #include "app/Application.h"
 #include "util/logger.h"
 
-using namespace std;
 using namespace gs;
 
 /*
  * 
  */
 int main(int argc, char** argv) {
-    logger *loge = logger::getInstance(); //No point in INFO or WARN messages before this point
+	logger *loge = logger::getInstance(); //No point in INFO or WARN messages before this point
 	loge->log("Starting application now",INFO);
-    Application *app = new Application(argc, argv);
-    app->init();
-    app->run();
-    return 0;
+	Application *app = new Application(argc, argv);
+	app->init();
+	app->run();
+
+	delete app;
+
+	return 0;
 }

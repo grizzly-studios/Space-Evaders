@@ -12,14 +12,14 @@
 
 namespace gs {
 
-	class Bonus : public Entity {
-	public:
-		Bonus();
-		Bonus(const Bonus& orig);
-		virtual ~Bonus();
-	private:
+class Bonus : public Entity {
+public:
+	Bonus();
+	Bonus(const Bonus& orig);
+	virtual ~Bonus();
+private:
 
-	};
+};
 
 }
 

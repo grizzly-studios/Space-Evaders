@@ -1,30 +1,16 @@
-#ifndef EVENT_ENUM_H
-#define	EVENT_ENUM_H
-
-#include <string>
+#ifndef EVENT_ENUM_HPP
+#define	EVENT_ENUM_HPP
 
 namespace gs {
 
+/**
+ * Enum for the different event types.
+ */
 enum EventEnum {
-	BISCUIT_EVENT,
-	CHEESE_EVENT
+	ENTITY_MOVED_EVENT,
+	ENTITY_CREATED_EVENT
 };
 
-inline std::string EventEnumToString(EventEnum eventEnum) {
-	std::string str = "UNKNOWN_EVENT";
-
-	switch (eventEnum) {
-	case BISCUIT_EVENT:
-		str = "BISCUIT";
-		break;
-	case CHEESE_EVENT:
-		str = "CHEESE";
-		break;
-	}
-
-	return str;
 }
 
-}
-
-#endif	/* EVENT_ENUM_H */
+#endif	/* EVENT_ENUM_HPP */

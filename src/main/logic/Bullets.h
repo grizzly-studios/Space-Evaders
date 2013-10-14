@@ -12,15 +12,17 @@
 
 namespace gs {
 
-	class Bullets : public MobileEntity {
-	public:
-		Bullets();
-		Bullets(Direction _dir, float _mag);
-		Bullets(const Bullets& orig);
-		virtual ~Bullets();
-				
-	private:
-	};
+class Bullets : public MobileEntity {
+public:
+	Bullets();
+	Bullets(Direction _dir, float _mag);
+	Bullets(const Bullets& orig);
+	virtual ~Bullets();
+
+private:
+};
+
+typedef std::tr1::shared_ptr<Bullets> BulletsShPtr;
 
 }
 

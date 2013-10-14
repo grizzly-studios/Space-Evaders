@@ -12,14 +12,16 @@
 
 namespace gs {
 
-	class Player : public MobileEntity {
-	public:
-		Player();
-		Player(const Player& orig);
-		virtual ~Player();
-	private:
+class Player : public MobileEntity {
+public:
+	Player();
+	Player(const Player& orig);
+	virtual ~Player();
+private:
 
-	};
+};
+
+typedef std::tr1::shared_ptr<Player> PlayerShPtr;
 
 }
 
