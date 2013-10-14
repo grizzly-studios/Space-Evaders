@@ -7,6 +7,8 @@
 
 #include "CShapes.h"
 
+using namespace gs;
+
 RoundedRectangle::RoundedRectangle(const sf::Vector2f &_size, float _radius) : sf::Shape() {
         radius = _radius;
         size = _size;

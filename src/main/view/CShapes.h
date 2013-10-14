@@ -12,6 +12,8 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
+namespace gs {
+
 class RoundedRectangle : public sf::Shape {
 public:
         RoundedRectangle(const sf::Vector2f &size = sf::Vector2f(0, 0), float _radius = 0);
@@ -34,6 +36,8 @@ private:
         sf::Vector2f size;
         int maxPoints;
 };
+
+}
 
 #endif	/* CSHAPES_H */
 
