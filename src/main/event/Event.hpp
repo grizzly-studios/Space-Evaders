@@ -5,7 +5,7 @@
 
 namespace gs {
 
-class IEvent {
+class Event {
 public:
 	virtual EventEnum getType() const = 0;
 };

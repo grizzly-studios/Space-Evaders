@@ -7,7 +7,7 @@
 
 namespace gs {
 
-class EntityMovedEvent : public IEvent {
+class EntityMovedEvent : public Event {
 public:
 	EntityMovedEvent(short _entityId, const sf::Vector2f& _position) : entityId(_entityId),
 		position(_position) {}

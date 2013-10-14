@@ -9,7 +9,7 @@ namespace gs {
 
 class IEventListener {
 public:
-	virtual void onEvent(IEvent& event) = 0;
+	virtual void onEvent(Event& event) = 0;
 };
 
 typedef std::tr1::weak_ptr<IEventListener> IEventListenerPtr;

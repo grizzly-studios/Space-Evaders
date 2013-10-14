@@ -25,7 +25,7 @@ void Logic::update() {
 	collisionDetection();
 }
 
-void Logic::onEvent(IEvent& event) {
+void Logic::onEvent(Event& event) {
 	std::cout << "Logic: event: " << event.getType() << std::endl;
 }
 

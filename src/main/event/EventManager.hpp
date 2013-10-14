@@ -15,7 +15,7 @@ class EventManager : public IEventManager {
 public:
 	~EventManager();
 	virtual bool addListener(EventEnum eventType, IEventListenerPtr listener);
-	virtual bool fireEvent(IEvent& event) const;
+	virtual bool fireEvent(Event& event) const;
 private:
 	/** Map of listeners */
 	EventListenerMap listeners;

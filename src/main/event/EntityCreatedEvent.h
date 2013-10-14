@@ -7,7 +7,7 @@
 
 namespace gs {
 
-class EntityCreatedEvent : public IEvent {
+class EntityCreatedEvent : public Event {
 public:
 	EntityCreatedEvent(short _entityId, const sf::FloatRect& _geo) : entityId(_entityId), geo(_geo)
 	{}
