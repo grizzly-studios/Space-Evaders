@@ -10,6 +10,8 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
+
 
 enum LOGLEVEL {
 	OFF = 0,
@@ -22,6 +24,11 @@ enum LOGTYPE {
 	WARN = 1,
 	ERROR = 2
 };
+
+struct splitted{
+	std::string key;
+	std::string value;
+};
 	
 class logger {
 public:
@@ -30,6 +37,8 @@ public:
 		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:
+		splitted split(std::string line, char token);
+		void readPropertiesFile();
         logger();
 		virtual ~logger();
 		

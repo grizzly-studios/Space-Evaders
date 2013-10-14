@@ -22,7 +22,7 @@ namespace gs {
 
 class Application {
 public:
-        Application(int argc, char** argv, logger* loge);
+        Application(int argc, char** argv);
         virtual ~Application();
         
         void init();
