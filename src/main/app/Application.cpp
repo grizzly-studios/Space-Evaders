@@ -5,12 +5,7 @@
  * Created on September 25, 2013, 1:11 AM
  */
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include "Application.h"
-#include "../event/EventManager.hpp"
-#include "../logic/Logic.hpp"
-#include "../view/View.hpp"
 
 using namespace gs;
 

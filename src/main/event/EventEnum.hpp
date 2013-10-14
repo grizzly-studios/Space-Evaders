@@ -1,8 +1,6 @@
 #ifndef EVENT_ENUM_H
 #define	EVENT_ENUM_H
 
-#include <string>
-
 namespace gs {
 
 enum EventEnum {
