@@ -9,16 +9,17 @@
 
 logger* logger::pLogger = NULL;
 
-void logger::changeLogging(bool file, bool console){
+void logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
     if(pLogger == NULL){
 		//We need to initalise before we change the settings
 		pLogger = new logger();
 	}
 	fileOut = new bool(file);
 	consoleOut = new bool(console);
+	level = new LOGLEVEL(newLevel);
 }
 
-void logger::log(std::string message){
+void logger::log(std::string message, LOGTYPE type){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
 		pLogger = new logger();

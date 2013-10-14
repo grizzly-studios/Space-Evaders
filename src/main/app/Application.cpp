@@ -16,7 +16,6 @@ namespace gs {
 
 	Application::Application(int argc, char** argv, logger* loger) {
 			
-			
 			verbose = false;
 			flush = false;
 			loge = loger;
@@ -25,28 +24,28 @@ namespace gs {
 			AL = 4;
 			WIDTH = 1024; HEIGHT = 640;
 			//Enable logging regardless in case there is a problem, at end we'll turn it off if a verbose flag has been specified
-			loge->changeLogging(false,true);
+			loge->changeLogging(false,true, STANDARD);
 			for (int i = 1; i < argc; i++) {
 					
 					std::string arg(argv[i]);
 					if (arg == "-v") {
 							if(verbose){
-									loge->log("You can only specify -v OR -vf OR -vc. A combination cannot be used");
+									loge->log("You can only specify -v OR -vf OR -vc. A combination cannot be used", ERROR);
 							}
 							verbose = true;
-							loge->changeLogging(true,true);
+							loge->changeLogging(true,true, STANDARD);
 					} else if(arg == "-vf"){
 							if(verbose){
-									loge->log("You can only specify -v OR -vf OR -vc. A combination cannot be used");
+									loge->log("You can only specify -v OR -vf OR -vc. A combination cannot be used", ERROR);
 							}
 							verbose = true;
-							loge->changeLogging(true,false);
+							loge->changeLogging(true,false, STANDARD);
 					} else if(arg == "-vc"){
 							if(verbose){
-									loge->log("You can only specify -v OR -vf OR -vc. A combination cannot be used");
+									loge->log("You can only specify -v OR -vf OR -vc. A combination cannot be used", ERROR);
 							}
 							verbose = true;
-							loge->changeLogging(false,true);
+							loge->changeLogging(false,true, STANDARD);
 					} else if (arg == "-f") {
 							flush = true;
 					} else if (arg == "-fr") {
@@ -62,18 +61,18 @@ namespace gs {
 							HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 							i++;
 					} else{
-							loge->log("Unknown Flag: " + arg);
+							loge->log("Unknown Flag: " + arg, ERROR);
 					}
 			}
 			//If we havent enabled logging, turn it off now
 			if(!verbose){
-					loge->changeLogging(false,false);
+					loge->changeLogging(false,false, STANDARD);
 			}
-			loge->log("Application successfully created");
+			loge->log("Application successfully created", INFO);
 	}
 
 	void Application::init() { 
-		loge->log("Begining init");
+		loge->log("Begining init", INFO);
 
 		eventManager = IEventManagerPtr(new EventManager);
 
@@ -85,15 +84,15 @@ namespace gs {
 		window = new sf::RenderWindow(sf::VideoMode(WIDTH,HEIGHT),"Space Evaders",sf::Style::Fullscreen, settings);
 		window->setVerticalSyncEnabled(true);
 
-		loge->log("Ending init");
+		loge->log("Ending init", INFO);
 	}
 
 	Application::~Application() {
-		loge->log("Deconstructing application");
+		loge->log("Deconstructing application", INFO);
 	}
 
 	void Application::run() {
-			loge->log("Beginning while loop");
+			loge->log("Beginning while loop", INFO);
 			while(window->isOpen()) {
 					sf::Event event;
 					while (window->pollEvent(event)) {
@@ -103,7 +102,7 @@ namespace gs {
 						}
 						if (event.type == sf::Event::KeyPressed) {
 								if (event.key.code == sf::Keyboard::Escape) {
-									loge->log("Request to close window registered - closing window");
+									loge->log("Request to close window registered - closing window", INFO);
 									window->close();
 								}
 						}

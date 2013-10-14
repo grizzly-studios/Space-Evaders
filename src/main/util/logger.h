@@ -11,11 +11,23 @@
 #include <string>
 #include <iostream>
 
+enum LOGLEVEL {
+	OFF = 0,
+	STANDARD = 1,
+	DEBUG = 2
+};
+
+enum LOGTYPE {
+	INFO = 0,
+	WARN = 1,
+	ERROR = 2
+};
+	
 class logger {
 public:
 		static logger* getInstance();
-        void log(std::string message);
-		void changeLogging(bool file, bool console);
+        void log(std::string message, LOGTYPE type);
+		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:
         logger();
@@ -24,6 +36,7 @@ private:
 		static logger* pLogger;
         bool *fileOut;
 		bool *consoleOut;
+		LOGLEVEL *level;
 };
 
 #endif	/* LOGGER_H */
