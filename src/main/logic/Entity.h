@@ -13,8 +13,6 @@
 
 #include <SFML/Graphics/Rect.hpp>
 
-#include "../view/Skin.h"
-
 namespace gs {
 
 	/**
