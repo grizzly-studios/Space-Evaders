@@ -10,7 +10,6 @@
 #include "view/View.hpp"
 #include "app/Application.h"
 
-using namespace std;
 using namespace gs;
 
 /*

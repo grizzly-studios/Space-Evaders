@@ -6,7 +6,7 @@
 #define SPRITE_SHEET_SPRITE_WIDTH 16
 #define SCREEN_SPRITE_WIDTH 16
 
-namespace gs {
+using namespace gs;
 
 View::View(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventManager(_eventManager),
 	window(_window) {
@@ -93,6 +93,4 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 		// TODO: Log error, no sprite for this id
 		std::cout << "no sprite for this id: " << entityId << std::endl;
 	}
-}
-
 }

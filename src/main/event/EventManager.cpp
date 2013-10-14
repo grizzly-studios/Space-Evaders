@@ -3,7 +3,7 @@
 #include <iostream>
 #include <algorithm>
 
-namespace gs {
+using namespace gs;
 
 EventManager::~EventManager() {
 	std::cout << __FILE__ << " destroyed" << std::endl;
@@ -60,6 +60,4 @@ bool EventManager::fireEvent(IEvent& event) const {
 	}
 
 	return success;
-}
-
 }

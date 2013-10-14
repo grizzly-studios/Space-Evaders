@@ -12,7 +12,7 @@
 #include "../logic/Logic.hpp"
 #include "../view/View.hpp"
 
-namespace gs {
+using namespace gs;
 
 Application::Application(int argc, char** argv) {
         
@@ -92,6 +92,4 @@ void Application::run() {
                 logic->update();
                 view->render();
         }
-}
-
 }
