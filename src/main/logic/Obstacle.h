@@ -12,14 +12,14 @@
 
 namespace gs {
 
-	class Obstacle : public Entity {
-	public:
-		Obstacle();
-		Obstacle(const Obstacle& orig);
-		virtual ~Obstacle();
-	private:
+class Obstacle : public Entity {
+public:
+	Obstacle();
+	Obstacle(const Obstacle& orig);
+	virtual ~Obstacle();
+private:
 
-	};
+};
 
 }
 

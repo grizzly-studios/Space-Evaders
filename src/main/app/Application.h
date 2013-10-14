@@ -24,23 +24,23 @@ typedef std::tr1::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
 
 class Application {
 public:
-        Application(int argc, char** argv);
-        virtual ~Application();
-        
-        void init();
-        void run();
+	Application(int argc, char** argv);
+	virtual ~Application();
+
+	void init();
+	void run();
 
 private:
-        IEventManagerPtr eventManager;
-        ILogicPtr logic;
-        IViewPtr view;
-        bool verbose;
-        bool flush;
-        unsigned int FR;
-        unsigned int AL;
-        unsigned int WIDTH, HEIGHT;
-        sf::ContextSettings settings;
-        RenderWindowShPtr window;
+	IEventManagerPtr eventManager;
+	ILogicPtr logic;
+	IViewPtr view;
+	bool verbose;
+	bool flush;
+	unsigned int FR;
+	unsigned int AL;
+	unsigned int WIDTH, HEIGHT;
+	sf::ContextSettings settings;
+	RenderWindowShPtr window;
 };
 
 }

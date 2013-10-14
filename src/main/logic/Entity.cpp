@@ -12,8 +12,8 @@ using namespace gs;
 unsigned int Entity::counter = 0;
 
 Entity::Entity() {
-    geo.left = 0;
-    geo.top = 0;
+	geo.left = 0;
+	geo.top = 0;
 	geo.width = 0;
 	geo.height = 0;
 	counter++;
@@ -21,8 +21,8 @@ Entity::Entity() {
 }
 
 Entity::Entity(const Entity& orig) {
-    geo = orig.getGeo();
-    name = orig.getName();
+	geo = orig.getGeo();
+	name = orig.getName();
 	counter++;
 	ID = counter;
 }
@@ -74,11 +74,11 @@ sf::FloatRect Entity::getGeo() const {
 }
 
 void Entity::setName(const std::string& _name) {
-    name = _name;
+	name = _name;
 }
 
 std::string Entity::getName() const {
-    return name;
+	return name;
 }
 
 unsigned int Entity::getID() const {

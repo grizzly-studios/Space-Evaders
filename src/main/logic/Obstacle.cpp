@@ -10,7 +10,7 @@
 using namespace gs;
 
 Obstacle::Obstacle() : Entity() {
-    name = "Obstacle";
+	name = "Obstacle";
 }
 
 Obstacle::Obstacle(const Obstacle& orig) : Entity(orig) {

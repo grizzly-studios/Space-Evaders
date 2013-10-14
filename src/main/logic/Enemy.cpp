@@ -10,7 +10,7 @@
 using namespace gs;
 
 Enemy::Enemy() : Entity() {
-    name = "Enemy";
+	name = "Enemy";
 }
 
 Enemy::Enemy(const Enemy& orig) : Entity(orig) {

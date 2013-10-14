@@ -12,14 +12,14 @@
 
 namespace gs {
 
-	class Enemy : public Entity {
-	public:
-		Enemy();
-		Enemy(const Enemy& orig);
-		virtual ~Enemy();
-	private:
+class Enemy : public Entity {
+public:
+	Enemy();
+	Enemy(const Enemy& orig);
+	virtual ~Enemy();
+private:
 
-	};
+};
 
 }
 
