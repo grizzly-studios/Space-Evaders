@@ -59,11 +59,34 @@ void logger::log(string message, LOGTYPE type, string source){
 		//We only log out on Anything except OFF
 		return;
 	}
-	//WE always log out error messages
+	//We always log out error messages
+	//Now create the logging message
+	string line1;
 	
+	//Get current date and time
+	time_t rawTime;
+	struct tm * timeinfo;
+	char timestamp [20];
+	time(&rawTime);
+	timeinfo = localtime (&rawTime);
+	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
+	
+	//Sort out string representation of type
+	if(type == INFO){
+		line1 = " - INFO";
+	} else if(type == WARN){
+		line1 = " - WARN";
+	} else{
+		line1 = " - ERROR";
+	}
+	
+	//Finally append the source (if supplied)
+	if(source.length() > 0){
+		line1 = line1 + " - " + source;
+	}
 	
 	if(*consoleOut){
-		std::cout << message << std::endl;
+		std::cout << timestamp << line1 << " - " << message << endl;
 	}
 	if(*fileOut){
 		//Nothing for now
