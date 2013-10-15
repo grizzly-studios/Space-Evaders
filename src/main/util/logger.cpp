@@ -41,6 +41,14 @@ void logger::log(string message, LOGTYPE type){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
 		pLogger = new logger();
+	} 
+	pLogger->log(message, type, "");
+}
+
+void logger::log(string message, LOGTYPE type, string source){
+	if(pLogger == NULL){
+		//We need to initalise before we log out first time
+		pLogger = new logger();
 	}
 	
 	// Do first checks to determine if we should log

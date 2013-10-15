@@ -12,6 +12,7 @@
 #include "app/Application.h"
 #include "util/logger.h"
 
+const std::string CLASS = "main";
 using namespace gs;
 
 /*
@@ -19,7 +20,7 @@ using namespace gs;
  */
 int main(int argc, char** argv) {
 	logger *loge = logger::getInstance(); //No point in INFO or WARN messages before this point
-	loge->log("Starting application now",INFO);
+	loge->log("Starting application now",INFO, CLASS);
 	Application *app = new Application(argc, argv);
 	app->init();
 	app->run();
