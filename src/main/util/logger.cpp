@@ -43,6 +43,17 @@ void logger::log(string message, LOGTYPE type){
 		pLogger = new logger();
 	}
 	
+	// Do first checks to determine if we should log
+	if(type == INFO && *level != DEBUG){
+		//we do not log out INFO on anything BUT debug
+		return;
+	} else if(type == WARN && *level == OFF){
+		//We only log out on Anything except OFF
+		return;
+	}
+	//WE always log out error messages
+	
+	
 	if(*consoleOut){
 		std::cout << message << std::endl;
 	}
