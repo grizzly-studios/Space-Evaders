@@ -1,10 +1,11 @@
-#ifndef EVENT_ENUM_H
-#define	EVENT_ENUM_H
-
-#include <string>
+#ifndef EVENT_ENUM_HPP
+#define	EVENT_ENUM_HPP
 
 namespace gs {
 
+/**
+ * Enum for the different event types.
+ */
 enum EventEnum {
 	ENTITY_MOVED_EVENT,
 	ENTITY_CREATED_EVENT
@@ -12,4 +13,4 @@ enum EventEnum {
 
 }
 
-#endif	/* EVENT_ENUM_H */
+#endif	/* EVENT_ENUM_HPP */

@@ -14,9 +14,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "../event/IEventManager.hpp"
-#include "../logic/ILogic.hpp"
-#include "../view/IView.hpp"
+#include "../event/EventManager.h"
+#include "../logic/Logic.h"
+#include "../view/View.h"
 #include "../view/KeyboardListener.h"
 #include "../view/UserInput.h"
 
@@ -26,23 +26,23 @@ typedef std::tr1::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
 
 class Application {
 public:
-        Application(int argc, char** argv);
-        virtual ~Application();
-        
-        void init();
-        void run();
+	Application(int argc, char** argv);
+	virtual ~Application();
+
+	void init();
+	void run();
 
 private:
-        IEventManagerPtr eventManager;
-        ILogicPtr logic;
-        IViewPtr view;
-        bool verbose;
-        bool flush;
-        unsigned int FR;
-        unsigned int AL;
-        unsigned int WIDTH, HEIGHT;
-        sf::ContextSettings settings;
-        RenderWindowShPtr window;
+	IEventManagerPtr eventManager;
+	ILogicPtr logic;
+	IViewPtr view;
+	bool verbose;
+	bool flush;
+	unsigned int FR;
+	unsigned int AL;
+	unsigned int WIDTH, HEIGHT;
+	sf::ContextSettings settings;
+	RenderWindowShPtr window;
 };
 
 }

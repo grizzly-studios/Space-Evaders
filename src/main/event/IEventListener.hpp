@@ -1,5 +1,5 @@
-#ifndef I_EVENT_LISTENER_H
-#define	I_EVENT_LISTENER_H
+#ifndef I_EVENT_LISTENER_HPP
+#define	I_EVENT_LISTENER_HPP
 
 #include <tr1/memory>
 
@@ -7,13 +7,22 @@
 
 namespace gs {
 
+/**
+ * Event listener interface.
+ *
+ * Classes implementing this interface can subscribe to specific events using the EventManager.
+ */
 class IEventListener {
 public:
-	virtual void onEvent(IEvent& event) = 0;
+	/**
+	 * Callback function for handling events
+	 * @param event Event to process
+	 */
+	virtual void onEvent(Event& event) = 0;
 };
 
 typedef std::tr1::weak_ptr<IEventListener> IEventListenerPtr;
 
 }
 
-#endif	/* I_EVENT_LISTENER_H */
+#endif	/* I_EVENT_LISTENER_HPP */

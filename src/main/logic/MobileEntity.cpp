@@ -13,38 +13,38 @@ MobileEntity::MobileEntity() : Entity() {
 }
 
 MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
-    mag = orig.getMagnitude();
-    dir = orig.getDirection();
+	mag = orig.getMagnitude();
+	dir = orig.getDirection();
 }
 
 MobileEntity::~MobileEntity() {
 }
 
 float MobileEntity::getMagnitude() const {
-    return mag;
+	return mag;
 }
 
 void MobileEntity::setMagnitude(float _mag) {
-    mag = _mag;
+	mag = _mag;
 }
 
 Direction MobileEntity::getDirection() const {
-    return dir;
+	return dir;
 }
 
 void MobileEntity::setDirection(Direction _dir) {
-    dir = _dir;
+	dir = _dir;
 }
 
 sf::Vector2f MobileEntity::getVector(const double& dt) const {
 	sf::Vector2f vector;
 	
 	float x_mag = mag;
-    float y_mag = mag;
-    
-    const float rootTwoOverTwo = 0.70710678118;
-    
-    switch(dir) {
+	float y_mag = mag;
+
+	const float rootTwoOverTwo = 0.70710678118;
+
+	switch(dir) {
 		case UP :
 			y_mag *= -1;
 		case DOWN :
@@ -72,7 +72,7 @@ sf::Vector2f MobileEntity::getVector(const double& dt) const {
 			y_mag = 0;
 			break;
 	}
-	
+
 	vector.x = x_mag * dt;
 	vector.y = y_mag * dt;
 	return vector;
@@ -80,9 +80,9 @@ sf::Vector2f MobileEntity::getVector(const double& dt) const {
 
 void MobileEntity::move(const double& dt) {
 	sf::Vector2f vector = getVector(dt);
-    
-    geo.left = vector.x;
-    geo.top = vector.y;
+
+	geo.left = vector.x;
+	geo.top = vector.y;
 }
 
 void MobileEntity::integrate(const double& dt) {
@@ -91,7 +91,7 @@ void MobileEntity::integrate(const double& dt) {
 	state[0] = state[1];
 	
 	state[1].x = vector.x;
-    state[1].y = vector.y;
+	state[1].y = vector.y;
 }
 
 void MobileEntity::interpolate(const double& alpha) {
@@ -101,4 +101,4 @@ void MobileEntity::interpolate(const double& alpha) {
 
 bool MobileEntity::detectCollision(const Entity &entity) {
 	return geo.intersects(entity.getGeo());
-} 
+}

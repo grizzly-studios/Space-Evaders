@@ -1,9 +1,9 @@
-#include "EventManager.hpp"
+#include "EventManager.h"
 
 #include <iostream>
 #include <algorithm>
 
-namespace gs {
+using namespace gs;
 
 EventManager::~EventManager() {
 	std::cout << __FILE__ << " destroyed" << std::endl;
@@ -35,7 +35,7 @@ bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) 
 	return success;
 }
 
-bool EventManager::fireEvent(IEvent& event) const {
+bool EventManager::fireEvent(Event& event) const {
 	bool success = false;
 	// TODO: Check for NULL pointers (assert/log?)
 
@@ -60,6 +60,4 @@ bool EventManager::fireEvent(IEvent& event) const {
 	}
 
 	return success;
-}
-
 }

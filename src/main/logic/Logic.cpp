@@ -1,11 +1,11 @@
-#include "Logic.hpp"
+#include "Logic.h"
 
 using namespace gs;
 
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 	clock = new sf::Clock();
-    accumulator = 0;
-    dt = 12500;
+	accumulator = 0;
+	dt = 12500;
 	
 	}
 
@@ -19,13 +19,13 @@ void Logic::update() {
 	if (interval > 250000) {
 		interval = 250000;
 	}
-    accumulator += interval;
-		
+	accumulator += interval;
+
 	move();
 	collisionDetection();
 }
 
-void Logic::onEvent(IEvent& event) {
+void Logic::onEvent(Event& event) {
 	std::cout << "Logic: event: " << event.getType() << std::endl;
 }
 
@@ -33,8 +33,8 @@ void Logic::move() {
 	while(accumulator >= dt) {
 		integrate();
 		accumulator -= dt;
-    }
-    interpolate(accumulator);
+	}
+	interpolate(accumulator);
 }
 
 void Logic::collisionDetection() {
@@ -61,7 +61,7 @@ void Logic::collisionDetection() {
 }
 
 void Logic::integrate() {
-    for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
+	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->integrate(dt);
 	}
 }

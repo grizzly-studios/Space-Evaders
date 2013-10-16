@@ -1,5 +1,5 @@
-#ifndef I_VIEW_H
-#define	I_VIEW_H
+#ifndef I_VIEW_HPP
+#define	I_VIEW_HPP
 
 #include <tr1/memory>
 
@@ -16,4 +16,4 @@ typedef std::tr1::shared_ptr<IView> IViewPtr;
 
 }
 
-#endif	/* I_VIEW_H */
+#endif	/* I_VIEW_HPP */
