@@ -121,7 +121,11 @@ void logger::log(string message, LOGTYPE type, string source){
 		std::cout << timestamp << line1 << " - " << message << endl;
 	}
 	if(*fileOut){
-		//Nothing for now
+		//Output the plain text to the log file
+		ofstream logFile;
+		logFile.open ("console.log", fstream::out | fstream::app);
+		logFile << timestamp << line1 << " - " << message << endl;
+		logFile.close();
 	}
 }
 
@@ -133,6 +137,23 @@ logger::logger(){
 	fileOut = new bool(false);
 	consoleOut = new bool(false);
 	level = new LOGLEVEL(OFF);
+	// Open the log file and make sure it is a new section 
+	time_t rawTime;
+	struct tm * timeinfo;
+	char timestamp [20];
+	time(&rawTime);
+	timeinfo = localtime (&rawTime);
+	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
+	
+	ofstream logFile;
+	logFile.open ("console.log", fstream::out | fstream::app);
+	logFile << endl ;
+	logFile << endl ;
+	logFile << "###########################################################################" << endl;
+	logFile << "## Space Evaders Console Log     -       " << timestamp << "             ##" << endl;
+	logFile << "###########################################################################" << endl;
+	logFile << endl;
+	logFile.close();
 }
 
 void logger::readPropertiesFile(){
