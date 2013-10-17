@@ -152,6 +152,8 @@ void logger::readPropertiesFile(){
 				continue;
 			}
 			property = split(line, '=');
+			property.key = trim(property.key);
+			property.value = trim(property.value);
 			// Now we have the property, let's work out which it is then set it 
 			if(property.key.compare("level")==0){
 				if(property.value.compare("off")==0){
