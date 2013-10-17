@@ -11,6 +11,38 @@ logger* logger::pLogger = NULL;
 
 using namespace std;
 
+string logger::trim(string line){
+	string front = "";
+	string back = "";
+	bool chars = false;
+
+	//trim front
+	for( unsigned int i = 0; i < line.length() ; i++){
+		if(((char)line[i] != ' ') || chars){
+			chars = true;
+			front = front + (char)line[i];
+		} else {
+			//do nothing as it's a space so we don't want it
+		}
+	}
+	chars = false;
+	//If we've trimmed it to nothing return an empty string (blank line of spaces)
+	if(front.length()==0){
+		return front;
+	}
+	
+	//Trim back, we definitely have chars to hit at this point
+	unsigned int i = front.length();
+	while((char)front[i-1] == ' '){
+		i--;
+	}
+	//Found where the whitespace stops so copy everything up to there
+	for(unsigned int x = 0; x < i ; x++){
+		back = back + (char)front[x];
+	}
+
+	return back;
+}
 splitted logger::split(string line, char token){
 	splitted back;
 	string current = "";
@@ -114,6 +146,7 @@ void logger::readPropertiesFile(){
 		// File exists and is open for reading
 		while(!propFile.eof()){
 			getline(propFile, line);
+			line = trim(line);
 			if(line[0] == '#' || line.length() == 0){
 				// comment, blank line so continue
 				continue;

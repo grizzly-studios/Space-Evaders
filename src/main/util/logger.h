@@ -39,6 +39,7 @@ public:
 		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:
+        std::string trim(std::string line);
 		splitted split(std::string line, char token);
 		void readPropertiesFile();
         logger();
