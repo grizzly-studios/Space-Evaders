@@ -11,53 +11,6 @@ logger* logger::pLogger = NULL;
 
 using namespace std;
 
-string logger::trim(string line){
-	string front = "";
-	string back = "";
-	bool chars = false;
-
-	//trim front
-	for( unsigned int i = 0; i < line.length() ; i++){
-		if(((char)line[i] != ' ') || chars){
-			chars = true;
-			front = front + (char)line[i];
-		} else {
-			//do nothing as it's a space so we don't want it
-		}
-	}
-	chars = false;
-	//If we've trimmed it to nothing return an empty string (blank line of spaces)
-	if(front.length()==0){
-		return front;
-	}
-	
-	//Trim back, we definitely have chars to hit at this point
-	unsigned int i = front.length();
-	while((char)front[i-1] == ' '){
-		i--;
-	}
-	//Found where the whitespace stops so copy everything up to there
-	for(unsigned int x = 0; x < i ; x++){
-		back = back + (char)front[x];
-	}
-
-	return back;
-}
-splitted logger::split(string line, char token){
-	splitted back;
-	string current = "";
-	bool splitted = false;
-	for( unsigned int i = 0; i < line.length() ; i++){
-		if(!splitted && ((char)line[i] == token)){
-			back.key = current;
-			current = "";
-		} else {
-			current = current + line[i];
-		}
-	}
-	back.value = current;
-	return back;
-}
 void logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
     if(pLogger == NULL){
 		//We need to initalise before we change the settings
@@ -68,15 +21,15 @@ void logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
 	level = new LOGLEVEL(newLevel);
 }
 
-void logger::log(string message, LOGTYPE type){
+void logger::logM(string message, LOGTYPE type){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
 		pLogger = new logger();
 	} 
-	pLogger->log(message, type, "");
+	pLogger->logM(message, type, "");
 }
 
-void logger::log(string message, LOGTYPE type, string source){
+void logger::logM(string message, LOGTYPE type, string source){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
 		pLogger = new logger();

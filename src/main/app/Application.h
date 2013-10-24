@@ -36,7 +36,6 @@ private:
         ILogicPtr logic;
         IViewPtr view;
         bool flush;
-		logger *loge;
         unsigned int FR;
         unsigned int AL;
         unsigned int WIDTH, HEIGHT;

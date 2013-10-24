@@ -19,6 +19,9 @@
 #include <fstream>
 #include <time.h>
 
+#define log logger::getInstance()->logM
+#define changeLog logger::getInstance()->changeLogging
+
 enum LOGLEVEL {
 	OFF = 0,
 	STANDARD = 1,
@@ -39,8 +42,8 @@ struct splitted{
 class logger {
 public:
 		static logger* getInstance();
-        void log(std::string message, LOGTYPE type);
-		void log(std::string message, LOGTYPE type, std::string source);
+        void logM(std::string message, LOGTYPE type);
+		void logM(std::string message, LOGTYPE type, std::string source);
 		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:

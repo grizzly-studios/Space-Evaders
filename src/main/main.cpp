@@ -19,11 +19,10 @@ using namespace gs;
  * 
  */
 int main(int argc, char** argv) {
-	logger *loge = logger::getInstance(); 
 	Application *app = new Application(argc, argv); //No point in INFO or WARN messages before this point
-	loge->log("Initialising application", INFO);
+	log("Initialising application", INFO);
 	app->init();
-	loge->log("Running application", INFO);
+	log("Running application", INFO);
 	app->run();
 
 	delete app;

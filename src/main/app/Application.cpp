@@ -11,7 +11,6 @@ using namespace gs;
 
 Application::Application(int argc, char** argv) {
 	flush = false;
-	loge = logger::getInstance();
 
 	FR = 50;
 	AL = 4;
@@ -34,19 +33,19 @@ Application::Application(int argc, char** argv) {
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
 		} else if (arg == "-v"){
-			loge->changeLogging(false, true, DEBUG);
+			changeLog(false, true, DEBUG);
 		} else if(arg == "-vf"){
-			loge->changeLogging(true, true, DEBUG);
+			changeLog(true, true, DEBUG);
 		}else{
-			loge->log("Unknown Flag: " + arg, ERR);
+			log("Unknown Flag: " + arg, ERR);
 		}
 	}
 	//No point in INFO or WARN messages before this point
-	loge->log("Application successfully created", INFO);
+	log("Application successfully created", INFO);
 }
 
 void Application::init() { 
-	loge->log("Begining init", INFO);
+	log("Begining init", INFO);
 	eventManager = IEventManagerPtr(new EventManager);
 	
 	settings.antialiasingLevel = AL;
@@ -64,16 +63,16 @@ void Application::init() {
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT,
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
-	loge->log("Ending init", INFO);
+	log("Ending init", INFO);
 }
 
 Application::~Application() {
-	loge->log("Deconstructing application", INFO);
+	log("Deconstructing application", INFO);
 	std::cout << __FILE__ << " destroyed" << std::endl;
 }
 
 void Application::run() {
-	loge->log("Beginning while loop", INFO);
+	log("Beginning while loop", INFO);
 	while(window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
@@ -83,7 +82,7 @@ void Application::run() {
 			}
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
-					loge->log("Request to close window registered - closing window", INFO);
+					log("Request to close window registered - closing window", INFO);
 					window->close();
 				}
 			}
