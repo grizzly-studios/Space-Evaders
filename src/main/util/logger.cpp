@@ -62,7 +62,6 @@ void logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
     if(pLogger == NULL){
 		//We need to initalise before we change the settings
 		pLogger = new logger();
-		pLogger->readPropertiesFile();
 	}
 	fileOut = new bool(file);
 	consoleOut = new bool(console);
@@ -190,69 +189,9 @@ logger::logger(){
 	logFile.close();
 }
 
-void logger::readPropertiesFile(){
-	// We look for a properties file, if it exists we override the defaults 
-	ifstream propFile;
-	string line;
-	propFile.open ("logging.properties");
-	if(propFile.is_open()){
-		
-		splitted property;
-		// File exists and is open for reading
-		while(!propFile.eof()){
-			getline(propFile, line);
-			line = trim(line);
-			if(line[0] == '#' || line.length() == 0){
-				// comment, blank line so continue
-				continue;
-			}
-			property = split(line, '=');
-			property.key = trim(property.key);
-			property.value = trim(property.value);
-			// Now we have the property, let's work out which it is then set it 
-			if(property.key.compare("level")==0){
-				if(property.value.compare("off")==0){
-					level = new LOGLEVEL(OFF);
-				} else if(property.value.compare("standard")==0){
-					level = new LOGLEVEL(STANDARD);
-				} else if(property.value.compare("debug")==0){
-					level = new LOGLEVEL(DEBUG);
-				} else{
-					log("Unknown value: " + property.value + " given for key: " + property.key, ERR);
-				}
-			} else if(property.key.compare("output")==0){
-				if(property.value.compare("off")==0){
-					fileOut = new bool(false);
-					consoleOut = new bool(false);
-				} else if(property.value.compare("file")==0){
-					fileOut = new bool(true);
-					consoleOut = new bool(false);
-				} else if(property.value.compare("console")==0){
-					fileOut = new bool(false);
-					consoleOut = new bool(true);
-				} else if(property.value.compare("both")==0){
-					fileOut = new bool(true);
-					consoleOut = new bool(true);
-				} else{
-					log("Unknown value: " + property.value + " given for key: " + property.key, ERR);
-				}
-			} else{
-				// Fuck knows what they gave us, output and move on 
-				log("Unknown property: " + line, ERR);
-			}
-		
-		}
-		log("Finished reading properties file",INFO); //No point in INFO or WARN messages before this point
-		propFile.close();
-	} else {
-		//log("No property file found, using defaults", WARN);
-	}
-}
-
 logger* logger::getInstance(){
 	if(pLogger == NULL){
 		pLogger = new logger();
-		pLogger->readPropertiesFile(); //No point in INFO or WARN messages before this point
 	}
 	return pLogger;
 }

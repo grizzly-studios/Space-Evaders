@@ -19,7 +19,6 @@
 #include <fstream>
 #include <time.h>
 
-
 enum LOGLEVEL {
 	OFF = 0,
 	STANDARD = 1,
@@ -47,7 +46,6 @@ public:
 private:
         std::string trim(std::string line);
 		splitted split(std::string line, char token);
-		void readPropertiesFile();
         logger();
 		virtual ~logger();
 		

@@ -35,7 +35,11 @@ Application::Application(int argc, char** argv) {
 			WIDTH = atoi(resolutionString.substr(0,pos).c_str());
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
-		} else{
+		} else if (arg == "-v"){
+			loge->changeLogging(false, true, DEBUG);
+		} else if(arg == "-vf"){
+			loge->changeLogging(true, true, DEBUG);
+		}else{
 			loge->log("Unknown Flag: " + arg, ERR);
 		}
 	}

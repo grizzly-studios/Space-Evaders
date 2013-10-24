@@ -19,9 +19,8 @@ using namespace gs;
  * 
  */
 int main(int argc, char** argv) {
-	logger *loge = logger::getInstance(); //No point in INFO or WARN messages before this point
-	loge->log("Starting application now",INFO, CLASS);
-	Application *app = new Application(argc, argv);
+	logger *loge = logger::getInstance(); 
+	Application *app = new Application(argc, argv); //No point in INFO or WARN messages before this point
 	app->init();
 	app->run();
 
