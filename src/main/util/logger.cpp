@@ -36,14 +36,11 @@ void logger::logM(string message, LOGTYPE type, string source, int line){
 	}
 	
 	// Do first checks to determine if we should log
-	if(type == INFO && *level != DEBUG){
-		//we do not log out INFO on anything BUT debug
+	if(type != ERR && *level != FULL){
+		//we do not log out INFO, WARN or DEBUG on anything BUT full
 		return;
-	} else if(type == WARN && *level == OFF){
-		//We only log out on Anything except OFF
-		return;
-	}
-	//We always log out error messages
+	} 
+	
 	//Now create the logging message
 	string line1;
 
@@ -60,8 +57,10 @@ void logger::logM(string message, LOGTYPE type, string source, int line){
 		line1 = " - INFO";
 	} else if(type == WARN){
 		line1 = " - WARN";
-	} else{
+	} else if(type == ERR){
 		line1 = " - ERR!";
+	} else {
+		line1 = " - DEBUG";
 	}
 	
 	//Finally append the source (if supplied)
@@ -79,6 +78,9 @@ void logger::logM(string message, LOGTYPE type, string source, int line){
 			case INFO: 
 				SetConsoleTextAttribute( hstdout, 0x0F );
 				break;
+			case DEBUG: 
+				SetConsoleTextAttribute( hstdout, 0x02 );
+				break;
 			case WARN:
 				SetConsoleTextAttribute( hstdout, 0x06 );
 				break;
@@ -94,6 +96,9 @@ void logger::logM(string message, LOGTYPE type, string source, int line){
 		switch (type){
 			case INFO: 
 				colour = "\033[0;37m";
+				break;
+			case DEBUG: 
+				colour = "\033[0;32m";
 				break;
 			case WARN:
 				colour = "\033[0;33m";

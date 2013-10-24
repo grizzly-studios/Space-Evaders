@@ -22,20 +22,21 @@
 #define INFO(_msg_) logger::getInstance()->logM(_msg_, INFO, __FILE__, __LINE__)
 #define WARN(_msg_) logger::getInstance()->logM(_msg_, WARN, __FILE__, __LINE__)
 #define ERR(_msg_) logger::getInstance()->logM(_msg_, ERR, __FILE__, __LINE__)
+#define DEBUG(_msg_) logger::getInstance()->logM(_msg_, DEBUG, __FILE__, __LINE__)
 
 #define log logger::getInstance()->logM
 #define changeLog logger::getInstance()->changeLogging
 
 enum LOGLEVEL {
 	OFF = 0,
-	STANDARD = 1,
-	DEBUG = 2
+	FULL = 2
 };
 
 enum LOGTYPE {
 	INFO = 0,
 	WARN = 1,
-	ERR = 2
+	ERR = 2,
+	DEBUG = 3
 };
 
 struct splitted{
