@@ -46,8 +46,8 @@ Application::Application(int argc, char** argv) {
 }
 
 void Application::init() { 
-
 	loge->log("Begining init", INFO);
+	eventManager = IEventManagerPtr(new EventManager);
 	
 	settings.antialiasingLevel = AL;
 
