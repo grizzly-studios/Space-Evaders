@@ -19,6 +19,10 @@
 #include <fstream>
 #include <time.h>
 
+#define INFO(_msg_) logger::getInstance()->logM(_msg_, INFO, __FILE__, __LINE__)
+#define WARN(_msg_) logger::getInstance()->logM(_msg_, WARN, __FILE__, __LINE__)
+#define ERR(_msg_) logger::getInstance()->logM(_msg_, ERR, __FILE__, __LINE__)
+
 #define log logger::getInstance()->logM
 #define changeLog logger::getInstance()->changeLogging
 

@@ -37,15 +37,15 @@ Application::Application(int argc, char** argv) {
 		} else if(arg == "-vf"){
 			changeLog(true, true, DEBUG);
 		}else{
-			log("Unknown Flag: " + arg, ERR, __FILE__, __LINE__);
+			INFO("Unknown Flag: " + arg);
 		}
 	}
 	//No point in INFO or WARN messages before this point
-	log("Application successfully created", INFO, __FILE__, __LINE__);
+	INFO("Application successfully created");
 }
 
 void Application::init() { 
-	log("Begining init", INFO, __FILE__, __LINE__);
+	INFO("Begining init");
 	eventManager = IEventManagerPtr(new EventManager);
 	
 	settings.antialiasingLevel = AL;
@@ -63,16 +63,16 @@ void Application::init() {
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT,
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
-	log("Ending init", INFO, __FILE__, __LINE__);
+	INFO("Ending init");
 }
 
 Application::~Application() {
-	log("Deconstructing application", INFO, __FILE__, __LINE__);
+	INFO("Deconstructing application");
 	std::cout << __FILE__ << " destroyed" << std::endl;
 }
 
 void Application::run() {
-	log("Beginning while loop", INFO, __FILE__, __LINE__);
+	INFO("Beginning while loop");
 	while(window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
@@ -82,7 +82,7 @@ void Application::run() {
 			}
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
-					log("Request to close window registered - closing window", INFO, __FILE__, __LINE__);
+					INFO("Request to close window registered - closing window");
 					window->close();
 				}
 			}
