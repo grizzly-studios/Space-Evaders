@@ -36,7 +36,7 @@ Application::Application(int argc, char** argv) {
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
 		} else{
-			loge->log("Unknown Flag: " + arg, ERROR);
+			loge->log("Unknown Flag: " + arg, ERR);
 		}
 	}
 	loge->log("Application successfully created", INFO);

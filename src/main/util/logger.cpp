@@ -94,7 +94,7 @@ void logger::log(string message, LOGTYPE type, string source){
 	//We always log out error messages
 	//Now create the logging message
 	string line1;
-	
+
 	//Get current date and time
 	time_t rawTime;
 	struct tm * timeinfo;
@@ -109,7 +109,7 @@ void logger::log(string message, LOGTYPE type, string source){
 	} else if(type == WARN){
 		line1 = " - WARN";
 	} else{
-		line1 = " - ERROR";
+		line1 = " - ERR!";
 	}
 	
 	//Finally append the source (if supplied)
@@ -118,7 +118,41 @@ void logger::log(string message, LOGTYPE type, string source){
 	}
 	
 	if(*consoleOut){
-		std::cout << timestamp << line1 << " - " << message << endl;
+#if defined(_WIN64) || defined(_WIN32)
+		//Windows specific code
+		HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
+		switch (type){
+			case INFO: 
+				SetConsoleTextAttribute( hstdout, 0x0F );
+				break;
+			case WARN:
+				SetConsoleTextAttribute( hstdout, 0x06 );
+				break;
+			case ERR:
+				SetConsoleTextAttribute( hstdout, 0x0C );
+				break;
+		}
+		cout << timestamp << line1 << " - " << message << endl;
+		//End Windows specific code
+#else
+		//UNIX specific code
+		string colour;
+		switch (type){
+			case INFO: 
+				colour = "\033[0;37m";
+				break;
+			case WARN:
+				colour = "\033[0;33m";
+				break;
+			case ERR:
+				colour = "\033[0;31m";
+				break;
+		}
+		
+		cout << colour << timestamp << line1 << " - " << message << endl;
+		//End UNIX specific code
+#endif
+	
 	}
 	if(*fileOut){
 		//Output the plain text to the log file
@@ -184,7 +218,7 @@ void logger::readPropertiesFile(){
 				} else if(property.value.compare("debug")==0){
 					level = new LOGLEVEL(DEBUG);
 				} else{
-					log("Unknown value: " + property.value + " given for key: " + property.key, ERROR);
+					log("Unknown value: " + property.value + " given for key: " + property.key, ERR);
 				}
 			} else if(property.key.compare("output")==0){
 				if(property.value.compare("off")==0){
@@ -200,11 +234,11 @@ void logger::readPropertiesFile(){
 					fileOut = new bool(true);
 					consoleOut = new bool(true);
 				} else{
-					log("Unknown value: " + property.value + " given for key: " + property.key, ERROR);
+					log("Unknown value: " + property.value + " given for key: " + property.key, ERR);
 				}
 			} else{
 				// Fuck knows what they gave us, output and move on 
-				log("Unknown property: " + line, ERROR);
+				log("Unknown property: " + line, ERR);
 			}
 		
 		}

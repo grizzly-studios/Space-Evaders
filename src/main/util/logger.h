@@ -8,6 +8,12 @@
 #ifndef LOGGER_H
 #define	LOGGER_H
 
+#if defined(_WIN64) || defined(_WIN32)
+//Windows specific code
+#include <windows.h>
+//End Windows specific code	  
+#endif
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -23,7 +29,7 @@ enum LOGLEVEL {
 enum LOGTYPE {
 	INFO = 0,
 	WARN = 1,
-	ERROR = 2
+	ERR = 2
 };
 
 struct splitted{
