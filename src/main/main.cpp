@@ -19,7 +19,8 @@ using namespace gs;
  * 
  */
 int main(int argc, char** argv) {
-	Application *app = new Application(argc, argv); //No point in INFO or WARN messages before this point
+	//No point in INFO, WARN or DEBUG messages before this point
+	Application *app = new Application(argc, argv); 
 	INFO("Initialising application");
 	app->init();
 	INFO("Running application");

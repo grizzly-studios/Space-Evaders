@@ -40,7 +40,7 @@ Application::Application(int argc, char** argv) {
 			INFO("Unknown Flag: " + arg);
 		}
 	}
-	//No point in INFO or WARN messages before this point
+	//No point in INFO, WARN or DEBUG messages before this point
 	INFO("Application successfully created");
 }
 

@@ -19,12 +19,11 @@
 #include <fstream>
 #include <time.h>
 
-#define INFO(_msg_) logger::getInstance()->logM(_msg_, INFO, __FILE__, __LINE__)
-#define WARN(_msg_) logger::getInstance()->logM(_msg_, WARN, __FILE__, __LINE__)
-#define ERR(_msg_) logger::getInstance()->logM(_msg_, ERR, __FILE__, __LINE__)
-#define DEBUG(_msg_) logger::getInstance()->logM(_msg_, DEBUG, __FILE__, __LINE__)
-
-#define log logger::getInstance()->logM
+//MACRO definitions
+#define INFO(_msg_) logger::getInstance()->log(_msg_, INFO, __FILE__, __LINE__)
+#define WARN(_msg_) logger::getInstance()->log(_msg_, WARN, __FILE__, __LINE__)
+#define ERR(_msg_) logger::getInstance()->log(_msg_, ERR, __FILE__, __LINE__)
+#define DEBUG(_msg_) logger::getInstance()->log(_msg_, DEBUG, __FILE__, __LINE__)
 #define changeLog logger::getInstance()->changeLogging
 
 enum LOGLEVEL {
@@ -38,22 +37,14 @@ enum LOGTYPE {
 	ERR = 2,
 	DEBUG = 3
 };
-
-struct splitted{
-	std::string key;
-	std::string value;
-};
 	
 class logger {
 public:
 		static logger* getInstance();
-        void logM(std::string message, LOGTYPE type);
-		void logM(std::string message, LOGTYPE type, std::string source, int line);
+		void log(std::string message, LOGTYPE type, std::string source, int line);
 		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:
-        std::string trim(std::string line);
-		splitted split(std::string line, char token);
         logger();
 		virtual ~logger();
 		
