@@ -12,8 +12,6 @@ using namespace gs;
 Application::Application(int argc, char** argv) {
 	flush = false;
 	loge = logger::getInstance();
-			
-	loge->log("Creating Application", INFO);
 
 	FR = 50;
 	AL = 4;
@@ -43,6 +41,7 @@ Application::Application(int argc, char** argv) {
 			loge->log("Unknown Flag: " + arg, ERR);
 		}
 	}
+	//No point in INFO or WARN messages before this point
 	loge->log("Application successfully created", INFO);
 }
 
