@@ -26,10 +26,10 @@ void logger::logM(string message, LOGTYPE type){
 		//We need to initalise before we log out first time
 		pLogger = new logger();
 	} 
-	pLogger->logM(message, type, "");
+	pLogger->logM(message, type, "", 0);
 }
 
-void logger::logM(string message, LOGTYPE type, string source){
+void logger::logM(string message, LOGTYPE type, string source, int line){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
 		pLogger = new logger();
@@ -66,7 +66,9 @@ void logger::logM(string message, LOGTYPE type, string source){
 	
 	//Finally append the source (if supplied)
 	if(source.length() > 0){
-		line1 = line1 + " - " + source;
+		char numstr[21]; // enough to hold all numbers up to 64-bits
+		sprintf(numstr, "%d", line);
+		line1 = line1 + " - " + source + ":" + numstr;
 	}
 	
 	if(*consoleOut){

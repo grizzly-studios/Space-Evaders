@@ -43,7 +43,7 @@ class logger {
 public:
 		static logger* getInstance();
         void logM(std::string message, LOGTYPE type);
-		void logM(std::string message, LOGTYPE type, std::string source);
+		void logM(std::string message, LOGTYPE type, std::string source, int line);
 		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:

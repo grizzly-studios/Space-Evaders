@@ -20,9 +20,9 @@ using namespace gs;
  */
 int main(int argc, char** argv) {
 	Application *app = new Application(argc, argv); //No point in INFO or WARN messages before this point
-	log("Initialising application", INFO);
+	log("Initialising application", INFO, __FILE__, __LINE__);
 	app->init();
-	log("Running application", INFO);
+	log("Running application", INFO, __FILE__, __LINE__);
 	app->run();
 
 	delete app;
