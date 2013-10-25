@@ -6,7 +6,7 @@
  */
 
 #include "UserInput.h"
-#include "../event/StateChangedEvent.h"
+#include "../event/GameStateChangedEvent.h"
 
 using namespace gs;
 
