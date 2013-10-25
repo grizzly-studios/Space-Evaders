@@ -53,6 +53,17 @@ void KeyboardListener::update() {
 
 void KeyboardListener::onEvent(Event& event) {
 	
+	switch (event.getType()) {
+		case GAME_STATE_CHANGED_EVENT:
+			onGameStateChanged((GameStateChangedEvent&) event);
+			break;
+		default:
+			break;
+	}
+}
+
+void KeyboardListener::onGameStateChanged(GameStateChangedEvent& event) {
+	gameState = event.getState();
 }
 
 }

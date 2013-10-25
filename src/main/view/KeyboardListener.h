@@ -12,6 +12,8 @@
 
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
+#include "../app/GameState.h"
+#include "../event/GameStateChangedEvent.h"
 
 namespace gs {
 
@@ -25,6 +27,9 @@ public:
 	virtual void update();
 private:
 	IEventManagerPtr eventManager;
+	GameState gameState;
+	
+	void onGameStateChanged(GameStateChangedEvent &event);
 };
 
 }
