@@ -12,6 +12,10 @@ OUT = bin/
 
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
+ifndef CC
+    CC = g++
+endif
+
 ifeq ($(mode),release)
 	OBJDIR := $(OBJDIR)Release/
 	OUT := $(OUT)Release/
@@ -35,12 +39,12 @@ all:
 $(OUT)$(EXEC): $(OBJECTS)
 	@mkdir -p $(OUT)
 	@echo "<<< Linking >>>"
-	g++ $(OBJECTS) -o $@ -L$(LIBS) $(LIBRARIES)
+	$(CC) $(OBJECTS) -o $@ -L$(LIBS) $(LIBRARIES)
 
 $(OBJDIR)%.o: src/main/%.cpp $(HEADERS)
 	@mkdir -p $(dir $@)
 	@echo "<<< Compiling >>> "$<
-	g++ $(CXXFLAGS) $< -o $@
+	$(CC) $(CXXFLAGS) $< -o $@
 	@echo ""
 	
 clean:
