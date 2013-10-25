@@ -14,6 +14,7 @@
 #include "../event/IEventManager.hpp"
 #include "../app/GameState.h"
 #include "../event/GameStateChangedEvent.h"
+#include "../logic/MobileEntity.h"
 
 namespace gs {
 
@@ -30,6 +31,11 @@ private:
 	GameState gameState;
 	
 	void onGameStateChanged(GameStateChangedEvent &event);
+	
+	void inGameUpdate();
+	void pausedUpdate();
+	void loadingUpdate();
+	void menuUpdate();
 };
 
 }

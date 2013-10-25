@@ -19,24 +19,37 @@ KeyboardListener::~KeyboardListener() {
 
 void KeyboardListener::update() {
 	
+	switch (gameState) {
+		case IN_GAME:
+			inGameUpdate();
+			break;
+		case PAUSED:
+			pausedUpdate();
+			break;
+		case LOADING:
+			loadingUpdate();
+			break;
+		case MENU:
+			menuUpdate();
+			break;
+	}
+	
+}
+
+void KeyboardListener::inGameUpdate() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		//KeyBoardRightEvent right;
-		//eventManager->fireEvent(right);
+		MoveEntityEvent moveEntityEvent(RIGHT);
+		eventManager->fireEvent(moveEntityEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		//KeyBoardDownEvent down;
-		//eventManager->fireEvent(down);
+		MoveEntityEvent moveEntityEvent(DOWN);
+		eventManager->fireEvent(moveEntityEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		//KeyBoardLeftEvent left;
-		//eventManager->fireEvent(left);
-	}
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		//KeyBoardUpEvent up;
-		//eventManager->fireEvent(up);
+		MoveEntityEvent moveEntityEvent(LEFT);
+		eventManager->fireEvent(moveEntityEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
@@ -48,7 +61,6 @@ void KeyboardListener::update() {
 		//KeyBoardEscapeEvent escape;
 		//eventManager->fireEvent(escape);
 	}
-	
 }
 
 void KeyboardListener::onEvent(Event& event) {
