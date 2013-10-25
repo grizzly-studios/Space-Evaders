@@ -51,4 +51,8 @@ void KeyboardListener::update() {
 	
 }
 
+void KeyboardListener::onEvent(Event& event) {
+	
+}
+
 }

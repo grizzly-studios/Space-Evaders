@@ -6,12 +6,16 @@
  */
 
 #include "UserInput.h"
+#include "../event/StateChangedEvent.h"
 
 using namespace gs;
 
 UserInput::UserInput(
 	IEventManagerPtr _eventManager, 
 	IKeyboardListenerShrPtr _keyboard) : eventManager(_eventManager), keyboard(_keyboard) {
+	
+	eventManager->addListener(GAME_STATE_CHANGED_EVENT,
+		std::tr1::dynamic_pointer_cast<IEventListener>(keyboard));
 }
 
 UserInput::~UserInput() {

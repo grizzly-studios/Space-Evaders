@@ -10,14 +10,17 @@
 
 #include "IKeyboardListener.h"
 
+#include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 
 namespace gs {
 
-class KeyboardListener : public IKeyboardListener {
+class KeyboardListener : public IKeyboardListener, public IEventListener {
 public:
 	KeyboardListener(IEventManagerPtr _eventManager);
 	virtual ~KeyboardListener();
+	
+	virtual void onEvent(Event& event);
 	
 	virtual void update();
 private:
