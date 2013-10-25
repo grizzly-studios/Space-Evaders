@@ -55,7 +55,7 @@ void Application::init() {
 	logic = ILogicPtr(new Logic(eventManager));
 	
 	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
-	IUserInputShPtr userInput(new UserInput(keyboard));
+	IUserInputShPtr userInput(new UserInput(eventManager,keyboard));
 	view = IViewPtr(new View(eventManager, window, userInput));
 	view->init();
 
