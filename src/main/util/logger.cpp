@@ -7,24 +7,24 @@
  
 #include "logger.h"
 
-logger* logger::pLogger = NULL;
+Logger* Logger::pLogger = NULL;
 
 using namespace std;
 
-void logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
+void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
     if(pLogger == NULL){
 		//We need to initalise before we change the settings
-		pLogger = new logger();
+		pLogger = new Logger();
 	}
 	fileOut = new bool(file);
 	consoleOut = new bool(console);
 	level = new LOGLEVEL(newLevel);
 }
 
-void logger::log(string message, LOGTYPE type, string source, int line){
+void Logger::log(string message, LOGTYPE type, string source, int line){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
-		pLogger = new logger();
+		pLogger = new Logger();
 	}
 	
 	// Do first checks to determine if we should log
@@ -113,10 +113,10 @@ void logger::log(string message, LOGTYPE type, string source, int line){
 	}
 }
 
-logger::~logger() {
+Logger::~Logger() {
 }
 
-logger::logger(){
+Logger::Logger(){
 	// Set default logging behaviour 
 	fileOut = new bool(false);
 	consoleOut = new bool(false);
@@ -140,9 +140,9 @@ logger::logger(){
 	logFile.close();
 }
 
-logger* logger::getInstance(){
+Logger* Logger::getInstance(){
 	if(pLogger == NULL){
-		pLogger = new logger();
+		pLogger = new Logger();
 	}
 	return pLogger;
 }
