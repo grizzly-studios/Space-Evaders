@@ -13,7 +13,7 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include "../util/logger.h"
+#include "../util/Logger.h"
 
 #include "../event/EventManager.h"
 #include "../event/GameStateChangedEvent.h"

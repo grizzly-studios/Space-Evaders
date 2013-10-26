@@ -10,7 +10,7 @@
 #include "logic/Logic.h"
 #include "view/View.h"
 #include "app/Application.h"
-#include "util/logger.h"
+#include "util/Logger.h"
 
 const std::string CLASS = "main";
 using namespace gs;
