@@ -5,10 +5,6 @@
  * Created on September 25, 2013, 12:29 AM
  */
 
-//#include <cstdlib>
-#include "event/EventManager.h"
-#include "logic/Logic.h"
-#include "view/View.h"
 #include "app/Application.h"
 #include "util/Logger.h"
 
