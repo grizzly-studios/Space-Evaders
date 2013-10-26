@@ -13,6 +13,7 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include "../util/Logger.h"
 
 #include "../event/EventManager.h"
 #include "../event/GameStateChangedEvent.h"
@@ -36,16 +37,15 @@ public:
 	void run();
 
 private:
-	IEventManagerPtr eventManager;
-	ILogicPtr logic;
-	IViewPtr view;
-	bool verbose;
-	bool flush;
-	unsigned int FR;
-	unsigned int AL;
-	unsigned int WIDTH, HEIGHT;
-	sf::ContextSettings settings;
-	RenderWindowShPtr window;
+        IEventManagerPtr eventManager;
+        ILogicPtr logic;
+        IViewPtr view;
+        bool flush;
+        unsigned int FR;
+        unsigned int AL;
+        unsigned int WIDTH, HEIGHT;
+        sf::ContextSettings settings;
+        RenderWindowShPtr window;
 };
 
 }
