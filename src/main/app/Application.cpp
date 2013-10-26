@@ -64,6 +64,10 @@ void Application::init() {
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT,
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
+	
+	//Set initial GameState
+	GameStateChangedEvent gameStateChangedEvent(IN_GAME);
+	eventManager->fireEvent(gameStateChangedEvent);
 }
 
 Application::~Application() {
@@ -86,6 +90,7 @@ void Application::run() {
 			}
 		}
 
+		view->update();
 		logic->update();
 		view->render();
 	}
