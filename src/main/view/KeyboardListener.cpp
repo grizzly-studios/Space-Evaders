@@ -36,18 +36,18 @@ void KeyboardListener::update() {
 
 void KeyboardListener::inGameUpdate() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		MoveEntityEvent moveEntityEvent(RIGHT);
-		eventManager->fireEvent(moveEntityEvent);
+		ChangePlayerDirectionEvent changePlayerDirectionEvent(RIGHT);
+		eventManager->fireEvent(changePlayerDirectionEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		MoveEntityEvent moveEntityEvent(DOWN);
-		eventManager->fireEvent(moveEntityEvent);
+		ChangePlayerDirectionEvent changePlayerDirectionEvent(DOWN);
+		eventManager->fireEvent(changePlayerDirectionEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		MoveEntityEvent moveEntityEvent(LEFT);
-		eventManager->fireEvent(moveEntityEvent);
+		ChangePlayerDirectionEvent changePlayerDirectionEvent(LEFT);
+		eventManager->fireEvent(changePlayerDirectionEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {

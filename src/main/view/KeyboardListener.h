@@ -15,7 +15,7 @@
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 
-#include "../event/MoveEntityEvent.h"
+#include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
 
 #include "../app/GameState.h"
@@ -34,6 +34,7 @@ public:
 private:
 	IEventManagerPtr eventManager;
 	GameState gameState;
+	short playerEntitiyId;
 	
 	void onGameStateChanged(GameStateChangedEvent &event);
 	
