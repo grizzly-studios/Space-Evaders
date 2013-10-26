@@ -16,8 +16,13 @@
 #include "../util/logger.h"
 
 #include "../event/EventManager.h"
+#include "../event/GameStateChangedEvent.h"
+
 #include "../logic/Logic.h"
+
 #include "../view/View.h"
+#include "../view/KeyboardListener.h"
+#include "../view/UserInput.h"
 
 namespace gs {
 

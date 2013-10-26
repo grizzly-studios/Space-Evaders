@@ -8,8 +8,11 @@
 
 using namespace gs;
 
-View::View(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventManager(_eventManager),
-	window(_window) {
+View::View(IEventManagerPtr _eventManager, 
+	RenderWindowShPtr _window,
+	IUserInputShPtr _userInput) : eventManager(_eventManager),
+	window(_window),
+	userInput(_userInput) {
 
 }
 
@@ -25,7 +28,7 @@ void View::init() {
 }
 
 void View::update() {
-
+	userInput->update();
 }
 
 void View::render() {

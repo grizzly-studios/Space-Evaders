@@ -14,6 +14,7 @@
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
+#include "UserInput.h"
 
 namespace gs {
 
@@ -24,7 +25,7 @@ typedef std::map<short, SpriteShPtr> SpriteMap;
 
 class View : public IView, public IEventListener {
 public:
-	View(IEventManagerPtr _eventManager, RenderWindowShPtr _window);
+	View(IEventManagerPtr _eventManager, RenderWindowShPtr _window, IUserInputShPtr _userInput);
 	virtual ~View();
 
 	virtual void init();
@@ -37,6 +38,7 @@ private:
 
 	IEventManagerPtr eventManager;
 	RenderWindowShPtr window;
+	IUserInputShPtr userInput;
 	sf::Texture texture;
 	SpriteMap spriteMap;
 };
