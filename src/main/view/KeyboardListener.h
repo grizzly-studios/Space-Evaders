@@ -34,7 +34,6 @@ public:
 private:
 	IEventManagerPtr eventManager;
 	GameState gameState;
-	short playerEntitiyId;
 	
 	void onGameStateChanged(GameStateChangedEvent &event);
 	
