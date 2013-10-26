@@ -7,6 +7,7 @@
 
 #include "UserInput.h"
 #include "../event/GameStateChangedEvent.h"
+#include "../util/Logger.h"
 
 using namespace gs;
 
@@ -19,7 +20,7 @@ UserInput::UserInput(
 }
 
 UserInput::~UserInput() {
-	std::cout << __FILE__ << " destroyed" << std::endl;
+	DBG("Destroyed");
 }
 
 void UserInput::update() {

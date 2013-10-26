@@ -6,6 +6,7 @@
  */
 
 #include "Application.h"
+#include "../util/Logger.h"
 
 using namespace gs;
 
@@ -37,7 +38,7 @@ Application::Application(int argc, char** argv) {
 		} else if(arg == "-vf"){
 			CHANGE_LOG(true, true, FULL);
 		}else{
-			INFO("Unknown Flag: " + arg);
+			WARN("Unknown Flag: " + arg);
 		}
 	}
 	//No point in INFO, WARN or DEBUG messages before this point
@@ -68,7 +69,6 @@ void Application::init() {
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
 
 	INFO("Ending init");
-
 	
 	//Set initial GameState
 	GameStateChangedEvent gameStateChangedEvent(IN_GAME);
@@ -76,8 +76,7 @@ void Application::init() {
 }
 
 Application::~Application() {
-	INFO("Deconstructing application");
-	std::cout << __FILE__ << " destroyed" << std::endl;
+	DBG("Destroyed");
 }
 
 void Application::run() {
