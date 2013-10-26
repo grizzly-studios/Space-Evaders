@@ -15,7 +15,7 @@
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 
-#include "../event/MoveEntityEvent.h"
+#include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
 
 #include "../app/GameState.h"
