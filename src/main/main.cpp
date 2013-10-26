@@ -8,7 +8,6 @@
 #include "app/Application.h"
 #include "util/Logger.h"
 
-const std::string CLASS = "main";
 using namespace gs;
 
 /*
