@@ -9,8 +9,6 @@
 
 Logger* Logger::pLogger = NULL;
 
-using namespace std;
-
 void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
     if(pLogger == NULL){
 		//We need to initalise before we change the settings
@@ -21,7 +19,7 @@ void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
 	level = newLevel;
 }
 
-void Logger::log(const string& message, LOGTYPE type, const string& source, int line){
+void Logger::log(const std::string& message, LOGTYPE type, const std::string& source, int line){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
 		pLogger = new Logger();
@@ -34,7 +32,7 @@ void Logger::log(const string& message, LOGTYPE type, const string& source, int 
 	} 
 	
 	//Now create the logging message
-	string line1;
+	std::string line1;
 
 	//Get current date and time
 	time_t rawTime;
@@ -80,11 +78,11 @@ void Logger::log(const string& message, LOGTYPE type, const string& source, int 
 				SetConsoleTextAttribute( hstdout, 0x0C );
 				break;
 		}
-		cout << timestamp << line1 << " - " << message << endl;
+		std::cout << timestamp << line1 << " - " << message << std::endl;
 		//End Windows specific code
 #else
 		//UNIX specific code
-		string colour;
+		std::string colour;
 		switch (type){
 			case INFO: 
 				colour = "\033[0;37m";
@@ -100,15 +98,15 @@ void Logger::log(const string& message, LOGTYPE type, const string& source, int 
 				break;
 		}
 		
-		cout << colour << timestamp << line1 << " - " << message << endl;
+		std::cout << colour << timestamp << line1 << " - " << message << std::endl;
 		//End UNIX specific code
 #endif
 	}
 	if(fileOut){
 		//Output the plain text to the log file
-		ofstream logFile;
-		logFile.open ("console.log", fstream::out | fstream::app);
-		logFile << timestamp << line1 << " - " << message << endl;
+		std::ofstream logFile;
+		logFile.open ("console.log", std::fstream::out | std::fstream::app);
+		logFile << timestamp << line1 << " - " << message << std::endl;
 		logFile.close();
 	}
 }
@@ -122,14 +120,17 @@ Logger::Logger() : fileOut(false), consoleOut(false), level(OFF) {
 	timeinfo = localtime (&rawTime);
 	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
 	
-	ofstream logFile;
-	logFile.open ("console.log", fstream::out | fstream::app);
-	logFile << endl ;
-	logFile << endl ;
-	logFile << "###########################################################################" << endl;
-	logFile << "## Space Evaders Console Log     -       " << timestamp << "             ##" << endl;
-	logFile << "###########################################################################" << endl;
-	logFile << endl;
+	std::ofstream logFile;
+	logFile.open ("console.log", std::fstream::out | std::fstream::app);
+	logFile << std::endl ;
+	logFile << std::endl ;
+	logFile << "###########################################################################"
+		<< std::endl;
+	logFile << "## Space Evaders Console Log     -       " << timestamp << "             ##"
+		<< std::endl;
+	logFile << "###########################################################################"
+		<< std::endl;
+	logFile << std::endl;
 	logFile.close();
 }
 
