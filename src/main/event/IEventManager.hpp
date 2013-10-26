@@ -6,6 +6,12 @@
 #include "EventEnum.hpp"
 #include "IEventListener.hpp"
 
+/**
+ * Cast a shared pointer to an IEventListenerPtr. The shared pointer must be wrapping an object
+ * that implements IEventListener, otherwise this will go horribly wrong...
+ */
+#define MAKE_EVENT_LISTENER(_lsnr_) std::tr1::dynamic_pointer_cast<IEventListener>(_lsnr_)
+
 namespace gs {
 
 /**
