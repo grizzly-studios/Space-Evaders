@@ -28,7 +28,7 @@ void View::init() {
 }
 
 void View::update() {
-
+	userInput->update();
 }
 
 void View::render() {
