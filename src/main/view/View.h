@@ -37,8 +37,8 @@ private:
 	void onEntityMoved(EntityMovedEvent& event);
 
 	IEventManagerPtr eventManager;
-	IUserInputShPtr userInput;
 	RenderWindowShPtr window;
+	IUserInputShPtr userInput;
 	sf::Texture texture;
 	SpriteMap spriteMap;
 };
