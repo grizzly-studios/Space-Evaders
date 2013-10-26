@@ -23,5 +23,5 @@ UserInput::~UserInput() {
 }
 
 void UserInput::update() {
-	
+	keyboard->update();
 }
