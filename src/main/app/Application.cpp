@@ -53,7 +53,10 @@ void Application::init() {
 	window->setVerticalSyncEnabled(true);
 
 	logic = ILogicPtr(new Logic(eventManager));
-	view = IViewPtr(new View(eventManager, window));
+	
+	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
+	IUserInputShPtr userInput(new UserInput(eventManager,keyboard));
+	view = IViewPtr(new View(eventManager, window, userInput));
 	view->init();
 
 	// TODO: How best to handle this cast?
@@ -61,6 +64,10 @@ void Application::init() {
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT,
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
+	
+	//Set initial GameState
+	GameStateChangedEvent gameStateChangedEvent(IN_GAME);
+	eventManager->fireEvent(gameStateChangedEvent);
 }
 
 Application::~Application() {
@@ -83,6 +90,7 @@ void Application::run() {
 			}
 		}
 
+		view->update();
 		logic->update();
 		view->render();
 	}
