@@ -1,5 +1,7 @@
 #include "Logic.h"
 
+#include "../util/Logger.h"
+
 using namespace gs;
 
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
@@ -10,7 +12,7 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 	}
 
 Logic::~Logic() {
-	std::cout << __FILE__ << " destroyed" << std::endl;
+	DBG("Destroyed");
 }
 
 void Logic::update() {

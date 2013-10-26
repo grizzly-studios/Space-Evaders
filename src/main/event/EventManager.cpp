@@ -3,10 +3,12 @@
 #include <iostream>
 #include <algorithm>
 
+#include "../util/Logger.h"
+
 using namespace gs;
 
 EventManager::~EventManager() {
-	std::cout << __FILE__ << " destroyed" << std::endl;
+	DBG("Destroyed");
 }
 
 bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) {
@@ -21,7 +23,7 @@ bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) 
 	// Check the listener being added is not already registered
 	for (it = listenerList.begin(); it != listenerList.end(); ++it) {
 		if (it->lock() == listener.lock()) {
-			// TODO: Log failure, attempting to double register listener
+			WARN("Failed to add listener as listener was already registered");
 			break;
 		}
 	}
@@ -29,7 +31,7 @@ bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) 
 	if (it == listenerList.end()) {
 		listenerList.push_back(listener);
 		success = true;
-		// TODO: Log success, listener added
+		INFO("Successfully added listener");
 	}
 
 	return success;
@@ -51,12 +53,11 @@ bool EventManager::fireEvent(Event& event) const {
 				listIt->lock()->onEvent(event);
 			}
 			success = true;
-			// TODO: Log success, listeners called
 		}
 	}
 
 	if (!success) {
-		// TODO: Log failure, no listeners for event type
+		WARN("Failed to fire event as there were no listeners for the event type");
 	}
 
 	return success;

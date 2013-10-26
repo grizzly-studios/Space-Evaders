@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "../util/Logger.h"
+
 #define SPRITE_SHEET "assets/sprites.png"
 #define SPRITE_SHEET_SPRITE_WIDTH 16
 #define SCREEN_SPRITE_WIDTH 16
@@ -13,17 +15,15 @@ View::View(IEventManagerPtr _eventManager,
 	IUserInputShPtr _userInput) : eventManager(_eventManager),
 	window(_window),
 	userInput(_userInput) {
-
 }
 
 View::~View() {
-	std::cout << __FILE__ << " destroyed" << std::endl;
+	DBG("Destroyed");
 }
 
 void View::init() {
 	if (!texture.loadFromFile(SPRITE_SHEET)) {
-		// TODO: Log error
-		std::cout << __FILE__ << "failed to load texture" << std::endl;
+		ERR("Failed to load texture: " + std::string(SPRITE_SHEET));
 	}
 }
 
@@ -42,23 +42,22 @@ void View::render() {
 }
 
 void View::onEvent(Event& event) {
-	std::cout << "View: event: ";
+	const short eventType = event.getType();
+	INFO("Received event: " + eventType);
 
-	switch (event.getType()) {
+	switch (eventType) {
 	case ENTITY_CREATED_EVENT: {
-		std::cout << "ENTITY_CREATED_EVENT" << std::endl;
 		EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
 		onEntityCreated(entityCreatedEvent);
 		break;
 	}
 	case ENTITY_MOVED_EVENT: {
-		std::cout << "ENTITY_MOVED_EVENT" << std::endl;
 		EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
 		onEntityMoved(entityMovedEvent);
 		break;
 	}
 	default: {
-		std::cout << "<UNHANDLED EVENT>" << std::endl;
+		WARN("Event wasn't handled");
 		break;
 	}
 	}
@@ -66,12 +65,11 @@ void View::onEvent(Event& event) {
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
 	const short entityId = event.getEntityId();
-	std::cout << "entity created with id: " << entityId << std::endl;
+	INFO("Entity created with id: " + entityId);
 
 	// Check if we already have a sprite associated with this id
 	if (spriteMap.find(entityId) != spriteMap.end()) {
-		// TODO Log warning about sprite already present, why was it not destroyed?
-		std::cout << "warning sprite already present" << std::endl;
+		WARN("Sprite already present for this id, should it have been destroyed?");
 	}
 
 	SpriteShPtr sprite(new sf::Sprite);
@@ -86,14 +84,13 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 
 void View::onEntityMoved(EntityMovedEvent& event) {
 	const short entityId = event.getEntityId();
-	std::cout << "entity moved with id: " << entityId << std::endl;
+	INFO("Entity moved with id: " + entityId);
 
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
 	if (it != spriteMap.end()) {
 		it->second->setPosition(event.getPosition());
 	} else {
-		// TODO: Log error, no sprite for this id
-		std::cout << "no sprite for this id: " << entityId << std::endl;
+		WARN("No sprite for this id");
 	}
 }
