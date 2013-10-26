@@ -10,10 +10,15 @@
 
 #include "IKeyboardListener.h"
 
+#include <SFML/Window/Keyboard.hpp>
+
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
-#include "../app/GameState.h"
+
+#include "../event/MoveEntityEvent.h"
 #include "../event/GameStateChangedEvent.h"
+
+#include "../app/GameState.h"
 #include "../logic/MobileEntity.h"
 
 namespace gs {

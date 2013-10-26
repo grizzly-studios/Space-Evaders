@@ -5,8 +5,6 @@
  * Created on October 13, 2013, 9:55 AM
  */
 
-#include <SFML/Window/Keyboard.hpp>
-
 #include "KeyboardListener.h"
 
 namespace gs {
@@ -53,14 +51,33 @@ void KeyboardListener::inGameUpdate() {
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-		//KeyBoardPEvent p;
-		//eventManager->fireEvent(p);
+		GameStateChangedEvent gameStateChangedEvent(PAUSED);
+		eventManager->fireEvent(gameStateChangedEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		//KeyBoardEscapeEvent escape;
-		//eventManager->fireEvent(escape);
+		GameStateChangedEvent gameStateChangedEvent(MENU);
+		eventManager->fireEvent(gameStateChangedEvent);
 	}
+}
+
+void KeyboardListener::pausedUpdate() {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+		GameStateChangedEvent gameStateChangedEvent(IN_GAME);
+		eventManager->fireEvent(gameStateChangedEvent);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+		GameStateChangedEvent gameStateChangedEvent(MENU);
+		eventManager->fireEvent(gameStateChangedEvent);
+	}
+}
+
+void KeyboardListener::loadingUpdate() {
+	
+}
+
+void KeyboardListener::menuUpdate() {
+	
 }
 
 void KeyboardListener::onEvent(Event& event) {
