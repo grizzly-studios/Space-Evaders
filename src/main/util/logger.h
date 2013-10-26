@@ -20,11 +20,11 @@
 #include <time.h>
 
 //MACRO definitions
-#define INFO(_msg_) logger::getInstance()->log(_msg_, INFO, __FILE__, __LINE__)
-#define WARN(_msg_) logger::getInstance()->log(_msg_, WARN, __FILE__, __LINE__)
-#define ERR(_msg_) logger::getInstance()->log(_msg_, ERR, __FILE__, __LINE__)
-#define DEBUG(_msg_) logger::getInstance()->log(_msg_, DEBUG, __FILE__, __LINE__)
-#define changeLog logger::getInstance()->changeLogging
+#define INFO(_msg_) Logger::getInstance()->log(_msg_, INFO, __FILE__, __LINE__)
+#define WARN(_msg_) Logger::getInstance()->log(_msg_, WARN, __FILE__, __LINE__)
+#define ERR(_msg_) Logger::getInstance()->log(_msg_, ERR, __FILE__, __LINE__)
+#define DEBUG(_msg_) Logger::getInstance()->log(_msg_, DEBUG, __FILE__, __LINE__)
+#define changeLog Logger::getInstance()->changeLogging
 
 enum LOGLEVEL {
 	OFF = 0,
@@ -38,17 +38,17 @@ enum LOGTYPE {
 	DEBUG = 3
 };
 	
-class logger {
+class Logger {
 public:
-		static logger* getInstance();
+		static Logger* getInstance();
 		void log(std::string message, LOGTYPE type, std::string source, int line);
 		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:
-        logger();
-		virtual ~logger();
+        Logger();
+		virtual ~Logger();
 		
-		static logger* pLogger;
+		static Logger* pLogger;
         bool *fileOut;
 		bool *consoleOut;
 		LOGLEVEL *level;
