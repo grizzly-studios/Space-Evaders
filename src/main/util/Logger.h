@@ -24,7 +24,7 @@
 #define WARN(_msg_) Logger::getInstance()->log(_msg_, WARN_TYPE, __FILE__, __LINE__)
 #define ERR(_msg_) Logger::getInstance()->log(_msg_, ERR_TYPE, __FILE__, __LINE__)
 #define DBG(_msg_) Logger::getInstance()->log(_msg_, DEBUG_TYPE, __FILE__, __LINE__)
-#define changeLog Logger::getInstance()->changeLogging
+#define CHANGE_LOG Logger::getInstance()->changeLogging
 
 namespace gs {
 

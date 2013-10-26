@@ -33,9 +33,9 @@ Application::Application(int argc, char** argv) {
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
 		} else if (arg == "-v"){
-			changeLog(false, true, FULL);
+			CHANGE_LOG(false, true, FULL);
 		} else if(arg == "-vf"){
-			changeLog(true, true, FULL);
+			CHANGE_LOG(true, true, FULL);
 		}else{
 			INFO("Unknown Flag: " + arg);
 		}
