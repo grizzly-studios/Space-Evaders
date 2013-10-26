@@ -97,7 +97,7 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 			case WARN_TYPE:
 				colour = "\033[0;33m";
 				break;
-			case ERR_TYPE_TYPE:
+			case ERR_TYPE:
 				colour = "\033[0;31m";
 				break;
 		}
