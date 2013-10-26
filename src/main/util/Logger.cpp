@@ -26,7 +26,7 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 	}
 	
 	// Do first checks to determine if we should log
-	if(type != ERR && level != FULL){
+	if(type != ERR_TYPE && level != FULL){
 		//we do not log out INFO, WARN or DEBUG on anything BUT full
 		return;
 	} 
@@ -43,11 +43,11 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
 	
 	//Sort out string representation of type
-	if(type == INFO){
+	if(type == INFO_TYPE){
 		line1 = " - INFO";
-	} else if(type == WARN){
+	} else if(type == WARN_TYPE){
 		line1 = " - WARN";
-	} else if(type == ERR){
+	} else if(type == ERR_TYPE){
 		line1 = " - ERR!";
 	} else {
 		line1 = " - DEBUG";
@@ -65,16 +65,16 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 		//Windows specific code
 		HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
 		switch (type){
-			case INFO: 
+			case INFO_TYPE:
 				SetConsoleTextAttribute( hstdout, 0x0F );
 				break;
-			case DEBUG: 
+			case DEBUG_TYPE:
 				SetConsoleTextAttribute( hstdout, 0x02 );
 				break;
-			case WARN:
+			case WARN_TYPE:
 				SetConsoleTextAttribute( hstdout, 0x06 );
 				break;
-			case ERR:
+			case ERR_TYPE:
 				SetConsoleTextAttribute( hstdout, 0x0C );
 				break;
 		}
@@ -84,16 +84,16 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 		//UNIX specific code
 		std::string colour;
 		switch (type){
-			case INFO: 
+			case INFO_TYPE:
 				colour = "\033[0;37m";
 				break;
-			case DEBUG: 
+			case DEBUG_TYPE:
 				colour = "\033[0;32m";
 				break;
-			case WARN:
+			case WARN_TYPE:
 				colour = "\033[0;33m";
 				break;
-			case ERR:
+			case ERR_TYPE_TYPE:
 				colour = "\033[0;31m";
 				break;
 		}

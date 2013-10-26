@@ -20,10 +20,10 @@
 #include <time.h>
 
 //MACRO definitions
-#define INFO(_msg_) Logger::getInstance()->log(_msg_, INFO, __FILE__, __LINE__)
-#define WARN(_msg_) Logger::getInstance()->log(_msg_, WARN, __FILE__, __LINE__)
-#define ERR(_msg_) Logger::getInstance()->log(_msg_, ERR, __FILE__, __LINE__)
-#define DEBUG(_msg_) Logger::getInstance()->log(_msg_, DEBUG, __FILE__, __LINE__)
+#define INFO(_msg_) Logger::getInstance()->log(_msg_, INFO_TYPE, __FILE__, __LINE__)
+#define WARN(_msg_) Logger::getInstance()->log(_msg_, WARN_TYPE, __FILE__, __LINE__)
+#define ERR(_msg_) Logger::getInstance()->log(_msg_, ERR_TYPE, __FILE__, __LINE__)
+#define DBG(_msg_) Logger::getInstance()->log(_msg_, DEBUG_TYPE, __FILE__, __LINE__)
 #define changeLog Logger::getInstance()->changeLogging
 
 enum LOGLEVEL {
@@ -32,10 +32,10 @@ enum LOGLEVEL {
 };
 
 enum LOGTYPE {
-	INFO = 0,
-	WARN = 1,
-	ERR = 2,
-	DEBUG = 3
+	INFO_TYPE = 0,
+	WARN_TYPE = 1,
+	ERR_TYPE = 2,
+	DEBUG_TYPE = 3
 };
 	
 class Logger {
