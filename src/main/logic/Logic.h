@@ -13,7 +13,7 @@
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 
-#include "../event/EntityCreatedEvent.hpp"
+#include "../event/ChangePlayerDirectionEvent.h"
 
 #include "MobileEntity.h"
 #include "Player.h"
@@ -53,6 +53,8 @@ private:
 
 	void integrate();
 	void interpolate(const double &remainder);
+	
+	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	
 	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
 };

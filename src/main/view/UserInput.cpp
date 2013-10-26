@@ -15,8 +15,7 @@ UserInput::UserInput(
 	IEventManagerPtr _eventManager, 
 	IKeyboardListenerShrPtr _keyboard) : eventManager(_eventManager), keyboard(_keyboard) {
 	
-	eventManager->addListener(GAME_STATE_CHANGED_EVENT,
-		std::tr1::dynamic_pointer_cast<IEventListener>(keyboard));
+	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(keyboard));
 }
 
 UserInput::~UserInput() {

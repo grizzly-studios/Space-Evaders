@@ -28,7 +28,13 @@ void Logic::update() {
 }
 
 void Logic::onEvent(Event& event) {
-	INFO("Received event: " + event.getType());
+	switch (event.getType()) {
+		case CHANGE_PLAYER_DIRECTION_EVENT:
+			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
+			break;
+		default:
+			break;
+	}
 }
 
 void Logic::move() {
@@ -72,6 +78,12 @@ void Logic::interpolate(const double &remainder) {
 	const double alpha  = remainder / dt;
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->interpolate(alpha);
+	}
+}
+
+void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
+	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+		(*it)->setDirection(event.getDirection());
 	}
 }
 
