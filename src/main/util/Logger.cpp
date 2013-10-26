@@ -16,9 +16,9 @@ void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
 		//We need to initalise before we change the settings
 		pLogger = new Logger();
 	}
-	fileOut = new bool(file);
-	consoleOut = new bool(console);
-	level = new LOGLEVEL(newLevel);
+	fileOut = file;
+	consoleOut = console;
+	level = newLevel;
 }
 
 void Logger::log(string message, LOGTYPE type, string source, int line){
@@ -28,7 +28,7 @@ void Logger::log(string message, LOGTYPE type, string source, int line){
 	}
 	
 	// Do first checks to determine if we should log
-	if(type != ERR && *level != FULL){
+	if(type != ERR && level != FULL){
 		//we do not log out INFO, WARN or DEBUG on anything BUT full
 		return;
 	} 
@@ -62,7 +62,7 @@ void Logger::log(string message, LOGTYPE type, string source, int line){
 		line1 = line1 + " - " + source + ":" + numstr;
 	}
 	
-	if(*consoleOut){
+	if(consoleOut){
 #if defined(_WIN64) || defined(_WIN32)
 		//Windows specific code
 		HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
@@ -104,7 +104,7 @@ void Logger::log(string message, LOGTYPE type, string source, int line){
 		//End UNIX specific code
 #endif
 	}
-	if(*fileOut){
+	if(fileOut){
 		//Output the plain text to the log file
 		ofstream logFile;
 		logFile.open ("console.log", fstream::out | fstream::app);
@@ -113,14 +113,7 @@ void Logger::log(string message, LOGTYPE type, string source, int line){
 	}
 }
 
-Logger::~Logger() {
-}
-
-Logger::Logger(){
-	// Set default logging behaviour 
-	fileOut = new bool(false);
-	consoleOut = new bool(false);
-	level = new LOGLEVEL(OFF);
+Logger::Logger() : fileOut(false), consoleOut(false), level(OFF) {
 	// Open the log file and make sure it is a new section 
 	time_t rawTime;
 	struct tm * timeinfo;
@@ -138,6 +131,9 @@ Logger::Logger(){
 	logFile << "###########################################################################" << endl;
 	logFile << endl;
 	logFile.close();
+}
+
+Logger::~Logger() {
 }
 
 Logger* Logger::getInstance(){

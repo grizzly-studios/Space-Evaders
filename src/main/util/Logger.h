@@ -49,9 +49,9 @@ private:
 		virtual ~Logger();
 		
 		static Logger* pLogger;
-        bool *fileOut;
-		bool *consoleOut;
-		LOGLEVEL *level;
+        bool fileOut;
+		bool consoleOut;
+		LOGLEVEL level;
 };
 
 #endif	/* LOGGER_H */
