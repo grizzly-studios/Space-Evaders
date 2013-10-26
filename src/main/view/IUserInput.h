@@ -13,6 +13,7 @@
 namespace gs {
 	
 class IUserInput {
+public:
 	virtual void update() = 0;
 };
 
