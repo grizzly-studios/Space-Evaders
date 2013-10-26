@@ -26,6 +26,8 @@
 #define DBG(_msg_) Logger::getInstance()->log(_msg_, DEBUG_TYPE, __FILE__, __LINE__)
 #define changeLog Logger::getInstance()->changeLogging
 
+namespace gs {
+
 enum LOGLEVEL {
 	OFF = 0,
 	FULL = 2
@@ -53,5 +55,7 @@ private:
 		bool consoleOut;
 		LOGLEVEL level;
 };
+
+}
 
 #endif	/* LOGGER_H */

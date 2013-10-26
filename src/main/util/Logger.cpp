@@ -7,6 +7,8 @@
  
 #include "Logger.h"
 
+using namespace gs;
+
 Logger* Logger::pLogger = NULL;
 
 void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
