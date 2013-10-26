@@ -41,7 +41,7 @@ enum LOGTYPE {
 class Logger {
 public:
 		static Logger* getInstance();
-		void log(std::string message, LOGTYPE type, std::string source, int line);
+		void log(const std::string& message, LOGTYPE type, const std::string& source, int line);
 		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:

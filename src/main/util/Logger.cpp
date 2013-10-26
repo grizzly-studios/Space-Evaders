@@ -21,7 +21,7 @@ void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
 	level = newLevel;
 }
 
-void Logger::log(string message, LOGTYPE type, string source, int line){
+void Logger::log(const string& message, LOGTYPE type, const string& source, int line){
 	if(pLogger == NULL){
 		//We need to initalise before we log out first time
 		pLogger = new Logger();
