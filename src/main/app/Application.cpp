@@ -10,7 +10,6 @@
 using namespace gs;
 
 Application::Application(int argc, char** argv) {
-	verbose = false;
 	flush = false;
 
 	FR = 50;
@@ -19,33 +18,36 @@ Application::Application(int argc, char** argv) {
 
 	for (int i = 1; i < argc; i++) {
 		std::string arg(argv[i]);
-		if (arg == "-v") {
-			verbose = true;
-		}
 		if (arg == "-f") {
 			flush = true;
-		}
-		if (arg == "-fr") {
+		} else if (arg == "-fr") {
 			FR = atoi(argv[i+1]);
 			i++;
-		}
-		if (arg == "-al") {
+		} else if (arg == "-al") {
 			AL = atoi(argv[i+1]);
 			i++;
-		}
-		if (arg == "-r") {
+		} else if (arg == "-r") {
 			std::string resolutionString(argv[i+1]);
 			std::size_t pos = resolutionString.find_first_of("x");
 			WIDTH = atoi(resolutionString.substr(0,pos).c_str());
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
+		} else if (arg == "-v"){
+			CHANGE_LOG(false, true, FULL);
+		} else if(arg == "-vf"){
+			CHANGE_LOG(true, true, FULL);
+		}else{
+			INFO("Unknown Flag: " + arg);
 		}
 	}
+	//No point in INFO, WARN or DEBUG messages before this point
+	INFO("Application successfully created");
 }
 
-void Application::init() {
+void Application::init() { 
+	INFO("Begining init");
 	eventManager = IEventManagerPtr(new EventManager);
-
+	
 	settings.antialiasingLevel = AL;
 
 	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
@@ -64,6 +66,9 @@ void Application::init() {
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT,
 		std::tr1::dynamic_pointer_cast<IEventListener>(view));
+
+	INFO("Ending init");
+
 	
 	//Set initial GameState
 	GameStateChangedEvent gameStateChangedEvent(IN_GAME);
@@ -71,11 +76,12 @@ void Application::init() {
 }
 
 Application::~Application() {
+	INFO("Deconstructing application");
 	std::cout << __FILE__ << " destroyed" << std::endl;
 }
 
 void Application::run() {
-
+	INFO("Beginning while loop");
 	while(window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
@@ -85,6 +91,7 @@ void Application::run() {
 			}
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
+					INFO("Request to close window registered - closing window");
 					window->close();
 				}
 			}
