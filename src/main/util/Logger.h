@@ -42,18 +42,18 @@ enum LOGTYPE {
 	
 class Logger {
 public:
-		static Logger* getInstance();
-		void log(const std::string& message, LOGTYPE type, const std::string& source, int line);
-		void changeLogging(bool file, bool console, LOGLEVEL newLevel);
+	static Logger* getInstance();
+	void log(const std::string& message, LOGTYPE type, const std::string& source, int line);
+	void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:
-        Logger();
-		virtual ~Logger();
-		
-		static Logger* pLogger;
-        bool fileOut;
-		bool consoleOut;
-		LOGLEVEL level;
+	Logger();
+	virtual ~Logger();
+
+	static Logger* pLogger;
+	bool fileOut;
+	bool consoleOut;
+	LOGLEVEL level;
 };
 
 }

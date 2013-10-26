@@ -11,24 +11,21 @@ using namespace gs;
 
 Logger* Logger::pLogger = NULL;
 
-void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel){
-    if(pLogger == NULL){
-		//We need to initalise before we change the settings
+Logger* Logger::getInstance() {
+	if (pLogger == NULL) {
 		pLogger = new Logger();
 	}
-	fileOut = file;
-	consoleOut = console;
-	level = newLevel;
+	return pLogger;
 }
 
-void Logger::log(const std::string& message, LOGTYPE type, const std::string& source, int line){
-	if(pLogger == NULL){
-		//We need to initalise before we log out first time
+void Logger::log(const std::string& message, LOGTYPE type, const std::string& source, int line) {
+	if (pLogger == NULL) {
+		//We need to initialise before we log out first time
 		pLogger = new Logger();
 	}
 	
 	// Do first checks to determine if we should log
-	if(type != ERR_TYPE && level != FULL){
+	if (type != ERR_TYPE && level != FULL) {
 		//we do not log out INFO, WARN or DEBUG on anything BUT full
 		return;
 	} 
@@ -45,28 +42,33 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
 	
 	//Sort out string representation of type
-	if(type == INFO_TYPE){
-		line1 = " - INFO";
-	} else if(type == WARN_TYPE){
-		line1 = " - WARN";
-	} else if(type == ERR_TYPE){
-		line1 = " - ERR!";
-	} else {
-		line1 = " - DEBUG";
+	switch (type) {
+		case INFO_TYPE:
+			line1 = " - INFO";
+			break;
+		case WARN_TYPE:
+			line1 = " - WARN";
+			break;
+		case ERR_TYPE:
+			line1 = " - ERR!";
+			break;
+		case DEBUG_TYPE:
+			line1 = " - DEBUG";
+			break;
 	}
 	
 	//Finally append the source (if supplied)
-	if(source.length() > 0){
+	if (source.length() > 0) {
 		char numstr[21];
 		sprintf(numstr, "%d", line);
 		line1 = line1 + " - " + source + ":" + numstr;
 	}
 	
-	if(consoleOut){
+	if(consoleOut) {
 #if defined(_WIN64) || defined(_WIN32)
 		//Windows specific code
 		HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
-		switch (type){
+		switch (type) {
 			case INFO_TYPE:
 				SetConsoleTextAttribute( hstdout, 0x0F );
 				break;
@@ -85,7 +87,7 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 #else
 		//UNIX specific code
 		std::string colour;
-		switch (type){
+		switch (type) {
 			case INFO_TYPE:
 				colour = "\033[0;37m";
 				break;
@@ -104,13 +106,23 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 		//End UNIX specific code
 #endif
 	}
-	if(fileOut){
+	if (fileOut) {
 		//Output the plain text to the log file
 		std::ofstream logFile;
 		logFile.open ("console.log", std::fstream::out | std::fstream::app);
 		logFile << timestamp << line1 << " - " << message << std::endl;
 		logFile.close();
 	}
+}
+
+void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel) {
+	if(pLogger == NULL) {
+		//We need to initalise before we change the settings
+		pLogger = new Logger();
+	}
+	fileOut = file;
+	consoleOut = console;
+	level = newLevel;
 }
 
 Logger::Logger() : fileOut(false), consoleOut(false), level(OFF) {
@@ -137,11 +149,4 @@ Logger::Logger() : fileOut(false), consoleOut(false), level(OFF) {
 }
 
 Logger::~Logger() {
-}
-
-Logger* Logger::getInstance(){
-	if(pLogger == NULL){
-		pLogger = new Logger();
-	}
-	return pLogger;
 }
