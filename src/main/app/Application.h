@@ -36,15 +36,17 @@ public:
 	void run();
 
 private:
-        IEventManagerPtr eventManager;
-        ILogicPtr logic;
-        IViewPtr view;
-        bool flush;
-        unsigned int FR;
-        unsigned int AL;
-        unsigned int WIDTH, HEIGHT;
-        sf::ContextSettings settings;
-        RenderWindowShPtr window;
+	void load();
+	
+	IEventManagerPtr eventManager;
+	ILogicPtr logic;
+	IViewPtr view;
+	bool flush;
+	unsigned int FR;
+	unsigned int AL;
+	unsigned int WIDTH, HEIGHT;
+	sf::ContextSettings settings;
+	RenderWindowShPtr window;
 };
 
 }

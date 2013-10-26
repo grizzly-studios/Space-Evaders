@@ -79,6 +79,10 @@ Application::~Application() {
 	DBG("Destroyed");
 }
 
+void Application::load() {
+	logic->generateLevel();
+}
+
 void Application::run() {
 	INFO("Beginning while loop");
 	while(window->isOpen()) {

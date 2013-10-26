@@ -8,6 +8,7 @@ namespace gs {
 class ILogic {
 public:
 	virtual void update() = 0;
+	virtual void generateLevel() = 0;
 };
 
 typedef std::tr1::shared_ptr<ILogic> ILogicPtr;
