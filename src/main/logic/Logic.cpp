@@ -91,4 +91,5 @@ void Logic::generateLevel() {
 		allPlayers.back()->getID(),
 		allPlayers.back()->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
+	DBG("Generated level");
 }

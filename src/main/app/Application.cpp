@@ -84,6 +84,9 @@ void Application::load() {
 }
 
 void Application::run() {
+	
+	load();
+	
 	INFO("Beginning while loop");
 	while(window->isOpen()) {
 		sf::Event event;
