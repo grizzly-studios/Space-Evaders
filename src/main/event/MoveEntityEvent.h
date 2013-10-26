@@ -11,21 +11,25 @@
 #include "Event.hpp"
 #include "../logic/MobileEntity.h"
 
+namespace gs {
+
 class MoveEntityEvent : public Event {
-	public:
-		MoveEntityEvent(Direction _direction) : direction(_direction) {}
-		
-		virtual EventEnum getType() const {
-			return MOVE_ENTITY_EVENT;
-		}
-		
-		Direction getDirection() const {
-			return direction;
-		}
-		
-	private:
-		Direction direction;
+public:
+	MoveEntityEvent(Direction _direction) : direction(_direction) {}
+
+	virtual EventEnum getType() const {
+		return MOVE_ENTITY_EVENT;
+	}
+
+	Direction getDirection() const {
+		return direction;
+	}
+
+private:
+	Direction direction;
 };
+
+}
 
 #endif	/* MOVE_ENTITY_EVENT_H */
 
