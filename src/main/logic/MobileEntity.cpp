@@ -102,3 +102,23 @@ void MobileEntity::interpolate(const double& alpha) {
 bool MobileEntity::detectCollision(const Entity &entity) {
 	return geo.intersects(entity.getGeo());
 }
+
+void MobileEntity::setPosition(const sf::Vector2f& pos) {
+	Entity::setPosition(pos);
+	state[0] = state[1] = pos;
+}
+
+void MobileEntity::setPosition(float x, float y) {
+	Entity::setPosition(x,y);
+	state[0] = state[1] = sf::Vector2f(x,y);
+}
+
+void MobileEntity::setGeo(const sf::FloatRect& _geo) {
+	Entity::setGeo(_geo);
+	state[0] = state[1] = sf::Vector2f(_geo.left,_geo.top);
+}
+
+void MobileEntity::setGeo(float x, float y, float w, float h) {
+	Entity::setGeo(x,y,w,h);
+	state[0] = state[1] = sf::Vector2f(x,y);
+}

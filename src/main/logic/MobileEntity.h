@@ -34,6 +34,10 @@ public:
 	void setMagnitude(float _mag);
 	Direction getDirection() const;
 	void setDirection(Direction _dir);
+	void setPosition(const sf::Vector2f &pos);
+	void setPosition(float x, float y);
+	void setGeo(const sf::FloatRect &_geo);
+	void setGeo(float x, float y, float w, float h);
 	
 	/**
 	 * Movement function
