@@ -90,8 +90,8 @@ void MobileEntity::integrate(const double& dt) {
 	
 	state[0] = state[1];
 	
-	state[1].x = vector.x;
-	state[1].y = vector.y;
+	state[1].x += vector.x;
+	state[1].y += vector.y;
 }
 
 void MobileEntity::interpolate(const double& alpha) {
