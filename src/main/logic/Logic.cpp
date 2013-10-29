@@ -9,7 +9,7 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 	accumulator = 0;
 	dt = 12500;
 	
-	}
+}
 
 Logic::~Logic() {
 	DBG("Destroyed");
@@ -78,6 +78,10 @@ void Logic::interpolate(const double &remainder) {
 	const double alpha  = remainder / dt;
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->interpolate(alpha);
+		if ((*it)->getMagnitude() > 0 && (*it)->getDirection() != NONE) {
+			EntityMovedEvent entityMovedEvent((*it)->getID(),(*it)->getPosition());
+			eventManager->fireEvent(entityMovedEvent);
+		}
 	}
 }
 
