@@ -1,7 +1,6 @@
 #include "View.h"
 
 #include <iostream>
-#include <sstream>
 
 #include "../util/Logger.h"
 
@@ -44,10 +43,7 @@ void View::render() {
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
-	std::stringstream ss;
-	ss << eventType;
-	INFO("Received event: " + ss.str());
-	ss.str("");
+	INFO("Received event: " + eventType);
 
 	switch (eventType) {
 	case ENTITY_CREATED_EVENT: {
@@ -92,10 +88,6 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
-	std::stringstream ss;
-	ss << "New position: (x):\t" << event.getPosition().x << "\t(y):\t" << event.getPosition().y << std::endl;
-	INFO(ss.str());
-	ss.str("");
 	if (it != spriteMap.end()) {
 		it->second->setPosition(event.getPosition());
 	} else {

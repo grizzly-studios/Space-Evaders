@@ -1,10 +1,6 @@
 #ifndef EVENT_ENUM_HPP
 #define	EVENT_ENUM_HPP
 
-#include <map>
-#include <vector>
-#include <string>
-
 namespace gs {
 
 /**
