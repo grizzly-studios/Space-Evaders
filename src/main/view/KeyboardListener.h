@@ -34,6 +34,7 @@ public:
 private:
 	IEventManagerPtr eventManager;
 	GameState gameState;
+	bool previousState[sf::Keyboard::KeyCount];
 	
 	void onGameStateChanged(GameStateChangedEvent &event);
 	
