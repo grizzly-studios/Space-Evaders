@@ -30,6 +30,7 @@ void Logic::update() {
 void Logic::onEvent(Event& event) {
 	switch (event.getType()) {
 		case CHANGE_PLAYER_DIRECTION_EVENT:
+			DBG("Change player direction");
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
 			break;
 		default:
