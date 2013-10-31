@@ -10,6 +10,9 @@
 
 namespace gs {
 
+/**
+ * Enum for different game states.
+ */
 enum GameState {
 	IN_GAME,
 	PAUSED,
