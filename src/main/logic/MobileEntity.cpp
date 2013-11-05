@@ -73,8 +73,8 @@ sf::Vector2f MobileEntity::getVector(const double& dt) const {
 			break;
 	}
 
-	vector.x = x_mag * (dt);
-	vector.y = y_mag * (dt);
+	vector.x = x_mag * dt;
+	vector.y = y_mag * dt;
 	return vector;
 }
 
