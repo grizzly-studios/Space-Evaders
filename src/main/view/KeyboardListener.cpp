@@ -10,6 +10,9 @@
 namespace gs {
 
 KeyboardListener::KeyboardListener(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
+	for (int i = 0; i < sf::Keyboard::KeyCount; i++) {
+		previousState[i] = false;
+	}
 }
 
 KeyboardListener::~KeyboardListener() {
@@ -35,19 +38,40 @@ void KeyboardListener::update() {
 }
 
 void KeyboardListener::inGameUpdate() {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		ChangePlayerDirectionEvent changePlayerDirectionEvent(RIGHT);
-		eventManager->fireEvent(changePlayerDirectionEvent);
+	bool resetDirection = false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) != previousState[sf::Keyboard::Right]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			ChangePlayerDirectionEvent changePlayerDirectionEvent(RIGHT);
+			eventManager->fireEvent(changePlayerDirectionEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Right] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
 	}
 	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		ChangePlayerDirectionEvent changePlayerDirectionEvent(DOWN);
-		eventManager->fireEvent(changePlayerDirectionEvent);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) != previousState[sf::Keyboard::Down]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			ChangePlayerDirectionEvent changePlayerDirectionEvent(DOWN);
+			eventManager->fireEvent(changePlayerDirectionEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
 	}
 	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		ChangePlayerDirectionEvent changePlayerDirectionEvent(LEFT);
-		eventManager->fireEvent(changePlayerDirectionEvent);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) != previousState[sf::Keyboard::Left]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			ChangePlayerDirectionEvent changePlayerDirectionEvent(LEFT);
+			eventManager->fireEvent(changePlayerDirectionEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+	}
+	
+	if (resetDirection) {
+		ChangePlayerDirectionEvent changePlayerDirectionEvent(NONE);
+			eventManager->fireEvent(changePlayerDirectionEvent);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {

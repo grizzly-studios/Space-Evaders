@@ -64,6 +64,7 @@ void Application::init() {
 
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
 
 	INFO("Ending init");
 	
@@ -76,7 +77,14 @@ Application::~Application() {
 	DBG("Destroyed");
 }
 
+void Application::load() {
+	logic->generateLevel();
+}
+
 void Application::run() {
+	
+	load();
+	
 	INFO("Beginning while loop");
 	while(window->isOpen()) {
 		sf::Event event;

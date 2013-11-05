@@ -35,13 +35,13 @@ public:
 	 * Set Entities position
 	 * @param pos New position for entity
 	 */
-	void setPosition(const sf::Vector2f &pos);
+	virtual void setPosition(const sf::Vector2f &pos);
 	/**
 	 * Set Entities position
 	 * @param x New x coordinate for entity
 	 * @param y New y coordinate for entity
 	 */
-	void setPosition(float x, float y);
+	virtual void setPosition(float x, float y);
 	/**
 	 * Get Entities position
 	 * @return Current position
@@ -51,8 +51,8 @@ public:
 	void setDimensions(const sf::Vector2f &dim);
 	void setDimensions(float w, float h);
 	sf::Vector2f getDimensions() const;
-	void setGeo(const sf::FloatRect &_geo);
-	void setGeo(float x, float y, float w, float h);
+	virtual void setGeo(const sf::FloatRect &_geo);
+	virtual void setGeo(float x, float y, float w, float h);
 	sf::FloatRect getGeo() const;
 	/**
 	 * Set Entities name

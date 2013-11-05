@@ -8,8 +8,7 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 	clock = new sf::Clock();
 	accumulator = 0;
 	dt = 12500;
-	
-	}
+}
 
 Logic::~Logic() {
 	DBG("Destroyed");
@@ -30,6 +29,7 @@ void Logic::update() {
 void Logic::onEvent(Event& event) {
 	switch (event.getType()) {
 		case CHANGE_PLAYER_DIRECTION_EVENT:
+			DBG("Change player direction");
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
 			break;
 		default:
@@ -78,6 +78,10 @@ void Logic::interpolate(const double &remainder) {
 	const double alpha  = remainder / dt;
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->interpolate(alpha);
+		if ((*it)->getMagnitude() > 0 && (*it)->getDirection() != NONE) {
+			EntityMovedEvent entityMovedEvent((*it)->getID(),(*it)->getPosition());
+			eventManager->fireEvent(entityMovedEvent);
+		}
 	}
 }
 
@@ -94,3 +98,14 @@ void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
 	allObjects.push_back(allBullets.back());
 }
 
+void Logic::generateLevel() {
+	allPlayers.push_back(PlayerShPtr(new Player()));
+	allPlayers.back()->setGeo(100,100,30,30);
+	mobileObjects.push_back(allPlayers.back());
+	allObjects.push_back(allPlayers.back());
+	EntityCreatedEvent entityCreatedEvent(
+		allPlayers.back()->getID(),
+		allPlayers.back()->getGeo());
+	eventManager->fireEvent(entityCreatedEvent);
+	DBG("Generated level");
+}

@@ -13,6 +13,8 @@
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 
+#include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
 
 #include "MobileEntity.h"
@@ -32,6 +34,9 @@ public:
 	~Logic();
 	virtual void update();
 	virtual void onEvent(Event& event);
+	
+	virtual void generateLevel();
+	
 private:
 	IEventManagerPtr eventManager;
 	
