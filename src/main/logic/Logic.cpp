@@ -99,13 +99,13 @@ void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
 }
 
 void Logic::generateLevel() {
-	/*allPlayers.push_back(PlayerShPtr(new Player()));
+	allPlayers.push_back(PlayerShPtr(new Player()));
 	allPlayers.back()->setGeo(100,100,30,30);
 	mobileObjects.push_back(allPlayers.back());
 	allObjects.push_back(allPlayers.back());
 	EntityCreatedEvent entityCreatedEvent(
 		allPlayers.back()->getID(),
 		allPlayers.back()->getGeo());
-	eventManager->fireEvent(entityCreatedEvent);*/
+	eventManager->fireEvent(entityCreatedEvent);
 	DBG("Generated level");
 }
