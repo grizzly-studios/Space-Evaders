@@ -12,7 +12,7 @@ using namespace gs;
 Player::Player() : MobileEntity() {
 	name = "Player 1";
 	dir = NONE;
-	mag = 100;
+	mag = 100/1000000;
 }
 
 Player::Player(const Player& orig) : MobileEntity(orig) {

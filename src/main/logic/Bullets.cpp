@@ -11,7 +11,7 @@ using namespace gs;
 
 Bullets::Bullets() : MobileEntity() {
     name = "Bullets";
-    mag = 10;
+    mag = 100/1000000;
     dir = DOWN;
 }
 
