@@ -1,6 +1,7 @@
 #include "View.h"
 
 #include <iostream>
+#include <string>
 
 #include "../util/Logger.h"
 
@@ -43,7 +44,7 @@ void View::render() {
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
-	INFO("Received event: " + eventType);
+	INFO("Received event: " + std::to_string(eventType));
 
 	switch (eventType) {
 	case ENTITY_CREATED_EVENT: {
@@ -65,7 +66,7 @@ void View::onEvent(Event& event) {
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
 	const short entityId = event.getEntityId();
-	INFO("Entity created with id: " + entityId);
+	INFO("Entity created with id: " + std::to_string(entityId));
 
 	// Check if we already have a sprite associated with this id
 	if (spriteMap.find(entityId) != spriteMap.end()) {
@@ -84,7 +85,7 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 
 void View::onEntityMoved(EntityMovedEvent& event) {
 	const short entityId = event.getEntityId();
-	INFO("Entity moved with id: " + entityId);
+	INFO("Entity moved with id: " + std::to_string(entityId));
 
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
