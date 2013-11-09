@@ -1,5 +1,6 @@
 #include "View.h"
 
+#include <tr1/random>
 #include <iostream>
 
 #include "../util/Logger.h"
@@ -27,41 +28,8 @@ View::~View() {
 
 void View::init() {
 	spriteFactory->init();
-
-	// Top-left
-	hudSprites.push_back(spriteFactory->createSprite(0, 0));
-
-	// Left
-	hudSprites.push_back(spriteFactory->createSprite(0, 1));
-	hudSprites.back().setPosition(0.0f, SCREEN_SPRITE_WIDTH);
-	hudSprites.back().setScale(1.0f, (HEIGHT - SCREEN_SPRITE_WIDTH * 2)/ SCREEN_SPRITE_WIDTH);
-
-	// Bottom-left
-	hudSprites.push_back(spriteFactory->createSprite(0, 2));
-	hudSprites.back().setPosition(0.0f, HEIGHT - SCREEN_SPRITE_WIDTH);
-
-	// Bottom
-	hudSprites.push_back(spriteFactory->createSprite(1, 2));
-	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
-	hudSprites.back().setScale((WIDTH - SCREEN_SPRITE_WIDTH * 2)/ SCREEN_SPRITE_WIDTH, 1.0f);
-
-	// Bottom-right
-	hudSprites.push_back(spriteFactory->createSprite(2, 2));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
-
-	// Right
-	hudSprites.push_back(spriteFactory->createSprite(2, 1));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, SCREEN_SPRITE_WIDTH);
-	hudSprites.back().setScale(1.0f, (HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
-
-	// Top-right
-	hudSprites.push_back(spriteFactory->createSprite(2, 0));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, 0.0f);
-
-	// Top
-	hudSprites.push_back(spriteFactory->createSprite(1, 0));
-	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH, 0.0f);
-	hudSprites.back().setScale((WIDTH - SCREEN_SPRITE_WIDTH * 2)/ SCREEN_SPRITE_WIDTH, 1.0f);
+	initBackground();
+	initHud();
 }
 
 void View::update() {
@@ -70,6 +38,11 @@ void View::update() {
 
 void View::render() {
 	window->clear();
+
+	// Draw background
+	for (RectShapeList::const_iterator it = stars.begin(); it != stars.end(); ++it) {
+		window->draw(*it);
+	}
 
 	// Draw entity sprites
 	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
@@ -105,6 +78,70 @@ void View::onEvent(Event& event) {
 		break;
 	}
 	}
+}
+
+void View::initBackground() {
+	// 'Randomly' position some stars
+	const int NUM_STARS = 80;
+	const int STAR_WIDTH = 3;
+	const int SEED = 48;
+
+	std::tr1::mt19937 randomNumGen(SEED);
+	std::tr1::uniform_int<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
+	std::tr1::uniform_int<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
+	std::tr1::variate_generator<std::tr1::mt19937&, std::tr1::uniform_int<int> > genX(
+			randomNumGen, distX);
+	std::tr1::variate_generator<std::tr1::mt19937&, std::tr1::uniform_int<int> > genY(
+			randomNumGen, distY);
+
+	for (int i=0; i<NUM_STARS; i++) {
+		stars.push_back(sf::RectangleShape(sf::Vector2f(STAR_WIDTH, STAR_WIDTH)));
+		stars.back().setPosition(genX(), genY());
+	}
+}
+
+void View::initHud() {
+	// Top-left
+	hudSprites.push_back(spriteFactory->createSprite(0, 0));
+
+	// Left
+	hudSprites.push_back(spriteFactory->createSprite(0, 1));
+	hudSprites.back().setPosition(0.0f, SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setScale(1.0f,
+			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+
+	// Bottom-left
+	hudSprites.push_back(spriteFactory->createSprite(0, 2));
+	hudSprites.back().setPosition(0.0f, HEIGHT - SCREEN_SPRITE_WIDTH);
+
+	// Bottom
+	hudSprites.push_back(spriteFactory->createSprite(1, 2));
+	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH,
+			HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setScale(
+			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+
+	// Bottom-right
+	hudSprites.push_back(spriteFactory->createSprite(2, 2));
+	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
+			HEIGHT - SCREEN_SPRITE_WIDTH);
+
+	// Right
+	hudSprites.push_back(spriteFactory->createSprite(2, 1));
+	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
+			SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setScale(1.0f,
+			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+
+	// Top-right
+	hudSprites.push_back(spriteFactory->createSprite(2, 0));
+	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, 0.0f);
+
+	// Top
+	hudSprites.push_back(spriteFactory->createSprite(1, 0));
+	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH, 0.0f);
+	hudSprites.back().setScale(
+			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
 }
 
 void View::onEntityCreated(EntityCreatedEvent& event) {

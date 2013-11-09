@@ -8,6 +8,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "IView.hpp"
 
@@ -22,6 +23,7 @@ namespace gs {
 
 // TODO: Extract this typdef to a single place (also defined in Application.h at present)
 typedef std::tr1::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
+typedef std::list<sf::RectangleShape> RectShapeList;
 typedef std::map<short, sf::Sprite> SpriteMap;
 typedef std::list<sf::Sprite> SpriteList;
 
@@ -36,6 +38,8 @@ public:
 	virtual void render();
 	virtual void onEvent(Event& event);
 private:
+	void initBackground();
+	void initHud();
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
 
@@ -44,6 +48,7 @@ private:
 	IUserInputShPtr userInput;
 	ISpriteFactoryShPtr spriteFactory;
 	sf::Texture texture;
+	RectShapeList stars;
 	SpriteMap spriteMap;
 	SpriteList hudSprites;
 };
