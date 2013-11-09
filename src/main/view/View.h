@@ -3,6 +3,7 @@
 
 #include <tr1/memory>
 #include <map>
+#include <list>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -15,17 +16,19 @@
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 #include "UserInput.h"
+#include "ISpriteFactory.hpp"
 
 namespace gs {
 
 // TODO: Extract this typdef to a single place (also defined in Application.h at present)
 typedef std::tr1::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
-typedef std::tr1::shared_ptr<sf::Sprite> SpriteShPtr;
-typedef std::map<short, SpriteShPtr> SpriteMap;
+typedef std::map<short, sf::Sprite> SpriteMap;
+typedef std::list<sf::Sprite> SpriteList;
 
 class View : public IView, public IEventListener {
 public:
-	View(IEventManagerPtr _eventManager, RenderWindowShPtr _window, IUserInputShPtr _userInput);
+	View(IEventManagerPtr _eventManager, RenderWindowShPtr _window, IUserInputShPtr _userInput,
+			ISpriteFactoryShPtr _sprite_factory);
 	virtual ~View();
 
 	virtual void init();
@@ -39,8 +42,10 @@ private:
 	IEventManagerPtr eventManager;
 	RenderWindowShPtr window;
 	IUserInputShPtr userInput;
+	ISpriteFactoryShPtr spriteFactory;
 	sf::Texture texture;
 	SpriteMap spriteMap;
+	SpriteList hudSprites;
 };
 
 }

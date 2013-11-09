@@ -15,7 +15,7 @@ Application::Application(int argc, char** argv) {
 
 	FR = 50;
 	AL = 4;
-	WIDTH = 1024; HEIGHT = 640;
+	WIDTH = 480; HEIGHT = 640;
 
 	for (int i = 1; i < argc; i++) {
 		std::string arg(argv[i]);
@@ -52,14 +52,15 @@ void Application::init() {
 	settings.antialiasingLevel = AL;
 
 	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
-		sf::Style::Default, settings));
+		sf::Style::Close, settings));
 	window->setVerticalSyncEnabled(true);
 
 	logic = ILogicPtr(new Logic(eventManager));
 	
 	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
 	IUserInputShPtr userInput(new UserInput(eventManager,keyboard));
-	view = IViewPtr(new View(eventManager, window, userInput));
+	ISpriteFactoryShPtr spriteFactory(new SpriteFactory());
+	view = IViewPtr(new View(eventManager, window, userInput, spriteFactory));
 	view->init();
 
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
