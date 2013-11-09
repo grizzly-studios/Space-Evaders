@@ -1,7 +1,7 @@
 #ifndef I_EVENT_MANAGER_HPP
 #define	I_EVENT_MANAGER_HPP
 
-#include <tr1/memory>
+#include <memory>
 
 #include "EventEnum.hpp"
 #include "IEventListener.hpp"
@@ -10,7 +10,7 @@
  * Cast a shared pointer to an IEventListenerPtr. The shared pointer must be wrapping an object
  * that implements IEventListener, otherwise this will go horribly wrong...
  */
-#define MAKE_EVENT_LISTENER(_lsnr_) std::tr1::dynamic_pointer_cast<IEventListener>(_lsnr_)
+#define MAKE_EVENT_LISTENER(_lsnr_) std::dynamic_pointer_cast<IEventListener>(_lsnr_)
 
 namespace gs {
 
@@ -37,7 +37,7 @@ public:
 	virtual bool fireEvent(Event& event) const = 0;
 };
 
-typedef std::tr1::shared_ptr<IEventManager> IEventManagerPtr;
+typedef std::shared_ptr<IEventManager> IEventManagerPtr;
 
 }
 

@@ -22,7 +22,7 @@ public:
 private:
 };
 
-typedef std::tr1::shared_ptr<Bullets> BulletsShPtr;
+typedef std::shared_ptr<Bullets> BulletsShPtr;
 
 }
 

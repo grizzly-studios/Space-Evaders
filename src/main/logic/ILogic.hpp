@@ -1,7 +1,7 @@
 #ifndef I_LOGIC_HPP
 #define	I_LOGIC_HPP
 
-#include <tr1/memory>
+#include <memory>
 
 namespace gs {
 
@@ -11,7 +11,7 @@ public:
 	virtual void generateLevel() = 0;
 };
 
-typedef std::tr1::shared_ptr<ILogic> ILogicPtr;
+typedef std::shared_ptr<ILogic> ILogicPtr;
 
 }
 

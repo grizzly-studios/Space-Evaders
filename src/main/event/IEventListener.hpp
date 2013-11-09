@@ -1,7 +1,7 @@
 #ifndef I_EVENT_LISTENER_HPP
 #define	I_EVENT_LISTENER_HPP
 
-#include <tr1/memory>
+#include <memory>
 
 #include "Event.hpp"
 
@@ -21,7 +21,7 @@ public:
 	virtual void onEvent(Event& event) = 0;
 };
 
-typedef std::tr1::weak_ptr<IEventListener> IEventListenerPtr;
+typedef std::weak_ptr<IEventListener> IEventListenerPtr;
 
 }
 
