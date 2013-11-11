@@ -1,7 +1,7 @@
 #ifndef VIEW_H
 #define	VIEW_H
 
-#include <tr1/memory>
+#include <memory>
 #include <map>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -19,8 +19,8 @@
 namespace gs {
 
 // TODO: Extract this typdef to a single place (also defined in Application.h at present)
-typedef std::tr1::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
-typedef std::tr1::shared_ptr<sf::Sprite> SpriteShPtr;
+typedef std::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
+typedef std::shared_ptr<sf::Sprite> SpriteShPtr;
 typedef std::map<short, SpriteShPtr> SpriteMap;
 
 class View : public IView, public IEventListener {

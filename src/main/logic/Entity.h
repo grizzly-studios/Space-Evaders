@@ -9,7 +9,7 @@
 #define	ENTITY_H
 
 #include <string>
-#include <tr1/memory>
+#include <memory>
 
 #include <SFML/Graphics/Rect.hpp>
 
@@ -87,7 +87,7 @@ private:
 	unsigned int ID;
 };
 
-typedef std::tr1::shared_ptr<Entity> EntityShPtr;
+typedef std::shared_ptr<Entity> EntityShPtr;
 	
 }
 

@@ -8,7 +8,7 @@
 #ifndef I_KEYBOARDLISTENER_H
 #define	I_KEYBOARDLISTENER_H
 
-#include <tr1/memory>
+#include <memory>
 
 namespace gs {
 	
@@ -17,7 +17,7 @@ public:
 	virtual void update() = 0;
 };
 
-typedef std::tr1::shared_ptr<IKeyboardListener> IKeyboardListenerShrPtr;
+typedef std::shared_ptr<IKeyboardListener> IKeyboardListenerShrPtr;
 	
 }
 

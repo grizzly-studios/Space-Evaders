@@ -21,7 +21,7 @@ private:
 
 };
 
-typedef std::tr1::shared_ptr<Player> PlayerShPtr;
+typedef std::shared_ptr<Player> PlayerShPtr;
 
 }
 

@@ -1,7 +1,7 @@
 #ifndef I_VIEW_HPP
 #define	I_VIEW_HPP
 
-#include <tr1/memory>
+#include <memory>
 
 namespace gs {
 
@@ -12,7 +12,7 @@ public:
 	virtual void render() = 0;
 };
 
-typedef std::tr1::shared_ptr<IView> IViewPtr;
+typedef std::shared_ptr<IView> IViewPtr;
 
 }
 

@@ -1,12 +1,10 @@
-# Define the following in Makefile.config:
-# SFML_DIR - SFML installation directory
-# LIBRARIES - libraries to link against
+# Define the following machine dependent settings in Makefile.config:
+# COMPILE - SFML inlcude dir flag (& C++11 flag for Windows & Linux)
+# LINK - SFML library dir flag & libraries to link against
 include Makefile.config
 
 EXEC = SpaceEvaders
-INCLUDES = $(SFML_DIR)/include/
-LIBS = $(SFML_DIR)/lib/
-CXXFLAGS = -c -Wall -I$(INCLUDES)
+CXXFLAGS = -c -Wall $(COMPILE)
 OBJDIR = build/
 OUT = bin/
 
@@ -39,7 +37,7 @@ all:
 $(OUT)$(EXEC): $(OBJECTS)
 	@mkdir -p $(OUT)
 	@echo "<<< Linking >>>"
-	$(CXX) $(OBJECTS) -o $@ -L$(LIBS) $(LIBRARIES)
+	$(CXX) $(OBJECTS) -o $@ $(LINK)
 
 $(OBJDIR)%.o: src/main/%.cpp $(HEADERS)
 	@mkdir -p $(dir $@)
