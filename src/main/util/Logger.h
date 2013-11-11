@@ -39,6 +39,38 @@ enum LOGTYPE {
 	ERR_TYPE = 2,
 	DEBUG_TYPE = 3
 };
+
+enum Color {
+	RED,
+	GREEN,
+	BLUE,
+	YELLOW,
+	ORANGE,
+	PURPLE,
+	PINK,
+	BROWN,
+	GREY,
+	WHITE
+};
+
+class LogBuffer : public std::streambuf {
+public:
+	LogBuffer(std::ostream &_sink);
+	LogBuffer(std::ostream &_sink, Color color);
+	virtual ~LogBuffer();
+protected:
+	static const int bufSize = 1;
+	char buf[bufSize];
+	std::string label;
+	std::ostream &sink;
+	bool isNewLine;
+private:
+	std::string header();
+	void setLabel(std::string);
+	int flushBuffer();
+	virtual int overflow (int c);
+	virtual int sync();
+};
 	
 class Logger {
 public:
