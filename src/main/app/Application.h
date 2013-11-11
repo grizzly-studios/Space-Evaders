@@ -8,7 +8,7 @@
 #ifndef APPLICATION_H
 #define	APPLICATION_H
 
-#include <tr1/memory>
+#include <memory>
 #include <string>
 
 #include <SFML/Window.hpp>
@@ -26,7 +26,7 @@
 
 namespace gs {
 
-typedef std::tr1::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
+typedef std::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
 
 class Application {
 public:

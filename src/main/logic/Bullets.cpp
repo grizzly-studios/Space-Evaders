@@ -12,7 +12,7 @@ using namespace gs;
 Bullets::Bullets() : MobileEntity() {
 	//Setting default behaviour for bullets
     name = "Bullets";
-    mag = 100/1000000;	// unit: pixel/microseconds
+    mag = 100.f/1000000.f;	// unit: pixel/microseconds
     dir = DOWN;
 }
 

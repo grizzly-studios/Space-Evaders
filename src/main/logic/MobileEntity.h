@@ -58,7 +58,7 @@ protected:
 	virtual sf::Vector2f getVector(const double & dt) const;
 };
 
-typedef std::tr1::shared_ptr<MobileEntity> MobileEntityShPtr;
+typedef std::shared_ptr<MobileEntity> MobileEntityShPtr;
 	
 }
 

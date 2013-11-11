@@ -2,6 +2,8 @@
 
 #include <tr1/random>
 #include <iostream>
+#include <string>
+#include <sstream>
 
 #include "../util/Logger.h"
 
@@ -60,7 +62,9 @@ void View::render() {
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
-	INFO("Received event: " + eventType);
+	std::stringstream ss;
+	ss << "Received event: " << eventType;
+	INFO(ss.str());
 
 	switch (eventType) {
 	case ENTITY_CREATED_EVENT: {
@@ -146,7 +150,9 @@ void View::initHud() {
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
 	const short entityId = event.getEntityId();
-	INFO("Entity created with id: " + entityId);
+	std::stringstream ss;
+	ss << "Entity created with id: " << entityId;
+	INFO(ss.str());
 
 	// Check if we already have a sprite associated with this id
 	if (spriteMap.find(entityId) != spriteMap.end()) {
@@ -163,7 +169,9 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 
 void View::onEntityMoved(EntityMovedEvent& event) {
 	const short entityId = event.getEntityId();
-	INFO("Entity moved with id: " + entityId);
+	std::stringstream ss;
+	ss << "Entity moved with id: " << entityId;
+	INFO(ss.str());
 
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);

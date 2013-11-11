@@ -13,7 +13,7 @@ Player::Player() : MobileEntity() {
 	//Setting default behaviour for player
 	name = "Player 1";
 	dir = NONE;
-	mag = 100/1000000;	// unit: pixel/microseconds
+	mag = 100.f/1000000.f;	// unit: pixel/microseconds
 }
 
 Player::Player(const Player& orig) : MobileEntity(orig) {
