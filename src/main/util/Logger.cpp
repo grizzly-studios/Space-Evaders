@@ -9,6 +9,66 @@
 
 using namespace gs;
 
+LogBuffer::LogBuffer(std::ostream &_sink) : sink(_sink), isNewLine(true) {
+	label = "";
+    setp(buf, buf + (bufSize - 1));
+}
+
+LogBuffer::LogBuffer(std::ostream &_sink, Color color) : sink(_sink), isNewLine(true) {
+	label = "";
+	setp(buf, buf + (bufSize - 1));
+}
+
+LogBuffer::~LogBuffer() {
+	
+}
+
+std::string LogBuffer::header() {
+	time_t rawTime;
+	time(&rawTime);
+	std::tm *lTime = std::localtime(&rawTime);
+	char timeBuf[100];
+	strftime(timeBuf, sizeof(timeBuf), "[%d/%m/%Y %H:%M:%S]", lTime);
+
+	return std::string(timeBuf) + " - " + 
+		((label != "") ? (label + " - ") : "" );
+}
+
+void LogBuffer::setLabel(std::string _label) {
+	label = _label;
+}
+
+int LogBuffer::flushBuffer () {
+	int num = pptr()-pbase();
+	sink.write(buf, num);
+	if (sink.eof()) {
+		return EOF;
+	}
+	pbump(-num); // reset put pointer accordingly
+	return num;
+}
+
+int LogBuffer::overflow(int c = EOF) {
+	int result = c;
+	if (isNewLine) {
+		sink << header();
+	}
+	if (sink && c != EOF) {
+		*pptr() = c;
+		pbump(1);
+	}
+
+	result = flushBuffer();
+	isNewLine = c == '\n';
+	return (result == EOF) ? EOF : c;
+}
+
+int LogBuffer::sync() {
+	sink << std::flush;
+	
+    return (flushBuffer() == EOF) ? -1 : 0;
+}
+
 Logger* Logger::pLogger = NULL;
 
 Logger* Logger::getInstance() {
