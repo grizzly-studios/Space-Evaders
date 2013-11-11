@@ -1,6 +1,7 @@
 #include "View.h"
 
-#include <tr1/random>
+#include <random>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -90,13 +91,11 @@ void View::initBackground() {
 	const int STAR_WIDTH = 3;
 	const int SEED = 48;
 
-	std::tr1::mt19937 randomNumGen(SEED);
-	std::tr1::uniform_int<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
-	std::tr1::uniform_int<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
-	std::tr1::variate_generator<std::tr1::mt19937&, std::tr1::uniform_int<int> > genX(
-			randomNumGen, distX);
-	std::tr1::variate_generator<std::tr1::mt19937&, std::tr1::uniform_int<int> > genY(
-			randomNumGen, distY);
+	std::mt19937 randomNumGen(SEED);
+	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
+	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
+	std::function<int()> genX(std::bind(distX, randomNumGen));
+	std::function<int()> genY(std::bind(distY, randomNumGen));
 
 	for (int i=0; i<NUM_STARS; i++) {
 		stars.push_back(sf::RectangleShape(sf::Vector2f(STAR_WIDTH, STAR_WIDTH)));

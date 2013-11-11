@@ -1,7 +1,7 @@
 #ifndef I_SPRITE_FACTORY_HPP
 #define	I_SPRITE_FACTORY_HPP
 
-#include <tr1/memory>
+#include <memory>
 #include <string>
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -15,7 +15,7 @@ public:
 	virtual sf::Sprite createSprite(int colIndex, int rowIndex) = 0;
 };
 
-typedef std::tr1::shared_ptr<ISpriteFactory> ISpriteFactoryShPtr;
+typedef std::shared_ptr<ISpriteFactory> ISpriteFactoryShPtr;
 
 }
 
