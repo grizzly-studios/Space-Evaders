@@ -20,24 +20,25 @@
 #include <time.h>
 
 //MACRO definitions
-#define INFO(_msg_) Logger::getInstance()->log(_msg_, INFO_TYPE, __FILE__, __LINE__)
-#define WARN(_msg_) Logger::getInstance()->log(_msg_, WARN_TYPE, __FILE__, __LINE__)
-#define ERR(_msg_) Logger::getInstance()->log(_msg_, ERR_TYPE, __FILE__, __LINE__)
-#define DBG(_msg_) Logger::getInstance()->log(_msg_, DEBUG_TYPE, __FILE__, __LINE__)
-#define CHANGE_LOG Logger::getInstance()->changeLogging
+#define INFO(_msg_) LogHandler::getInstance()->log(_msg_, INFO_TYPE, __FILE__, __LINE__)
+#define WARN(_msg_) LogHandler::getInstance()->log(_msg_, WARN_TYPE, __FILE__, __LINE__)
+#define ERR(_msg_) LogHandler::getInstance()->log(_msg_, ERR_TYPE, __FILE__, __LINE__)
+#define DBG(_msg_) LogHandler::getInstance()->log(_msg_, DEBUG_TYPE, __FILE__, __LINE__)
+#define CHANGE_LOG LogHandler::getInstance()->changeLogging
 
 namespace gs {
 
-enum LOGLEVEL {
-	OFF = 0,
-	FULL = 2
+enum LogLevel {
+	OFF,
+	DEFAULT,
+	FULL
 };
 
-enum LOGTYPE {
-	INFO_TYPE = 0,
-	WARN_TYPE = 1,
-	ERR_TYPE = 2,
-	DEBUG_TYPE = 3
+enum LogType {
+	INFO_TYPE,
+	WARN_TYPE,
+	ERR_TYPE,
+	DEBUG_TYPE
 };
 
 enum Color {
@@ -71,18 +72,28 @@ private:
 	virtual int overflow (int c);
 	virtual int sync();
 };
-	
-class Logger {
+
+class Logger : public std::ostream {
 public:
-	static Logger* getInstance();
+	Logger(LOGTYPE _type, std::ostream &_sink = std::cout);
+	Logger(LOGTYPE _type, Color _color, std::ostream &_sink = std::cout);
+	virtual ~Logger();
+private:
+	LOGTYPE type;
+	Color color;
+};
+	
+class LogHandler {
+public:
+	static LogHandler* getInstance();
 	void log(const std::string& message, LOGTYPE type, const std::string& source, int line);
 	void changeLogging(bool file, bool console, LOGLEVEL newLevel);
 
 private:
-	Logger();
-	virtual ~Logger();
+	LogHandler();
+	virtual ~LogHandler();
 
-	static Logger* pLogger;
+	static LogHandler* pLogHandler;
 	bool fileOut;
 	bool consoleOut;
 	LOGLEVEL level;

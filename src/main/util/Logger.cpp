@@ -69,19 +69,19 @@ int LogBuffer::sync() {
     return (flushBuffer() == EOF) ? -1 : 0;
 }
 
-Logger* Logger::pLogger = NULL;
+LogHandler* LogHandler::pLogHandler = NULL;
 
-Logger* Logger::getInstance() {
-	if (pLogger == NULL) {
-		pLogger = new Logger();
+LogHandler* LogHandler::getInstance() {
+	if (pLogHandler == NULL) {
+		pLogHandler = new LogHandler();
 	}
-	return pLogger;
+	return pLogHandler;
 }
 
-void Logger::log(const std::string& message, LOGTYPE type, const std::string& source, int line) {
-	if (pLogger == NULL) {
+void LogHandler::log(const std::string& message, LOGTYPE type, const std::string& source, int line) {
+	if (pLogHandler == NULL) {
 		//We need to initialise before we log out first time
-		pLogger = new Logger();
+		pLogHandler = new LogHandler();
 	}
 	
 	// Do first checks to determine if we should log
@@ -175,17 +175,17 @@ void Logger::log(const std::string& message, LOGTYPE type, const std::string& so
 	}
 }
 
-void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel) {
-	if(pLogger == NULL) {
+void LogHandler::changeLogging(bool file, bool console, LOGLEVEL newLevel) {
+	if(pLogHandler == NULL) {
 		//We need to initalise before we change the settings
-		pLogger = new Logger();
+		pLogHandler= new LogHandler();
 	}
 	fileOut = file;
 	consoleOut = console;
 	level = newLevel;
 }
 
-Logger::Logger() : fileOut(false), consoleOut(false), level(OFF) {
+LogHandler::LogHandler() : fileOut(false), consoleOut(false), level(OFF) {
 	// Open the log file and make sure it is a new section 
 	time_t rawTime;
 	struct tm * timeinfo;
@@ -208,5 +208,5 @@ Logger::Logger() : fileOut(false), consoleOut(false), level(OFF) {
 	logFile.close();
 }
 
-Logger::~Logger() {
+LogHandler::~LogHandler() {
 }
