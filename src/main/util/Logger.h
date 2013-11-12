@@ -18,6 +18,8 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
+#include <sstream>
+#include <list>
 
 //MACRO definitions
 #define INFO(_msg_) LogHandler::getInstance()->log(_msg_, INFO_TYPE, __FILE__, __LINE__)
@@ -75,28 +77,47 @@ private:
 
 class Logger : public std::ostream {
 public:
-	Logger(LOGTYPE _type, std::ostream &_sink = std::cout);
-	Logger(LOGTYPE _type, Color _color, std::ostream &_sink = std::cout);
+	Logger(LogType _type, std::ostream &_sink = std::cout);
+	Logger(LogType _type, Color _color, std::ostream &_sink = std::cout);
 	virtual ~Logger();
 private:
-	LOGTYPE type;
+	LogType type;
 	Color color;
+};
+
+class LogHeader {
+public:
+	LogHeader();
+	virtual ~LogHeader();
+	
+	void addLogger(LogType _type, std::ostream &_sink);
+	void clearLoggers();
+	
+	friend std::ostream& operator<< (std::ostream &out, LogHeader &logHeader);
+private:
+	std::list<Logger*> loggers;
 };
 	
 class LogHandler {
 public:
 	static LogHandler* getInstance();
-	void log(const std::string& message, LOGTYPE type, const std::string& source, int line);
-	void changeLogging(bool file, bool console, LOGLEVEL newLevel);
+	void changeLogging(bool file, bool console, LogLevel newLevel);
 
 private:
 	LogHandler();
 	virtual ~LogHandler();
 
 	static LogHandler* pLogHandler;
+	LogHeader warningLogHeader;
+	LogHeader errorLogHeader;
+	LogHeader infoLogHeader;
+	LogHeader debugLogHeader;
+	
+	bool initalised;
 	bool fileOut;
 	bool consoleOut;
-	LOGLEVEL level;
+	LogLevel level;
+	std::ofstream logFile;
 };
 
 }

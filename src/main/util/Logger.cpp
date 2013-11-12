@@ -5,6 +5,8 @@
  * Created on October 3, 2013, 21:09 PM
  */
  
+#include <c++/4.2.1/bits/stl_list.h>
+
 #include "Logger.h"
 
 using namespace gs;
@@ -69,6 +71,27 @@ int LogBuffer::sync() {
     return (flushBuffer() == EOF) ? -1 : 0;
 }
 
+LogHeader::LogHeader() {}
+LogHeader::~LogHeader() {}
+LogHeader::addLogger(LogType _type, std::ostream& _sink) {
+	loggers.push_back(new Logger(_type, _sink));
+}
+
+LogHeader::clearLoggers() {
+	while(!loggers.empty()) {
+		delete loggers.front();
+		loggers.pop_front();
+	}
+}
+
+std::ostream& operator<< (std::ostream &out, LogHeader &logHeader)
+{
+    for (list<Logger*>::iterator iter = loggers.begin(); iter != loggers.end(); iter++) {
+		**iter << out;
+	}
+    return out;
+}
+
 LogHandler* LogHandler::pLogHandler = NULL;
 
 LogHandler* LogHandler::getInstance() {
@@ -78,7 +101,7 @@ LogHandler* LogHandler::getInstance() {
 	return pLogHandler;
 }
 
-void LogHandler::log(const std::string& message, LOGTYPE type, const std::string& source, int line) {
+void LogHandler::log(const std::string& message, LogType type, const std::string& source, int line) {
 	if (pLogHandler == NULL) {
 		//We need to initialise before we log out first time
 		pLogHandler = new LogHandler();
@@ -175,7 +198,7 @@ void LogHandler::log(const std::string& message, LOGTYPE type, const std::string
 	}
 }
 
-void LogHandler::changeLogging(bool file, bool console, LOGLEVEL newLevel) {
+void LogHandler::changeLogging(bool file, bool console, LogLevel newLevel) {
 	if(pLogHandler == NULL) {
 		//We need to initalise before we change the settings
 		pLogHandler= new LogHandler();
@@ -183,16 +206,50 @@ void LogHandler::changeLogging(bool file, bool console, LOGLEVEL newLevel) {
 	fileOut = file;
 	consoleOut = console;
 	level = newLevel;
+	
+	if (consoleOut) {
+		switch(level) {
+			case OFF:
+				break;
+			case DEFAULT:
+				errorLogHeader.addLogger(ERR_TYPE, std::cout);
+				break;
+			case FULL:
+				errorLogHeader.addLogger(ERR_TYPE, std::cout);
+				warningLogHeader.addLogger(WARN_TYPE, std::cout);
+				infoLogHeader.addLogger(INFO_TYPE, std::cout);
+				debugLogHeader.addLogger(DEBUG_TYPE, std::cout);
+				break;
+		}
+	}
+	
+	if (fileOut) {
+		if (logFile.is_open) {
+			logFile.close();
+		}
+		logFile.open("console.log", std::fstream::out | std::fstream::app);
+		switch(level) {
+			case OFF:
+				break;
+			case DEFAULT:
+				errorLogHeader.addLogger(ERR_TYPE, logFile);
+				break;
+			case FULL:
+				errorLogHeader.addLogger(ERR_TYPE, logFile);
+				warningLogHeader.addLogger(WARN_TYPE, logFile);
+				infoLogHeader.addLogger(INFO_TYPE, logFile);
+				debugLogHeader.addLogger(DEBUG_TYPE, logFile);
+				break;
+		}
+	}
 }
 
-LogHandler::LogHandler() : fileOut(false), consoleOut(false), level(OFF) {
-	// Open the log file and make sure it is a new section 
-	time_t rawTime;
-	struct tm * timeinfo;
-	char timestamp [20];
-	time(&rawTime);
-	timeinfo = localtime (&rawTime);
-	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
+LogHandler::LogHandler() : 
+	fileOut(false), 
+	consoleOut(true), 
+	level(DEFAULT),
+	initalised(false) {
+	
 	
 	std::ofstream logFile;
 	logFile.open ("console.log", std::fstream::out | std::fstream::app);
