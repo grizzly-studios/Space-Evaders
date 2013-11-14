@@ -12,7 +12,12 @@
 #define WIDTH 480
 #define HEIGHT 640
 
-#define SCREEN_SPRITE_WIDTH 32
+#define SCREEN_SPRITE_WIDTH 32		// pixels
+#define LEVEL_TEXT "LEVEL"
+#define WAVE_TEXT  "WAVE"
+#define SCORE_TEXT "SCORE"
+#define MULTI_TEXT "MULTI"
+#define TEXT_SIZE 16 				// pixels
 
 using namespace gs;
 
@@ -33,6 +38,30 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
+
+	if (!hudFont.loadFromFile("assets/joystix_monospace.ttf")) {
+		ERR("Failed to load HUD font");
+	}
+
+	levelText.setFont(hudFont);
+	levelText.setString(LEVEL_TEXT);
+	levelText.setCharacterSize(TEXT_SIZE);
+	levelText.setPosition(SCREEN_SPRITE_WIDTH, SCREEN_SPRITE_WIDTH);
+
+	waveText.setFont(hudFont);
+	waveText.setString(WAVE_TEXT);
+	waveText.setCharacterSize(TEXT_SIZE);
+	waveText.setPosition(SCREEN_SPRITE_WIDTH, SCREEN_SPRITE_WIDTH * 1.75);
+
+	scoreText.setFont(hudFont);
+	scoreText.setString(SCORE_TEXT);
+	scoreText.setCharacterSize(TEXT_SIZE);
+	scoreText.setPosition(WIDTH - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH);
+
+	multiText.setFont(hudFont);
+	multiText.setString(MULTI_TEXT);
+	multiText.setCharacterSize(TEXT_SIZE);
+	multiText.setPosition(WIDTH - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH * 1.75);
 }
 
 void View::update() {
@@ -57,6 +86,11 @@ void View::render() {
 			++it) {
 		window->draw(*it);
 	}
+
+	window->draw(levelText);
+	window->draw(waveText);
+	window->draw(scoreText);
+	window->draw(multiText);
 
 	window->display();
 }

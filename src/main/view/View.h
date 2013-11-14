@@ -9,6 +9,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "IView.hpp"
 
@@ -47,10 +48,14 @@ private:
 	RenderWindowShPtr window;
 	IUserInputShPtr userInput;
 	ISpriteFactoryShPtr spriteFactory;
-	sf::Texture texture;
 	RectShapeList stars;
 	SpriteMap spriteMap;
 	SpriteList hudSprites;
+	sf::Font hudFont;
+	sf::Text levelText;
+	sf::Text waveText;
+	sf::Text scoreText;
+	sf::Text multiText;
 };
 
 }
