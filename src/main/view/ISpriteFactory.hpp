@@ -4,7 +4,10 @@
 #include <memory>
 #include <string>
 
-#include <SFML/Graphics/Sprite.hpp>
+
+namespace sf {
+	class Sprite;
+}
 
 namespace gs {
 

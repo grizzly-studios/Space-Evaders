@@ -1,10 +1,12 @@
 #include "SpriteFactory.h"
 
+#include <SFML/Graphics/Sprite.hpp>
+
 #include "../util/Logger.h"
 
 #define SPRITE_SHEET "assets/sprites.png"
 #define SPRITE_SHEET_SPRITE_WIDTH 32
-#define SPRITE_SHEET_COLS 3
+#define SPRITE_SHEET_COLS 4
 #define SPRITE_SHEET_ROWS 3
 
 using namespace gs;
