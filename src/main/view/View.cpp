@@ -196,7 +196,20 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 		WARN("Sprite already present for this id, should it have been destroyed?");
 	}
 
-	sf::Sprite sprite = spriteFactory->createSprite(1, 1);
+	int spriteCol = -1;
+	int spriteRow = -1;
+	switch (event.getEntityType()) {
+		case PLAYER_ENTITY:
+			spriteCol = 3;
+			spriteRow = 0;
+			break;
+		case ENEMY_ENTITY:
+			spriteCol = 3;
+			spriteRow = 1;
+			break;
+	}
+
+	sf::Sprite sprite = spriteFactory->createSprite(spriteCol, spriteRow);
 	sprite.setPosition(convertToScreenCoords(event.getPosition()));
 	// Logic dimensions map to screen pixels 1:1
 	sprite.setScale(event.getDimensions() / (float) SCREEN_SPRITE_WIDTH);

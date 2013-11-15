@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Rect.hpp>
 
 #include "Event.hpp"
+#include "../logic/EntityEnum.hpp"
 
 namespace gs {
 
@@ -15,10 +16,12 @@ public:
 	/**
 	 * Constructor
 	 * @param _entityId Entity id
+	 * @param _entityType Entity type
 	 * @param _geo Rectangle representing the entity position and dimensions
 	 */
-	EntityCreatedEvent(short _entityId, const sf::FloatRect& _geo) : entityId(_entityId), geo(_geo)
-	{}
+	EntityCreatedEvent(short _entityId, EntityEnum _entityType, const sf::FloatRect& _geo)
+		: entityId(_entityId), entityType(_entityType), geo(_geo) {
+	}
 
 	/**
 	 * Get the event type
@@ -35,6 +38,15 @@ public:
 	short getEntityId() const {
 		return entityId;
 	}
+
+	/**
+	 * Get the entity type
+	 * @return the Entity type
+	 */
+	EntityEnum getEntityType() const {
+		return entityType;
+	}
+
 
 	/**
 	 * Get the entity position
@@ -55,6 +67,8 @@ public:
 private:
 	/** Entity id */
 	short entityId;
+	/** Entity type */
+	EntityEnum entityType;
 	/** Position and dimensions of the entity */
 	sf::FloatRect geo;
 };
