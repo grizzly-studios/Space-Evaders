@@ -48,6 +48,10 @@ private:
 	RenderWindowShPtr window;
 	IUserInputShPtr userInput;
 	ISpriteFactoryShPtr spriteFactory;
+
+	int width;
+	int height;
+
 	RectShapeList stars;
 	SpriteMap spriteMap;
 	SpriteList hudSprites;

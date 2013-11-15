@@ -15,7 +15,7 @@ Application::Application(int argc, char** argv) {
 
 	FR = 50;
 	AL = 4;
-	WIDTH = 480; HEIGHT = 640;
+	WIDTH = 480; HEIGHT = 704;
 
 	for (int i = 1; i < argc; i++) {
 		std::string arg(argv[i]);

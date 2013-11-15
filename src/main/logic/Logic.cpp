@@ -2,6 +2,10 @@
 
 #include "../util/Logger.h"
 
+#define TILE_WIDTH 32		// tile width & height
+#define COLS 13				// tilemap dimensions
+#define ROWS 20
+
 using namespace gs;
 
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
@@ -100,7 +104,11 @@ void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
 
 void Logic::generateLevel() {
 	allPlayers.push_back(PlayerShPtr(new Player()));
-	allPlayers.back()->setGeo(100,100,30,30);
+
+	float playerX = ((COLS / 2.0f) * TILE_WIDTH) - (TILE_WIDTH / 2);
+	float playerY = TILE_WIDTH * 18;
+
+	allPlayers.back()->setGeo(playerX, playerY, TILE_WIDTH, TILE_WIDTH);
 	mobileObjects.push_back(allPlayers.back());
 	allObjects.push_back(allPlayers.back());
 	EntityCreatedEvent entityCreatedEvent(

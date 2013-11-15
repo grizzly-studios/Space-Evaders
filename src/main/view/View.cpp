@@ -8,10 +8,6 @@
 
 #include "../util/Logger.h"
 
-// TODO: Refactor (duplicate constants in application layer)
-#define WIDTH 480
-#define HEIGHT 640
-
 #define SCREEN_SPRITE_WIDTH 32		// pixels
 #define LEVEL_TEXT "LEVEL"
 #define WAVE_TEXT  "WAVE"
@@ -21,13 +17,21 @@
 
 using namespace gs;
 
-View::View(IEventManagerPtr _eventManager,
-	RenderWindowShPtr _window,
-	IUserInputShPtr _userInput,
-	ISpriteFactoryShPtr _sprite_factory) : eventManager(_eventManager),
-	window(_window),
-	userInput(_userInput),
-	spriteFactory(_sprite_factory) {
+namespace {
+
+sf::Vector2f convertToScreenCoords(const sf::Vector2f& logicCoords) {
+	// Add offset for the HUD border
+	return sf::Vector2f(logicCoords.x + SCREEN_SPRITE_WIDTH, logicCoords.y + SCREEN_SPRITE_WIDTH);
+}
+
+}
+
+View::View(IEventManagerPtr _eventManager, RenderWindowShPtr _window, IUserInputShPtr _userInput,
+	ISpriteFactoryShPtr _sprite_factory)
+	: eventManager(_eventManager), window(_window), userInput(_userInput),
+	spriteFactory(_sprite_factory), width(0), height(0) {
+	width = window->getSize().x;
+	height = window->getSize().y;
 }
 
 View::~View() {
@@ -56,12 +60,12 @@ void View::init() {
 	scoreText.setFont(hudFont);
 	scoreText.setString(SCORE_TEXT);
 	scoreText.setCharacterSize(TEXT_SIZE);
-	scoreText.setPosition(WIDTH - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH);
+	scoreText.setPosition(width - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH);
 
 	multiText.setFont(hudFont);
 	multiText.setString(MULTI_TEXT);
 	multiText.setCharacterSize(TEXT_SIZE);
-	multiText.setPosition(WIDTH - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH * 1.75);
+	multiText.setPosition(width - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH * 1.75);
 }
 
 void View::update() {
@@ -119,15 +123,15 @@ void View::onEvent(Event& event) {
 	}
 }
 
-void View::initBackground() {
+void View::initBackground() {return;
 	// 'Randomly' position some stars
 	const int NUM_STARS = 80;
 	const int STAR_WIDTH = 3;
 	const int SEED = 48;
 
 	std::mt19937 randomNumGen(SEED);
-	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
-	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
+	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, width - SCREEN_SPRITE_WIDTH);
+	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, height - SCREEN_SPRITE_WIDTH);
 	std::function<int()> genX(std::bind(distX, randomNumGen));
 	std::function<int()> genY(std::bind(distY, randomNumGen));
 
@@ -145,40 +149,40 @@ void View::initHud() {
 	hudSprites.push_back(spriteFactory->createSprite(0, 1));
 	hudSprites.back().setPosition(0.0f, SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(1.0f,
-			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+			(height - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
 
 	// Bottom-left
 	hudSprites.push_back(spriteFactory->createSprite(0, 2));
-	hudSprites.back().setPosition(0.0f, HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(0.0f, height - SCREEN_SPRITE_WIDTH);
 
 	// Bottom
 	hudSprites.push_back(spriteFactory->createSprite(1, 2));
 	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH,
-			HEIGHT - SCREEN_SPRITE_WIDTH);
+			height - SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(
-			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+			(width - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
 
 	// Bottom-right
 	hudSprites.push_back(spriteFactory->createSprite(2, 2));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
-			HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(width - SCREEN_SPRITE_WIDTH,
+			height - SCREEN_SPRITE_WIDTH);
 
 	// Right
 	hudSprites.push_back(spriteFactory->createSprite(2, 1));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
+	hudSprites.back().setPosition(width - SCREEN_SPRITE_WIDTH,
 			SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(1.0f,
-			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+			(height - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
 
 	// Top-right
 	hudSprites.push_back(spriteFactory->createSprite(2, 0));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, 0.0f);
+	hudSprites.back().setPosition(width - SCREEN_SPRITE_WIDTH, 0.0f);
 
 	// Top
 	hudSprites.push_back(spriteFactory->createSprite(1, 0));
 	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH, 0.0f);
 	hudSprites.back().setScale(
-			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+			(width - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
 }
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
@@ -193,7 +197,7 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 	}
 
 	sf::Sprite sprite = spriteFactory->createSprite(1, 1);
-	sprite.setPosition(event.getPosition());
+	sprite.setPosition(convertToScreenCoords(event.getPosition()));
 	// Logic dimensions map to screen pixels 1:1
 	sprite.setScale(event.getDimensions() / (float) SCREEN_SPRITE_WIDTH);
 
@@ -209,7 +213,7 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
 	if (it != spriteMap.end()) {
-		it->second.setPosition(event.getPosition());
+		it->second.setPosition(convertToScreenCoords(event.getPosition()));
 	} else {
 		WARN("No sprite for this id");
 	}
