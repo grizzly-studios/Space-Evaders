@@ -47,25 +47,29 @@ void View::init() {
 		ERR("Failed to load HUD font");
 	}
 
+	const int upperTextY = SCREEN_SPRITE_WIDTH + 5;
+	const int lowerTextY = height - 58;
+	const int rightTextX = width - SCREEN_SPRITE_WIDTH*5;
+
 	levelText.setFont(hudFont);
 	levelText.setString(LEVEL_TEXT);
 	levelText.setCharacterSize(TEXT_SIZE);
-	levelText.setPosition(SCREEN_SPRITE_WIDTH, SCREEN_SPRITE_WIDTH);
+	levelText.setPosition(SCREEN_SPRITE_WIDTH, upperTextY);
 
 	waveText.setFont(hudFont);
 	waveText.setString(WAVE_TEXT);
 	waveText.setCharacterSize(TEXT_SIZE);
-	waveText.setPosition(SCREEN_SPRITE_WIDTH, SCREEN_SPRITE_WIDTH * 1.75);
+	waveText.setPosition(rightTextX, upperTextY);
 
 	scoreText.setFont(hudFont);
 	scoreText.setString(SCORE_TEXT);
 	scoreText.setCharacterSize(TEXT_SIZE);
-	scoreText.setPosition(width - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH);
+	scoreText.setPosition(SCREEN_SPRITE_WIDTH, lowerTextY);
 
 	multiText.setFont(hudFont);
 	multiText.setString(MULTI_TEXT);
 	multiText.setCharacterSize(TEXT_SIZE);
-	multiText.setPosition(width - SCREEN_SPRITE_WIDTH * 6, SCREEN_SPRITE_WIDTH * 1.75);
+	multiText.setPosition(rightTextX, lowerTextY);
 }
 
 void View::update() {
