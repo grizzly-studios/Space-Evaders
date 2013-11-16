@@ -1,5 +1,7 @@
 #include "Logic.h"
 
+#include <SFML/System/Vector2.hpp>
+
 #include "../util/Logger.h"
 
 #define TILE_WIDTH 32		// tile width & height
@@ -7,6 +9,23 @@
 #define ROWS 20
 
 using namespace gs;
+
+namespace {
+
+sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
+	sf::Vector2f vec;
+
+	if (colIndex >= 0 && colIndex < COLS && rowIndex >= 0 && rowIndex < ROWS) {
+		vec.x = colIndex * TILE_WIDTH;
+		vec.y = rowIndex * TILE_WIDTH;
+	} else {
+		ERR("Tile indices out of range");
+	}
+
+	return vec;
+}
+
+}
 
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 	clock = new sf::Clock();
@@ -16,6 +35,7 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 
 Logic::~Logic() {
 	DBG("Destroyed");
+	delete clock;
 }
 
 void Logic::update() {
@@ -103,18 +123,31 @@ void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
 }
 
 void Logic::generateLevel() {
+	// Create player
 	allPlayers.push_back(PlayerShPtr(new Player()));
-
-	float playerX = ((COLS / 2.0f) * TILE_WIDTH) - (TILE_WIDTH / 2);
-	float playerY = TILE_WIDTH * 18;
-
-	allPlayers.back()->setGeo(playerX, playerY, TILE_WIDTH, TILE_WIDTH);
+	const sf::Vector2f playerPos = getTilePosition(6, 17);
+	allPlayers.back()->setGeo(playerPos.x, playerPos.y, TILE_WIDTH, TILE_WIDTH);
 	mobileObjects.push_back(allPlayers.back());
 	allObjects.push_back(allPlayers.back());
+
 	EntityCreatedEvent entityCreatedEvent(
 		allPlayers.back()->getID(),
 		PLAYER_ENTITY,
 		allPlayers.back()->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
-	DBG("Generated level");
+
+	// Create enemies
+	for (int i=0; i<11; i++) {
+		const sf::Vector2f enemyPos = getTilePosition(1 + i, 2);
+		allObjects.push_back(EnemyShPtr(new Enemy()));
+		allObjects.back()->setGeo(enemyPos.x, enemyPos.y, TILE_WIDTH, TILE_WIDTH);
+
+		EntityCreatedEvent entityCreatedEvent2(
+			allObjects.back()->getID(),
+			ENEMY_ENTITY,
+			allObjects.back()->getGeo());
+		eventManager->fireEvent(entityCreatedEvent2);
+	}
+
+	INFO("Generated level");
 }

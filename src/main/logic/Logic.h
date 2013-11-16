@@ -20,6 +20,7 @@
 #include "MobileEntity.h"
 #include "Player.h"
 #include "Bullets.h"
+#include "Enemy.h"
 
 namespace gs {
 	

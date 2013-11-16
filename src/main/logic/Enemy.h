@@ -21,6 +21,8 @@ private:
 
 };
 
+typedef std::shared_ptr<Enemy> EnemyShPtr;
+
 }
 
 #endif	/* ENEMY_H */
