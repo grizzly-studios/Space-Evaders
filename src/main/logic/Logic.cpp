@@ -28,6 +28,9 @@ void Logic::update() {
 
 void Logic::onEvent(Event& event) {
 	switch (event.getType()) {
+	    case GAME_STATE_CHANGED_EVENT:
+		    DBG("Changing game state");
+			onGameStateChange((GameStateChangedEvent&) event);
 		case CHANGE_PLAYER_DIRECTION_EVENT:
 			DBG("Change player direction");
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
@@ -108,4 +111,8 @@ void Logic::generateLevel() {
 		allPlayers.back()->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
 	DBG("Generated level");
+}
+
+void Logic::onGameStateChange(GameStateChangedEvent& event) {
+    
 }

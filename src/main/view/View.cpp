@@ -68,20 +68,20 @@ void View::onEvent(Event& event) {
 	INFO(ss.str());
 
 	switch (eventType) {
-	case ENTITY_CREATED_EVENT: {
-		EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
-		onEntityCreated(entityCreatedEvent);
-		break;
-	}
-	case ENTITY_MOVED_EVENT: {
-		EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
-		onEntityMoved(entityMovedEvent);
-		break;
-	}
-	default: {
-		WARN("Event wasn't handled");
-		break;
-	}
+		case ENTITY_CREATED_EVENT: {
+			EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
+			onEntityCreated(entityCreatedEvent);
+			break;
+		}
+		case ENTITY_MOVED_EVENT: {
+			EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
+			onEntityMoved(entityMovedEvent);
+			break;
+		}
+		default: {
+			WARN("Event wasn't handled");
+			break;
+		}
 	}
 }
 

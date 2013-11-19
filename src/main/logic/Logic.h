@@ -16,6 +16,8 @@
 #include "../event/EntityCreatedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
+#include "../event/GameStateChangedEvent.h"
+#include "../event/GameStartEvent.h
 
 #include "MobileEntity.h"
 #include "Player.h"
@@ -57,6 +59,7 @@ private:
 	void interpolate(const double &remainder);
 	
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
+	void onGameStateChange(GameStateChangedEvent &event);
 	
 	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
 };
