@@ -96,7 +96,9 @@ void View::initBackground() {
 	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
 	std::function<int()> genX(std::bind(distX, randomNumGen));
 	std::function<int()> genY(std::bind(distY, randomNumGen));
-
+	
+	genX();
+	
 	for (int i=0; i<NUM_STARS; i++) {
 		stars.push_back(sf::RectangleShape(sf::Vector2f(STAR_WIDTH, STAR_WIDTH)));
 		stars.back().setPosition(genX(), genY());
