@@ -66,20 +66,20 @@ void View::onEvent(Event& event) {
 	INFO << "Received event: " << event << std::endl;
 
 	switch (eventType) {
-	case ENTITY_CREATED_EVENT: {
-		EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
-		onEntityCreated(entityCreatedEvent);
-		break;
-	}
-	case ENTITY_MOVED_EVENT: {
-		EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
-		onEntityMoved(entityMovedEvent);
-		break;
-	}
-	default: {
-		WARN << "Event wasn't handled" << std::endl;
-		break;
-	}
+		case ENTITY_CREATED_EVENT: {
+			EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
+			onEntityCreated(entityCreatedEvent);
+			break;
+		}
+		case ENTITY_MOVED_EVENT: {
+			EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
+			onEntityMoved(entityMovedEvent);
+			break;
+		}
+		default: {
+			WARN("Event wasn't handled");
+			break;
+		}
 	}
 }
 
