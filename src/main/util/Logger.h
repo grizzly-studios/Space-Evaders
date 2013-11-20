@@ -22,10 +22,10 @@
 #include <list>
 
 //MACRO definitions
-#define INFO LogHandler::getInstance()->infoLog << __FILE__ << ":" << __LINE__ << " - "
-#define WARN LogHandler::getInstance()->warningLog << __FILE__ << ":" << __LINE__ << " - "
-#define ERR LogHandler::getInstance()->errorLog << __FILE__ << ":" << __LINE__ << " - "
-#define DBG LogHandler::getInstance()->debugLog << __FILE__ << ":" << __LINE__ << " - "
+#define INFO LogHandler::getInstance()->infoLog << __FILE__ << ":" << __LINE__ << " - " << LogBuffer::getColor(WHITE)
+#define WARN LogHandler::getInstance()->warningLog << __FILE__ << ":" << __LINE__ << " - " << LogBuffer::getColor(YELLOW)
+#define ERR LogHandler::getInstance()->errorLog << __FILE__ << ":" << __LINE__ << " - " << LogBuffer::getColor(RED)
+#define DBG LogHandler::getInstance()->debugLog << __FILE__ << ":" << __LINE__ << " - " << LogBuffer::getColor(GREEN)
 
 namespace gs {
 
@@ -70,6 +70,10 @@ public:
 	LogBuffer(LogOutput _output, LogType type);
 	LogBuffer(LogOutput _output, LogType type, LogColor _color);
 	virtual ~LogBuffer();
+	
+	std::string getColor();
+	static std::string getColor(LogColor _color, bool bold = false);
+	
 protected:
 	static const int bufSize = 1;
 	char buf[bufSize];
@@ -80,8 +84,6 @@ protected:
 	std::ofstream fileSink;
 	bool isNewLine;
 	
-	std::string getColor();
-	std::string getColor(LogColor _color);
 	std::string header();
 	void setLabel(std::string);
 	int flushBuffer();

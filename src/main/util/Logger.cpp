@@ -66,7 +66,7 @@ std::string LogBuffer::getColor() {
 	return getColor(color);
 }
 
-std::string LogBuffer::getColor(LogColor _color) {
+std::string LogBuffer::getColor(LogColor _color, bool bold) {
 	#if defined(_WIN64) || defined(_WIN32)
 	HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
 	switch (_color) {
@@ -106,33 +106,34 @@ std::string LogBuffer::getColor(LogColor _color) {
 	}
 	return "";
 	#else
+	std::string boldBit = bold ? "1" : "0";
 	switch (_color) {
 		case RED:
-			return "\033[1;91m";
+			return "\033["+boldBit+";91m";
 		case GREEN:
-			return "\033[1;32m";
+			return "\033["+boldBit+";32m";
 		case BLUE:
-			return "\033[1;94m";
+			return "\033["+boldBit+";94m";
 		case YELLOW:
-			return "\033[1;93m";
+			return "\033["+boldBit+";93m";
 		case PURPLE:
-			return "\033[1;35m";
+			return "\033["+boldBit+";35m";
 		case PINK:
-			return "\033[1;95m";
+			return "\033["+boldBit+";95m";
 		case BROWN:
-			return "\033[1;31m";
+			return "\033["+boldBit+";31m";
 			break;
 		case GREY:
-			return "\033[1;90m";
+			return "\033["+boldBit+";90m";
 			break;
 		case WHITE:
-			return "\033[1;97;40m";
+			return "\033["+boldBit+";97;40m";
 			break;
 		case BLACK:
-			return "\033[1;30;47m";
+			return "\033["+boldBit+";30;47m";
 			break;
 		case RESET:
-			return "\033[1;39;49m";
+			return "\033["+boldBit+";39;49m";
 			
 	}
 	#endif
@@ -145,7 +146,7 @@ std::string LogBuffer::header() {
 	char timeBuf[100];
 	strftime(timeBuf, sizeof(timeBuf), "[%d/%m/%Y %H:%M:%S]", lTime);
 
-	return getColor() + std::string(timeBuf) + " - " + 
+	return getColor(color, true) + std::string(timeBuf) + " - " + 
 		((label != "") ? (label + " - ") : "" );
 }
 
