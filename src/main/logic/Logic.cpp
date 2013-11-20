@@ -11,7 +11,7 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 }
 
 Logic::~Logic() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void Logic::update() {
@@ -29,7 +29,7 @@ void Logic::update() {
 void Logic::onEvent(Event& event) {
 	switch (event.getType()) {
 		case CHANGE_PLAYER_DIRECTION_EVENT:
-			DBG("Change player direction");
+			DBG << "Change player direction" << std::endl;
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
 			break;
 		default:
@@ -107,5 +107,5 @@ void Logic::generateLevel() {
 		allPlayers.back()->getID(),
 		allPlayers.back()->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
-	DBG("Generated level");
+	DBG << "Generated level" << std::endl;
 }

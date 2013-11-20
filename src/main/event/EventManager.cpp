@@ -8,7 +8,7 @@
 using namespace gs;
 
 EventManager::~EventManager() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) {
@@ -23,7 +23,7 @@ bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) 
 	// Check the listener being added is not already registered
 	for (it = listenerList.begin(); it != listenerList.end(); ++it) {
 		if (it->lock() == listener.lock()) {
-			WARN("Failed to add listener as listener was already registered");
+			WARN << "Failed to add listener as listener was already registered" << std::endl;
 			break;
 		}
 	}
@@ -31,7 +31,7 @@ bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) 
 	if (it == listenerList.end()) {
 		listenerList.push_back(listener);
 		success = true;
-		INFO("Successfully added listener");
+		INFO << "Successfully added listener" << std::endl;
 	}
 
 	return success;
@@ -57,7 +57,7 @@ bool EventManager::fireEvent(Event& event) const {
 	}
 
 	if (!success) {
-		WARN("Failed to fire event as there were no listeners for the event type");
+		WARN << "Failed to fire event as there were no listeners for the event type" << std::endl;
 	}
 
 	return success;

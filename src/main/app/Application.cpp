@@ -34,19 +34,19 @@ Application::Application(int argc, char** argv) {
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
 		} else if (arg == "-v"){
-			CHANGE_LOG(false, true, FULL);
+			//CHANGE_LOG(false, true, FULL);
 		} else if(arg == "-vf"){
-			CHANGE_LOG(true, true, FULL);
+			//CHANGE_LOG(true, true, FULL);
 		}else{
-			WARN("Unknown Flag: " + arg);
+			WARN << "Unknown Flag: " << arg << std::endl;
 		}
 	}
 	//No point in INFO, WARN or DEBUG messages before this point
-	INFO("Application successfully created");
+	INFO << "Application successfully created" << std::endl;
 }
 
 void Application::init() { 
-	INFO("Begining init");
+	INFO << "Begining init" << std::endl;
 	eventManager = IEventManagerPtr(new EventManager);
 	
 	settings.antialiasingLevel = AL;
@@ -66,7 +66,7 @@ void Application::init() {
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
 
-	INFO("Ending init");
+	INFO << "Ending init" << std::endl;
 	
 	//Set initial GameState
 	GameStateChangedEvent gameStateChangedEvent(IN_GAME);
@@ -74,7 +74,7 @@ void Application::init() {
 }
 
 Application::~Application() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void Application::load() {
@@ -85,7 +85,7 @@ void Application::run() {
 	
 	load();
 	
-	INFO("Beginning while loop");
+	INFO << "Beginning while loop" << std::endl;
 	while(window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
@@ -95,7 +95,7 @@ void Application::run() {
 			}
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
-					INFO("Request to close window registered - closing window");
+					INFO << "Request to close window registered - closing window" << std::endl;
 					window->close();
 				}
 			}
