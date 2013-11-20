@@ -4,25 +4,63 @@
  *
  * Created on October 3, 2013, 21:09 PM
  */
- 
-#include <c++/4.2.1/bits/stl_list.h>
 
 #include "Logger.h"
 
 using namespace gs;
 
-LogBuffer::LogBuffer(std::ostream &_sink) : sink(_sink), isNewLine(true) {
-	label = "";
+LogBuffer::LogBuffer(LogOutput _output, LogType type) : 
+	output(_output),
+	screenSink(std::cout), 
+	fileSink(defaultFileName, std::ofstream::app),
+	isNewLine(true) {
+	
+	
+	switch(type) {
+		case INFO_TYPE:
+			label = "INFO";
+			color = WHITE;
+			break;
+		case WARN_TYPE:
+			label = "WARN";
+			color = YELLOW;
+		case ERR_TYPE:
+			label = "ERROR";
+			color = RED;
+		case DEBUG_TYPE:
+			label = "DBG";
+			color = GREEN;
+			break;
+	}
     setp(buf, buf + (bufSize - 1));
 }
 
-LogBuffer::LogBuffer(std::ostream &_sink, Color color) : sink(_sink), isNewLine(true) {
-	label = "";
+LogBuffer::LogBuffer(LogOutput _output, LogType type, LogColor _color) : 
+	output(_output),
+	color(_color), 
+	screenSink(std::cout), 
+	fileSink(defaultFileName, std::ofstream::app),
+	isNewLine(true) {
+	
+	switch(type) {
+		case INFO_TYPE:
+			label = "INFO";
+			break;
+		case WARN_TYPE:
+			label = "WARN";
+		case ERR_TYPE:
+			label = "ERROR";
+		case DEBUG_TYPE:
+			label = "DBG";
+			break;
+	}
 	setp(buf, buf + (bufSize - 1));
 }
 
 LogBuffer::~LogBuffer() {
-	
+	if (fileSink.is_open()) {
+		fileSink.close();
+	}
 }
 
 std::string LogBuffer::header() {
@@ -42,8 +80,13 @@ void LogBuffer::setLabel(std::string _label) {
 
 int LogBuffer::flushBuffer () {
 	int num = pptr()-pbase();
-	sink.write(buf, num);
-	if (sink.eof()) {
+	if (output == CONSOLE || output == BOTH) {
+		screenSink.write(buf, num);
+	}
+	if (output == FILE || output == BOTH) {
+		fileSink.write(buf, num);
+	}
+	if (screenSink.eof() && fileSink.eof()) {
 		return EOF;
 	}
 	pbump(-num); // reset put pointer accordingly
@@ -53,9 +96,14 @@ int LogBuffer::flushBuffer () {
 int LogBuffer::overflow(int c = EOF) {
 	int result = c;
 	if (isNewLine) {
-		sink << header();
+		if (output == CONSOLE || output == BOTH) {
+			screenSink << header();
+		} 
+		if (output == FILE || output == BOTH) {
+			fileSink << header();
+		}
 	}
-	if (sink && c != EOF) {
+	if (c != EOF) {
 		*pptr() = c;
 		pbump(1);
 	}
@@ -66,30 +114,28 @@ int LogBuffer::overflow(int c = EOF) {
 }
 
 int LogBuffer::sync() {
-	sink << std::flush;
+	if (output == CONSOLE || output == BOTH) {
+			screenSink << std::flush;
+		} 
+		if (output == FILE || output == BOTH) {
+			fileSink << std::flush;
+		}
 	
     return (flushBuffer() == EOF) ? -1 : 0;
 }
 
-LogHeader::LogHeader() {}
-LogHeader::~LogHeader() {}
-LogHeader::addLogger(LogType _type, std::ostream& _sink) {
-	loggers.push_back(new Logger(_type, _sink));
-}
+Logger::Logger(LogOutput _output, LogType _type) :  
+	std::ios(0),
+	std::ostream(new LogBuffer(_output, _type))
+	{}
 
-LogHeader::clearLoggers() {
-	while(!loggers.empty()) {
-		delete loggers.front();
-		loggers.pop_front();
-	}
-}
+Logger::Logger(LogOutput _output, LogType _type, LogColor _color) : 
+	std::ios(0),
+	std::ostream(new LogBuffer(_output, _type, _color))
+	{}
 
-std::ostream& operator<< (std::ostream &out, LogHeader &logHeader)
-{
-    for (list<Logger*>::iterator iter = loggers.begin(); iter != loggers.end(); iter++) {
-		**iter << out;
-	}
-    return out;
+Logger::~Logger() {
+	
 }
 
 LogHandler* LogHandler::pLogHandler = NULL;
@@ -101,7 +147,7 @@ LogHandler* LogHandler::getInstance() {
 	return pLogHandler;
 }
 
-void LogHandler::log(const std::string& message, LogType type, const std::string& source, int line) {
+/*void LogHandler::log(const std::string& message, LogType type, const std::string& source, int line) {
 	if (pLogHandler == NULL) {
 		//We need to initialise before we log out first time
 		pLogHandler = new LogHandler();
@@ -196,62 +242,20 @@ void LogHandler::log(const std::string& message, LogType type, const std::string
 		logFile << timestamp << line1 << " - " << message << std::endl;
 		logFile.close();
 	}
-}
-
-void LogHandler::changeLogging(bool file, bool console, LogLevel newLevel) {
-	if(pLogHandler == NULL) {
-		//We need to initalise before we change the settings
-		pLogHandler= new LogHandler();
-	}
-	fileOut = file;
-	consoleOut = console;
-	level = newLevel;
-	
-	if (consoleOut) {
-		switch(level) {
-			case OFF:
-				break;
-			case DEFAULT:
-				errorLogHeader.addLogger(ERR_TYPE, std::cout);
-				break;
-			case FULL:
-				errorLogHeader.addLogger(ERR_TYPE, std::cout);
-				warningLogHeader.addLogger(WARN_TYPE, std::cout);
-				infoLogHeader.addLogger(INFO_TYPE, std::cout);
-				debugLogHeader.addLogger(DEBUG_TYPE, std::cout);
-				break;
-		}
-	}
-	
-	if (fileOut) {
-		if (logFile.is_open) {
-			logFile.close();
-		}
-		logFile.open("console.log", std::fstream::out | std::fstream::app);
-		switch(level) {
-			case OFF:
-				break;
-			case DEFAULT:
-				errorLogHeader.addLogger(ERR_TYPE, logFile);
-				break;
-			case FULL:
-				errorLogHeader.addLogger(ERR_TYPE, logFile);
-				warningLogHeader.addLogger(WARN_TYPE, logFile);
-				infoLogHeader.addLogger(INFO_TYPE, logFile);
-				debugLogHeader.addLogger(DEBUG_TYPE, logFile);
-				break;
-		}
-	}
-}
+}*/
 
 LogHandler::LogHandler() : 
+	warningLog(BOTH, WARN_TYPE),
+	errorLog(BOTH, ERR_TYPE),
+	infoLog(BOTH, INFO_TYPE),
+	debugLog(BOTH, DEBUG_TYPE),
 	fileOut(false), 
 	consoleOut(true), 
-	level(DEFAULT),
-	initalised(false) {
+	level(DEFAULT) {
 	
 	
-	std::ofstream logFile;
+	
+	/*std::ofstream logFile;
 	logFile.open ("console.log", std::fstream::out | std::fstream::app);
 	logFile << std::endl ;
 	logFile << std::endl ;
@@ -262,7 +266,7 @@ LogHandler::LogHandler() :
 	logFile << "###########################################################################"
 		<< std::endl;
 	logFile << std::endl;
-	logFile.close();
+	logFile.close();*/
 }
 
 LogHandler::~LogHandler() {

@@ -22,13 +22,14 @@
 #include <list>
 
 //MACRO definitions
-#define INFO(_msg_) LogHandler::getInstance()->log(_msg_, INFO_TYPE, __FILE__, __LINE__)
-#define WARN(_msg_) LogHandler::getInstance()->log(_msg_, WARN_TYPE, __FILE__, __LINE__)
-#define ERR(_msg_) LogHandler::getInstance()->log(_msg_, ERR_TYPE, __FILE__, __LINE__)
-#define DBG(_msg_) LogHandler::getInstance()->log(_msg_, DEBUG_TYPE, __FILE__, __LINE__)
-#define CHANGE_LOG LogHandler::getInstance()->changeLogging
+#define INFO LogHandler::getInstance()->infoLog << __FILE__ << ":" << __LINE__ << " - "
+#define WARN LogHandler::getInstance()->warningLog << __FILE__ << ":" << __LINE__ << " - "
+#define ERR LogHandler::getInstance()->errorLog << __FILE__ << ":" << __LINE__ << " - "
+#define DBG LogHandler::getInstance()->debugLog << __FILE__ << ":" << __LINE__ << " - "
 
 namespace gs {
+
+const std::string defaultFileName = "console.log";
 
 enum LogLevel {
 	OFF,
@@ -43,7 +44,7 @@ enum LogType {
 	DEBUG_TYPE
 };
 
-enum Color {
+enum LogColor {
 	RED,
 	GREEN,
 	BLUE,
@@ -56,16 +57,26 @@ enum Color {
 	WHITE
 };
 
+enum LogOutput {
+	NO_OUTPUT,
+	CONSOLE,
+	FILE,
+	BOTH
+};
+
 class LogBuffer : public std::streambuf {
 public:
-	LogBuffer(std::ostream &_sink);
-	LogBuffer(std::ostream &_sink, Color color);
+	LogBuffer(LogOutput _output, LogType type);
+	LogBuffer(LogOutput _output, LogType type, LogColor _color);
 	virtual ~LogBuffer();
 protected:
 	static const int bufSize = 1;
 	char buf[bufSize];
 	std::string label;
-	std::ostream &sink;
+	LogColor color;
+	LogOutput output;
+	std::ostream &screenSink;
+	std::ofstream fileSink;
 	bool isNewLine;
 private:
 	std::string header();
@@ -77,43 +88,27 @@ private:
 
 class Logger : public std::ostream {
 public:
-	Logger(LogType _type, std::ostream &_sink = std::cout);
-	Logger(LogType _type, Color _color, std::ostream &_sink = std::cout);
+	Logger(LogOutput _output, LogType _type);
+	Logger(LogOutput _output, LogType _type, LogColor _color);
 	virtual ~Logger();
 private:
-	LogType type;
-	Color color;
-};
-
-class LogHeader {
-public:
-	LogHeader();
-	virtual ~LogHeader();
-	
-	void addLogger(LogType _type, std::ostream &_sink);
-	void clearLoggers();
-	
-	friend std::ostream& operator<< (std::ostream &out, LogHeader &logHeader);
-private:
-	std::list<Logger*> loggers;
 };
 	
 class LogHandler {
 public:
 	static LogHandler* getInstance();
-	void changeLogging(bool file, bool console, LogLevel newLevel);
+	
+	Logger warningLog;
+	Logger errorLog;
+	Logger infoLog;
+	Logger debugLog;
 
 private:
 	LogHandler();
 	virtual ~LogHandler();
 
 	static LogHandler* pLogHandler;
-	LogHeader warningLogHeader;
-	LogHeader errorLogHeader;
-	LogHeader infoLogHeader;
-	LogHeader debugLogHeader;
 	
-	bool initalised;
 	bool fileOut;
 	bool consoleOut;
 	LogLevel level;
