@@ -49,12 +49,13 @@ enum LogColor {
 	GREEN,
 	BLUE,
 	YELLOW,
-	ORANGE,
 	PURPLE,
 	PINK,
 	BROWN,
 	GREY,
-	WHITE
+	WHITE,
+	BLACK,
+	RESET
 };
 
 enum LogOutput {
@@ -78,10 +79,14 @@ protected:
 	std::ostream &screenSink;
 	std::ofstream fileSink;
 	bool isNewLine;
-private:
+	
+	std::string getColor();
+	std::string getColor(LogColor _color);
 	std::string header();
 	void setLabel(std::string);
 	int flushBuffer();
+	
+private:
 	virtual int overflow (int c);
 	virtual int sync();
 };

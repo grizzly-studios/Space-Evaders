@@ -15,7 +15,6 @@ LogBuffer::LogBuffer(LogOutput _output, LogType type) :
 	fileSink(defaultFileName, std::ofstream::app),
 	isNewLine(true) {
 	
-	
 	switch(type) {
 		case INFO_TYPE:
 			label = "INFO";
@@ -36,8 +35,8 @@ LogBuffer::LogBuffer(LogOutput _output, LogType type) :
 }
 
 LogBuffer::LogBuffer(LogOutput _output, LogType type, LogColor _color) : 
-	output(_output),
 	color(_color), 
+	output(_output),
 	screenSink(std::cout), 
 	fileSink(defaultFileName, std::ofstream::app),
 	isNewLine(true) {
@@ -63,6 +62,82 @@ LogBuffer::~LogBuffer() {
 	}
 }
 
+std::string LogBuffer::getColor() {
+	return getColor(color);
+}
+
+std::string LogBuffer::getColor(LogColor _color) {
+	#if defined(_WIN64) || defined(_WIN32)
+	HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
+	switch (_color) {
+		case RED:
+			SetConsoleTextAttribute(hstdout, 4);
+			break;
+		case GREEN:
+			SetConsoleTextAttribute(hstdout, 2);
+			break;
+		case BLUE:
+			SetConsoleTextAttribute(hstdout, 1);
+			break;
+		case YELLOW:
+			SetConsoleTextAttribute(hstdout, 14);
+			break;
+		case PURPLE:
+			SetConsoleTextAttribute(hstdout, 5);
+			break;
+		case PINK:
+			SetConsoleTextAttribute(hstdout, 15);
+			break;
+		case BROWN:
+			SetConsoleTextAttribute(hstdout, 6);
+			break;
+		case GREY:
+			SetConsoleTextAttribute(hstdout, 8);
+			break;
+		case WHITE:
+			SetConsoleTextAttribute(hstdout, 15);
+			break;
+		case BLACK:
+			SetConsoleTextAttribute(hstdout, 0);
+			break;
+		case RESET:
+			SetConsoleTextAttribute(hstdout, OriginalColors);
+			break;
+	}
+	return "";
+	#else
+	switch (_color) {
+		case RED:
+			return "\033[1;91m";
+		case GREEN:
+			return "\033[1;32m";
+		case BLUE:
+			return "\033[1;94m";
+		case YELLOW:
+			return "\033[1;93m";
+		case PURPLE:
+			return "\033[1;35m";
+		case PINK:
+			return "\033[1;95m";
+		case BROWN:
+			return "\033[1;31m";
+			break;
+		case GREY:
+			return "\033[1;90m";
+			break;
+		case WHITE:
+			return "\033[1;97;40m";
+			break;
+		case BLACK:
+			return "\033[1;30;47m";
+			break;
+		case RESET:
+			return "\033[1;39;49m";
+			
+	}
+	#endif
+}
+
 std::string LogBuffer::header() {
 	time_t rawTime;
 	time(&rawTime);
@@ -70,7 +145,7 @@ std::string LogBuffer::header() {
 	char timeBuf[100];
 	strftime(timeBuf, sizeof(timeBuf), "[%d/%m/%Y %H:%M:%S]", lTime);
 
-	return std::string(timeBuf) + " - " + 
+	return getColor() + std::string(timeBuf) + " - " + 
 		((label != "") ? (label + " - ") : "" );
 }
 
@@ -110,6 +185,10 @@ int LogBuffer::overflow(int c = EOF) {
 
 	result = flushBuffer();
 	isNewLine = c == '\n';
+	if (isNewLine) {
+		screenSink << getColor(RESET);
+		fileSink << getColor(RESET);
+	}
 	return (result == EOF) ? EOF : c;
 }
 
