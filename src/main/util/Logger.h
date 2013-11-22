@@ -73,6 +73,9 @@ public:
 	
 	std::string getColor();
 	static std::string getColor(LogColor _color, bool bold = false);
+	void setColor(LogColor _color);
+	void setOutput(LogOutput _output);
+	void setType(LogType type);
 	
 protected:
 	static const int bufSize = 1;
@@ -98,6 +101,10 @@ public:
 	Logger(LogOutput _output, LogType _type);
 	Logger(LogOutput _output, LogType _type, LogColor _color);
 	virtual ~Logger();
+	
+	void setOutput(LogOutput _output);
+	void setColor(LogColor _color);
+	void setType(LogType type);
 private:
 };
 	
@@ -116,9 +123,6 @@ private:
 
 	static LogHandler* pLogHandler;
 	
-	bool fileOut;
-	bool consoleOut;
-	LogLevel level;
 	std::ofstream logFile;
 };
 
