@@ -34,9 +34,15 @@ Application::Application(int argc, char** argv) {
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
 		} else if (arg == "-v"){
-			//CHANGE_LOG(false, true, FULL);
+			LogHandler::getInstance()->debugLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->infoLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->warningLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->errorLog.setOutput(CONSOLE);
 		} else if(arg == "-vf"){
-			//CHANGE_LOG(true, true, FULL);
+			LogHandler::getInstance()->debugLog.setOutput(BOTH);
+			LogHandler::getInstance()->infoLog.setOutput(BOTH);
+			LogHandler::getInstance()->warningLog.setOutput(BOTH);
+			LogHandler::getInstance()->errorLog.setOutput(BOTH);
 		}else{
 			WARN << "Unknown Flag: " << arg << std::endl;
 		}
