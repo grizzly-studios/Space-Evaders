@@ -60,6 +60,9 @@ private:
 	sf::Text waveText;
 	sf::Text scoreText;
 	sf::Text multiText;
+
+	// Draw grid (for debugging)
+	void drawGrid();
 };
 
 }

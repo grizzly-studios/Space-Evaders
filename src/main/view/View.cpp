@@ -100,6 +100,8 @@ void View::render() {
 	window->draw(scoreText);
 	window->draw(multiText);
 
+	drawGrid();
+
 	window->display();
 }
 
@@ -234,4 +236,28 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	} else {
 		WARN("No sprite for this id");
 	}
+}
+
+void View::drawGrid() {
+	int horizLines = (height / SCREEN_SPRITE_WIDTH) -1;
+	int vertLines = (width / SCREEN_SPRITE_WIDTH) -1;
+	int numVertices = horizLines * vertLines;
+
+	sf::Vertex* vertices = new sf::Vertex[numVertices];
+
+	int count = 0;
+
+	for (int i=0; i<horizLines; i++) {
+		vertices[count++] = sf::Vertex(sf::Vector2f(0, SCREEN_SPRITE_WIDTH + i*SCREEN_SPRITE_WIDTH));
+		vertices[count++] = sf::Vertex(sf::Vector2f(width, SCREEN_SPRITE_WIDTH + i*SCREEN_SPRITE_WIDTH));
+	}
+
+	for (int i=0; i<vertLines; i++) {
+		vertices[count++] = sf::Vertex(sf::Vector2f(SCREEN_SPRITE_WIDTH + i*SCREEN_SPRITE_WIDTH, 0));
+		vertices[count++] = sf::Vertex(sf::Vector2f(SCREEN_SPRITE_WIDTH + i*SCREEN_SPRITE_WIDTH, height));
+	}
+
+	window->draw(vertices, numVertices, sf::Lines);
+
+	delete[] vertices;
 }
