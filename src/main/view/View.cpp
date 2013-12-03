@@ -1,22 +1,28 @@
 #include "View.h"
 
+#include <random>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <sstream>
 
 #include "../util/Logger.h"
 
-#define SPRITE_SHEET "assets/sprites.png"
-#define SPRITE_SHEET_SPRITE_WIDTH 16
-#define SCREEN_SPRITE_WIDTH 16
+// TODO: Refactor (duplicate constants in application layer)
+#define WIDTH 480
+#define HEIGHT 640
+
+#define SCREEN_SPRITE_WIDTH 32
 
 using namespace gs;
 
-View::View(IEventManagerPtr _eventManager, 
+View::View(IEventManagerPtr _eventManager,
 	RenderWindowShPtr _window,
-	IUserInputShPtr _userInput) : eventManager(_eventManager),
+	IUserInputShPtr _userInput,
+	ISpriteFactoryShPtr _sprite_factory) : eventManager(_eventManager),
 	window(_window),
-	userInput(_userInput) {
+	userInput(_userInput),
+	spriteFactory(_sprite_factory) {
 }
 
 View::~View() {
@@ -24,9 +30,9 @@ View::~View() {
 }
 
 void View::init() {
-	if (!texture.loadFromFile(SPRITE_SHEET)) {
-		ERR << "Failed to load texture: " << std::string(SPRITE_SHEET) << std::endl;
-	}
+	spriteFactory->init();
+	initBackground();
+	initHud();
 }
 
 void View::update() {
@@ -36,8 +42,20 @@ void View::update() {
 void View::render() {
 	window->clear();
 
+	// Draw background
+	for (RectShapeList::const_iterator it = stars.begin(); it != stars.end(); ++it) {
+		window->draw(*it);
+	}
+
+	// Draw entity sprites
 	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
-		window->draw(*(it->second));
+		window->draw(it->second);
+	}
+
+	// Draw HUD sprites
+	for (SpriteList::const_iterator it = hudSprites.begin(); it != hudSprites.end();
+			++it) {
+		window->draw(*it);
 	}
 
 	window->display();
@@ -65,6 +83,70 @@ void View::onEvent(Event& event) {
 	}
 }
 
+void View::initBackground() {
+	// 'Randomly' position some stars
+	const int NUM_STARS = 80;
+	const int STAR_WIDTH = 3;
+	const int SEED = 48;
+
+	std::mt19937 randomNumGen(SEED);
+	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
+	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
+	std::function<int()> genX(std::bind(distX, randomNumGen));
+	std::function<int()> genY(std::bind(distY, randomNumGen));
+	
+	genX();
+	
+	for (int i=0; i<NUM_STARS; i++) {
+		stars.push_back(sf::RectangleShape(sf::Vector2f(STAR_WIDTH, STAR_WIDTH)));
+		stars.back().setPosition(genX(), genY());
+	}
+}
+
+void View::initHud() {
+	// Top-left
+	hudSprites.push_back(spriteFactory->createSprite(0, 0));
+
+	// Left
+	hudSprites.push_back(spriteFactory->createSprite(0, 1));
+	hudSprites.back().setPosition(0.0f, SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setScale(1.0f,
+			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+
+	// Bottom-left
+	hudSprites.push_back(spriteFactory->createSprite(0, 2));
+	hudSprites.back().setPosition(0.0f, HEIGHT - SCREEN_SPRITE_WIDTH);
+
+	// Bottom
+	hudSprites.push_back(spriteFactory->createSprite(1, 2));
+	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH,
+			HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setScale(
+			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+
+	// Bottom-right
+	hudSprites.push_back(spriteFactory->createSprite(2, 2));
+	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
+			HEIGHT - SCREEN_SPRITE_WIDTH);
+
+	// Right
+	hudSprites.push_back(spriteFactory->createSprite(2, 1));
+	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
+			SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setScale(1.0f,
+			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+
+	// Top-right
+	hudSprites.push_back(spriteFactory->createSprite(2, 0));
+	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, 0.0f);
+
+	// Top
+	hudSprites.push_back(spriteFactory->createSprite(1, 0));
+	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH, 0.0f);
+	hudSprites.back().setScale(
+			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+}
+
 void View::onEntityCreated(EntityCreatedEvent& event) {
 	const short entityId = event.getEntityId();
 	INFO << "Entity created with id: " << entityId << std::endl;
@@ -74,12 +156,10 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 		WARN << "Sprite already present for this id, should it have been destroyed?" << std::endl;
 	}
 
-	SpriteShPtr sprite(new sf::Sprite);
-	sprite->setPosition(event.getPosition());
+	sf::Sprite sprite = spriteFactory->createSprite(1, 1);
+	sprite.setPosition(event.getPosition());
 	// Logic dimensions map to screen pixels 1:1
-	sprite->setScale(event.getDimensions() / (float) SCREEN_SPRITE_WIDTH);
-	sprite->setTexture(texture);
-	sprite->setTextureRect(sf::IntRect(0, 0, SPRITE_SHEET_SPRITE_WIDTH, SPRITE_SHEET_SPRITE_WIDTH));
+	sprite.setScale(event.getDimensions() / (float) SCREEN_SPRITE_WIDTH);
 
 	spriteMap[event.getEntityId()] = sprite;
 }
@@ -91,7 +171,7 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
 	if (it != spriteMap.end()) {
-		it->second->setPosition(event.getPosition());
+		it->second.setPosition(event.getPosition());
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}
