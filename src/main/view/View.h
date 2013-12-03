@@ -17,6 +17,7 @@
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
+#include "../util/RandomNumberGenerator.h"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
 
@@ -48,6 +49,7 @@ private:
 	RenderWindowShPtr window;
 	IUserInputShPtr userInput;
 	ISpriteFactoryShPtr spriteFactory;
+	RandomNumberGenerator randomNumberGenerator;
 
 	int width;
 	int height;

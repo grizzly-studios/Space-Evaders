@@ -1,7 +1,5 @@
 #include "View.h"
 
-#include <random>
-#include <functional>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -14,6 +12,10 @@
 #define SCORE_TEXT "SCORE"
 #define MULTI_TEXT "MULTI"
 #define TEXT_SIZE 16 				// pixels
+
+#define NUM_STARS 80
+#define STAR_WIDTH 3
+#define RANDOM_NUM_GEN_SEED 48
 
 using namespace gs;
 
@@ -29,7 +31,8 @@ sf::Vector2f convertToScreenCoords(const sf::Vector2f& logicCoords) {
 View::View(IEventManagerPtr _eventManager, RenderWindowShPtr _window, IUserInputShPtr _userInput,
 	ISpriteFactoryShPtr _sprite_factory)
 	: eventManager(_eventManager), window(_window), userInput(_userInput),
-	spriteFactory(_sprite_factory), width(0), height(0) {
+	spriteFactory(_sprite_factory), randomNumberGenerator(RANDOM_NUM_GEN_SEED),
+	width(0), height(0) {
 	width = window->getSize().x;
 	height = window->getSize().y;
 }
@@ -129,21 +132,13 @@ void View::onEvent(Event& event) {
 	}
 }
 
-void View::initBackground() {return;
+void View::initBackground() {
 	// 'Randomly' position some stars
-	const int NUM_STARS = 80;
-	const int STAR_WIDTH = 3;
-	const int SEED = 48;
-
-	std::mt19937 randomNumGen(SEED);
-	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, width - SCREEN_SPRITE_WIDTH);
-	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, height - SCREEN_SPRITE_WIDTH);
-	std::function<int()> genX(std::bind(distX, randomNumGen));
-	std::function<int()> genY(std::bind(distY, randomNumGen));
-
 	for (int i=0; i<NUM_STARS; i++) {
+		int x = randomNumberGenerator.randomNumberInRange(SCREEN_SPRITE_WIDTH, width - SCREEN_SPRITE_WIDTH);
+		int y = randomNumberGenerator.randomNumberInRange(SCREEN_SPRITE_WIDTH, height - SCREEN_SPRITE_WIDTH);
 		stars.push_back(sf::RectangleShape(sf::Vector2f(STAR_WIDTH, STAR_WIDTH)));
-		stars.back().setPosition(genX(), genY());
+		stars.back().setPosition(x, y);
 	}
 }
 
