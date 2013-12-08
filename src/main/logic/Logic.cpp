@@ -5,10 +5,15 @@
 
 #include "../util/Logger.h"
 
-#define TILE_WIDTH 32		// tile width & height
-#define COLS 13				// tilemap dimensions
+#define TILE_WIDTH 32				// tile width & height
+#define COLS 13						// tilemap dimensions
 #define ROWS 20
+#define NUMBER_LEVELS 3
 #define NUMBER_ENEMIES COLS-2
+#define MIN_LEVEL_START_SPEED 150.0		// units/sec (pixels in this simplistic mapping)
+#define MAX_LEVEL_START_SPEED 350.0		// TODO: What should this be?
+#define LEVEL_START_SPEED_INCREMENT ((MAX_LEVEL_START_SPEED - MIN_LEVEL_START_SPEED) / (NUMBER_LEVELS - 1))
+#define MAX_BULLET_SPEED 450.0			// max speed is the same for each level
 
 using namespace gs;
 
@@ -30,7 +35,7 @@ sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
 }
 
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
-	randomNumberGenerator(time(NULL)), level(0), wave(0) {
+	randomNumberGenerator(time(NULL)), level(1), wave(1) {
 	clock = new sf::Clock();
 	accumulator = 0;
 	dt = 12500;
@@ -169,8 +174,12 @@ void Logic::generateBullets() {
 		firingEnemyIndices.remove(indexToRemove);
 	}
 
+	level = 1;	// TODO: Remove
+	float minSpeedForLevel = MIN_LEVEL_START_SPEED + (LEVEL_START_SPEED_INCREMENT * (level -1));
+	std::cout << "minSpeedForLevel " << level << ": " << minSpeedForLevel << std::endl;
+
 	for (std::list<int>::const_iterator it=firingEnemyIndices.begin();
 		it!=firingEnemyIndices.end(); ++it) {
-		std::cout << *it << std::endl;
+		std::cout << "Generating bullet: " << *it << std::endl;
 	}
 }
