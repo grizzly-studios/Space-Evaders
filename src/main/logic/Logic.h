@@ -12,7 +12,6 @@
 #include "ILogic.hpp"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
-
 #include "../event/EntityCreatedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
@@ -21,6 +20,8 @@
 #include "Player.h"
 #include "Bullets.h"
 #include "Enemy.h"
+
+#include "../util/RandomNumberGenerator.h"
 
 namespace gs {
 	
@@ -42,6 +43,7 @@ private:
 	IEventManagerPtr eventManager;
 	
 	sf::Clock *clock;
+	RandomNumberGenerator randomNumberGenerator;
 	double accumulator;
 	double dt;
 
@@ -49,6 +51,9 @@ private:
 	MobileEntityList mobileObjects;
 	PlayerList allPlayers;
 	BulletsList allBullets;
+
+	int level;
+	int wave;
 	
 	//Subroutines
 	void move();
@@ -60,6 +65,7 @@ private:
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	
 	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
+	void generateBullets();
 };
 
 }

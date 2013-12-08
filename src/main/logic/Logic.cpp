@@ -1,5 +1,6 @@
 #include "Logic.h"
 
+#include <list>
 #include <SFML/System/Vector2.hpp>
 
 #include "../util/Logger.h"
@@ -7,6 +8,7 @@
 #define TILE_WIDTH 32		// tile width & height
 #define COLS 13				// tilemap dimensions
 #define ROWS 20
+#define NUMBER_ENEMIES COLS-2
 
 using namespace gs;
 
@@ -27,7 +29,8 @@ sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
 
 }
 
-Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
+Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
+	randomNumberGenerator(time(NULL)), level(0), wave(0) {
 	clock = new sf::Clock();
 	accumulator = 0;
 	dt = 12500;
@@ -137,7 +140,7 @@ void Logic::generateLevel() {
 	eventManager->fireEvent(entityCreatedEvent);
 
 	// Create enemies
-	for (int i=0; i<11; i++) {
+	for (int i=0; i<NUMBER_ENEMIES; i++) {
 		const sf::Vector2f enemyPos = getTilePosition(1 + i, 2);
 		allObjects.push_back(EnemyShPtr(new Enemy()));
 		allObjects.back()->setGeo(enemyPos.x, enemyPos.y, TILE_WIDTH, TILE_WIDTH);
@@ -150,4 +153,24 @@ void Logic::generateLevel() {
 	}
 
 	INFO("Generated level");
+	generateBullets();
+}
+
+void Logic::generateBullets() {
+	const int NUM_ENEMIES_NOT_FIRING = 2;
+
+	std::list<int> firingEnemyIndices;
+	for (int i=0; i<NUMBER_ENEMIES; i++) {
+		firingEnemyIndices.push_back(i);
+	}
+
+	for (int i=0; i<NUM_ENEMIES_NOT_FIRING; i++) {
+		int indexToRemove = randomNumberGenerator.randomNumberInRange(0, firingEnemyIndices.size());
+		firingEnemyIndices.remove(indexToRemove);
+	}
+
+	for (std::list<int>::const_iterator it=firingEnemyIndices.begin();
+		it!=firingEnemyIndices.end(); ++it) {
+		std::cout << *it << std::endl;
+	}
 }
