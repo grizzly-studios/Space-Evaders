@@ -5,15 +5,16 @@
 
 #include "../util/Logger.h"
 
-#define TILE_WIDTH 32				// tile width & height
-#define COLS 13						// tilemap dimensions
+#define TILE_WIDTH 32					// tile width & height
+#define COLS 13							// tilemap dimensions
 #define ROWS 20
 #define NUMBER_LEVELS 3
+#define MIN_NUMBER_WAVES 4				// player can move back, and can hence play more than this no. of waves
 #define NUMBER_ENEMIES COLS-2
 #define MIN_LEVEL_START_SPEED 150.0		// units/sec (pixels in this simplistic mapping)
-#define MAX_LEVEL_START_SPEED 350.0		// TODO: What should this be?
-#define LEVEL_START_SPEED_INCREMENT ((MAX_LEVEL_START_SPEED - MIN_LEVEL_START_SPEED) / (NUMBER_LEVELS - 1))
 #define MAX_BULLET_SPEED 450.0			// max speed is the same for each level
+#define LEVEL_START_SPEED_INCREMENT ((MAX_BULLET_SPEED - MIN_LEVEL_START_SPEED) / (NUMBER_LEVELS - 1))
+
 
 using namespace gs;
 
@@ -174,12 +175,22 @@ void Logic::generateBullets() {
 		firingEnemyIndices.remove(indexToRemove);
 	}
 
-	level = 1;	// TODO: Remove
+	level = 3;	// TODO: Remove
+	wave = 4;	// TODO: Remove
 	float minSpeedForLevel = MIN_LEVEL_START_SPEED + (LEVEL_START_SPEED_INCREMENT * (level -1));
 	std::cout << "minSpeedForLevel " << level << ": " << minSpeedForLevel << std::endl;
 
+	float waveSpeedIncrement = (MAX_BULLET_SPEED - minSpeedForLevel) / (MIN_NUMBER_WAVES - 1);
+	std::cout << "waveSpeedIncrement: " << waveSpeedIncrement << std::endl;
+
+	float speedForWave = minSpeedForLevel + (waveSpeedIncrement * (wave -1));
+	std::cout << "speedForWave " << wave << ": " << speedForWave << std::endl;
+
 	for (std::list<int>::const_iterator it=firingEnemyIndices.begin();
 		it!=firingEnemyIndices.end(); ++it) {
-		std::cout << "Generating bullet: " << *it << std::endl;
+		std::cout << "Generating bullet: " << (*it) << std::endl;
+
+		// Position of the tile containing the bullet
+		const sf::Vector2f bulletTilePos = getTilePosition(1 + (*it), 2);
 	}
 }
