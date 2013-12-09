@@ -33,6 +33,10 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
+	if(!font.loadFromFile("assets/arial.ttf"))
+    {
+      ERR("Could not load font file");
+    }
 }
 
 void View::update() {
@@ -40,23 +44,60 @@ void View::update() {
 }
 
 void View::render() {
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
 	window->clear();
 
-	// Draw background
+	// Draw background (ALL)
 	for (RectShapeList::const_iterator it = stars.begin(); it != stars.end(); ++it) {
 		window->draw(*it);
 	}
 
-	// Draw entity sprites
-	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
-		window->draw(it->second);
-	}
+	// Draw Menu items (MENU)
+	textBorder.setSize(sf::Vector2f(200, 22));
+	textBorder.setPosition(135,222);
+	text.setFont(font);
+	text.setString("START EVADING");
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+	text.setPosition(137,218);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("OPTIONS");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setPosition(135,290);
+	text.setString("CREDITS");
+	text.setPosition(137,286);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setSize(sf::Vector2f(64, 22));
+	textBorder.setPosition(135,324);
+	text.setString("QUIT");
+	text.setPosition(137,320);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	
+	// Draw entity sprites (GAME)
+	//for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
+	//	window->draw(it->second);
+	//}
 
-	// Draw HUD sprites
-	for (SpriteList::const_iterator it = hudSprites.begin(); it != hudSprites.end();
-			++it) {
-		window->draw(*it);
-	}
+	// Draw HUD sprites (GAME)
+	//for (SpriteList::const_iterator it = hudSprites.begin(); it != hudSprites.end();
+	//		++it) {
+	//	window->draw(*it);
+	//}
 
 	window->display();
 }
@@ -92,8 +133,8 @@ void View::initBackground() {
 	const int SEED = 48;
 
 	std::mt19937 randomNumGen(SEED);
-	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
-	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
+	std::uniform_int_distribution<int> distX(0, WIDTH);
+	std::uniform_int_distribution<int> distY(0, HEIGHT);
 	std::function<int()> genX(std::bind(distX, randomNumGen));
 	std::function<int()> genY(std::bind(distY, randomNumGen));
 	
