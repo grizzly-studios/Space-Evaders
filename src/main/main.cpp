@@ -16,9 +16,9 @@ using namespace gs;
 int main(int argc, char** argv) {
 	//No point in INFO, WARN or DEBUG messages before this point
 	Application *app = new Application(argc, argv); 
-	INFO("Initialising application");
+	INFO << "Initialising application" << std::endl;
 	app->init();
-	INFO("Running application");
+	INFO << "Running application" << std::endl;
 	app->run();
 
 	delete app;

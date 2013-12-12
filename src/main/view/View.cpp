@@ -26,7 +26,7 @@ View::View(IEventManagerPtr _eventManager,
 }
 
 View::~View() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void View::init() {
@@ -63,9 +63,7 @@ void View::render() {
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
-	std::stringstream ss;
-	ss << "Received event: " << eventType;
-	INFO(ss.str());
+	INFO << "Received event: " << eventType << std::endl;
 
 	switch (eventType) {
 	case ENTITY_CREATED_EVENT: {
@@ -79,7 +77,7 @@ void View::onEvent(Event& event) {
 		break;
 	}
 	default: {
-		WARN("Event wasn't handled");
+		WARN << "Event wasn't handled" << std::endl;
 		break;
 	}
 	}
@@ -151,13 +149,11 @@ void View::initHud() {
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
 	const short entityId = event.getEntityId();
-	std::stringstream ss;
-	ss << "Entity created with id: " << entityId;
-	INFO(ss.str());
+	INFO << "Entity created with id: " << entityId << std::endl;
 
 	// Check if we already have a sprite associated with this id
 	if (spriteMap.find(entityId) != spriteMap.end()) {
-		WARN("Sprite already present for this id, should it have been destroyed?");
+		WARN << "Sprite already present for this id, should it have been destroyed?" << std::endl;
 	}
 
 	sf::Sprite sprite = spriteFactory->createSprite(1, 1);
@@ -170,15 +166,13 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 
 void View::onEntityMoved(EntityMovedEvent& event) {
 	const short entityId = event.getEntityId();
-	std::stringstream ss;
-	ss << "Entity moved with id: " << entityId;
-	INFO(ss.str());
+	INFO << "Entity moved with id: " << entityId << std::endl;
 
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
 	if (it != spriteMap.end()) {
 		it->second.setPosition(event.getPosition());
 	} else {
-		WARN("No sprite for this id");
+		WARN << "No sprite for this id" << std::endl;
 	}
 }
