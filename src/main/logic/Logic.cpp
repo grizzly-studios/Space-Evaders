@@ -1,13 +1,15 @@
 #include "Logic.h"
 
 #include "../util/Logger.h"
+#include <sstream>
 
 using namespace gs;
 
-Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
+Logic::Logic(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventManager(_eventManager),window(_window) {
 	clock = new sf::Clock();
 	accumulator = 0;
 	dt = 12500;
+	currentMenuPos = 0;
 }
 
 Logic::~Logic() {
@@ -35,7 +37,18 @@ void Logic::onEvent(Event& event) {
 			DBG("Change player direction");
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
 			break;
+		case MOVE_MENU_POINTER_EVENT:
+		    DBG("Moving Menu Pointer");
+		    moveMenuPointer((MoveMenuPointerEvent&) event);
+		    break;
+		case MENU_SELECT_EVENT:
+		    selectMenuItem();
+		    break;
 		default:
+		    const short eventType = event.getType();
+			std::stringstream ss;
+			ss << "Un-Handled: " << eventType;
+		    ERR(ss.str());
 			break;
 	}
 }
@@ -115,4 +128,76 @@ void Logic::generateLevel() {
 
 void Logic::onGameStateChange(GameStateChangedEvent& event) {
     
+}
+
+
+void Logic::moveMenuPointer(MoveMenuPointerEvent& event){
+	int rc = 0;
+	switch(event.getDirection()){
+		case DOWN:
+			currentMenuPos = ((++currentMenuPos) % 4);
+			break;
+
+		case UP:
+			currentMenuPos = --currentMenuPos;
+			if(currentMenuPos < 0){
+				currentMenuPos = 3;
+			}
+
+			break;
+
+		case NONE: //go nowhere. duh!
+			break;
+
+		default:
+			std::stringstream ss;
+			ss << "Unable to move menu pointer in direction: " << event.getDirection();
+		    ERR(ss.str());
+		    rc = 1;
+			break;
+	}
+
+	if(!rc){ //Above was OK
+		std::stringstream ss;
+		ss << "New position is: " << currentMenuPos;
+		DBG(ss.str());
+
+		MenuPointerChange menuPointerChange(currentMenuPos);
+		eventManager->fireEvent(menuPointerChange);
+	}
+}
+
+void Logic::selectMenuItem(){
+	//we have been told to activate whatever so go for it!
+	switch(currentMenuPos){
+		case MENU_START:{
+			INFO("Start Game selected");
+			//We need to start a new game!
+			GameStartEvent gameStartEvent;
+			eventManager->fireEvent(gameStartEvent);
+			break;
+		}
+		case MENU_SETTINGS:{
+			//Do nothing for now
+			INFO("Settings selected");
+			break;
+		}		
+		case MENU_CREDITS:{
+			//Do nothing for now
+			INFO("Credits selected");
+			break;
+		}
+		case MENU_QUIT:{
+			//Let's quit!
+			INFO("Quit selected");
+			window->close();
+			break;
+		}
+		default:{
+			std::stringstream ss;
+			ss << "Unkown Posistion: " << currentMenuPos;
+			ERR(ss.str());
+			break;
+		}
+	}
 }

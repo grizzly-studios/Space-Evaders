@@ -33,6 +33,7 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
+	menuPos = 222;
 	if(!font.loadFromFile("assets/arial.ttf"))
     {
       ERR("Could not load font file");
@@ -46,6 +47,7 @@ void View::update() {
 void View::render() {
 	sf::Text text;
 	sf::RectangleShape textBorder;
+	sf::CircleShape menuPoint;
 	textBorder.setFillColor(sf::Color::Black);
 	window->clear();
 
@@ -86,6 +88,11 @@ void View::render() {
 	text.setPosition(137,320);
 	window->draw(textBorder);
 	window->draw(text);
+
+	menuPoint.setRadius(10);
+	menuPoint.setFillColor(sf::Color::Blue);
+	menuPoint.setPosition(105,menuPos);
+	window->draw(menuPoint);
 	
 	
 	// Draw entity sprites (GAME)
@@ -119,8 +126,42 @@ void View::onEvent(Event& event) {
 			onEntityMoved(entityMovedEvent);
 			break;
 		}
+		case MENU_POINTER_CHANGE :{
+			MenuPointerChange menuPointerChange = (MenuPointerChange&) event;
+			const int newPos = menuPointerChange.getPos();
+			switch (newPos){
+				case MENU_START:{
+					menuPos = 222;
+					break;
+				}
+				case MENU_SETTINGS:{
+					menuPos = 256;
+					break;
+				}
+				case MENU_CREDITS:{
+					menuPos = 290;
+					break;
+				}
+				case MENU_QUIT:{
+					menuPos = 324;
+					break;
+				}
+				default:{
+					std::stringstream ss;
+					ss << "Unkown Posistion: " << newPos;
+				    ERR(ss.str());
+					break;
+				}
+
+
+			}
+			break;
+		}
 		default: {
-			WARN("Event wasn't handled");
+			const short eventType = event.getType();
+			std::stringstream ss;
+			ss << "Un-Handled: " << eventType;
+		    ERR(ss.str());
 			break;
 		}
 	}
