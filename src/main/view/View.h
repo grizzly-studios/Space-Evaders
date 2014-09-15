@@ -7,17 +7,22 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 
 #include "IView.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
+#include "../event/MenuPointerChange.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
+#include "../logic/MenuItemEnum.hpp"
 
 namespace gs {
 
@@ -51,6 +56,9 @@ private:
 	RectShapeList stars;
 	SpriteMap spriteMap;
 	SpriteList hudSprites;
+	sf::Font font;
+
+	int menuPos;
 };
 
 }
