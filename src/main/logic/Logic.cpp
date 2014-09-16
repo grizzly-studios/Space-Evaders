@@ -31,8 +31,8 @@ void Logic::update() {
 void Logic::onEvent(Event& event) {
 	switch (event.getType()) {
 	    case GAME_STATE_CHANGED_EVENT:
-		    DBG("Changing game state");
 			onGameStateChange((GameStateChangedEvent&) event);
+			break;
 		case CHANGE_PLAYER_DIRECTION_EVENT:
 			DBG << "Change player direction" << std::endl;
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
@@ -44,6 +44,12 @@ void Logic::onEvent(Event& event) {
 		case MENU_SELECT_EVENT:
 		    selectMenuItem();
 		    break;
+		case GAME_START_EVENT:
+			startNewGame();
+			break;
+		case GAME_END_EVENT:
+			gameEnd();
+			break;
 		default:
 		    const short eventType = event.getType();
 			std::stringstream ss;
@@ -127,7 +133,10 @@ void Logic::generateLevel() {
 }
 
 void Logic::onGameStateChange(GameStateChangedEvent& event) {
-    
+	const short newState = event.getState();
+	std::stringstream ss;
+	ss << "Changing game state to " << newState;
+	DBG(ss.str());
 }
 
 
@@ -200,4 +209,27 @@ void Logic::selectMenuItem(){
 			break;
 		}
 	}
+}
+
+void Logic::startNewGame(){
+	//Ok so we're going to start a new game
+	//first set the loading screen
+	GameStateChangedEvent gameStateChangedEvent(LOADING);
+	eventManager->fireEvent(gameStateChangedEvent);
+	//Now we need to initalise everything
+	generateLevel();
+	//Now we're done show the game!
+	GameStateChangedEvent gameStateChangedEvent2(IN_GAME);
+	eventManager->fireEvent(gameStateChangedEvent2);
+
+}
+
+void Logic::gameEnd(){
+	//Ok so we're ending the game just go back to menu and tidy up
+	GameStateChangedEvent gameStateChangedEvent(MENU);
+	eventManager->fireEvent(gameStateChangedEvent);
+
+	allPlayers.clear();
+	mobileObjects.clear();
+	allObjects.clear();
 }

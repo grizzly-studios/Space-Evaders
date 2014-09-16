@@ -29,6 +29,8 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "../app/GameState.h"
+
 namespace gs {
 
 typedef std::list<EntityShPtr> EntityList;
@@ -58,12 +60,16 @@ private:
 	MobileEntityList mobileObjects;
 	PlayerList allPlayers;
 	BulletsList allBullets;
+	GameState gameState;
 
 	RenderWindowShPtr window;
 	
 	//Subroutines
 	void move();
 	void collisionDetection();
+
+	void startNewGame();
+	void gameEnd();
 
 	void integrate();
 	void interpolate(const double &remainder);

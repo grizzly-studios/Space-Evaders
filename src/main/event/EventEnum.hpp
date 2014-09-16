@@ -14,7 +14,8 @@ enum EventEnum {
 	MOVE_MENU_POINTER_EVENT,		//4
 	GAME_START_EVENT,				//5
 	MENU_SELECT_EVENT,				//6
-	MENU_POINTER_CHANGE				//7
+	MENU_POINTER_CHANGE,			//7
+	GAME_END_EVENT 					//8
 };
 
 extern const char* EventEnumText[];

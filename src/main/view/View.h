@@ -18,11 +18,14 @@
 #include "../event/EntityCreatedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/MenuPointerChange.h"
+#include "../event/GameStateChangedEvent.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
 #include "../logic/MenuItemEnum.hpp"
+
+#include "../app/GameState.h"
 
 namespace gs {
 
@@ -47,6 +50,14 @@ private:
 	void initHud();
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
+	void onGameStateChanged(GameStateChangedEvent& event);
+
+	void inGameRender();
+	void pausedRender();
+	void loadingRender();
+	void menuRender();
+
+	void gameOver();
 
 	IEventManagerPtr eventManager;
 	RenderWindowShPtr window;
@@ -57,6 +68,7 @@ private:
 	SpriteMap spriteMap;
 	SpriteList hudSprites;
 	sf::Font font;
+	GameState gameState;
 
 	int menuPos;
 };

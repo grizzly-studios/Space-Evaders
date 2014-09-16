@@ -45,29 +45,109 @@ void View::update() {
 }
 
 void View::render() {
-	sf::Text text;
-	sf::RectangleShape textBorder;
-	sf::CircleShape menuPoint;
-	textBorder.setFillColor(sf::Color::Black);
+	//First clear up then make the standards
 	window->clear();
-
-	// Draw background (ALL)
 	for (RectShapeList::const_iterator it = stars.begin(); it != stars.end(); ++it) {
 		window->draw(*it);
 	}
 
-	// Draw Menu items (MENU)
-	textBorder.setSize(sf::Vector2f(200, 22));
-	textBorder.setPosition(135,222);
+	//Now work out what else to draw
+	switch (gameState) {
+		case IN_GAME:
+			inGameRender();
+			break;
+		case PAUSED:
+			pausedRender();
+			break;
+		case LOADING:
+			loadingRender();
+			break;
+		case MENU:
+			menuRender();
+			break;
+	}
+
+	//Now display
+	window->display();
+}
+
+void View::inGameRender(){
+	// Draw entity sprites (GAME)
+	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
+		window->draw(it->second);
+	}
+
+	// Draw HUD sprites (GAME)
+	for (SpriteList::const_iterator it = hudSprites.begin(); it != hudSprites.end();
+			++it) {
+		window->draw(*it);
+	}
+}
+
+void View::pausedRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
 	text.setFont(font);
-	text.setString("START EVADING");
 	text.setCharacterSize(24);
 	text.setColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold);
-	text.setPosition(137,218);
+
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("PAUSED");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+
+	textBorder.setSize(sf::Vector2f(200, 22));
+	textBorder.setPosition(135,290);
+	text.setString("P to Continue");
+	text.setPosition(137,286);
 	window->draw(textBorder);
 	window->draw(text);
 	
+	
+	textBorder.setPosition(135,324);
+	text.setString("Escape to Quit");
+	text.setPosition(137,320);
+	window->draw(textBorder);
+	window->draw(text);
+}
+
+void View::loadingRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("LOADING");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+}
+
+void View::menuRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	sf::CircleShape menuPoint;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+	
+	textBorder.setSize(sf::Vector2f(200, 22));
+	textBorder.setPosition(135,222);
+	text.setString("START EVADING");
+	text.setPosition(137,218);
+	window->draw(textBorder);
+	window->draw(text);
 	
 	textBorder.setSize(sf::Vector2f(120, 22));
 	textBorder.setPosition(135,256);
@@ -93,27 +173,17 @@ void View::render() {
 	menuPoint.setFillColor(sf::Color::Blue);
 	menuPoint.setPosition(105,menuPos);
 	window->draw(menuPoint);
-	
-	
-	// Draw entity sprites (GAME)
-	//for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
-	//	window->draw(it->second);
-	//}
-
-	// Draw HUD sprites (GAME)
-	//for (SpriteList::const_iterator it = hudSprites.begin(); it != hudSprites.end();
-	//		++it) {
-	//	window->draw(*it);
-	//}
-
-	window->display();
 }
+
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
 	INFO << "Received event: " << event << std::endl;
 
 	switch (eventType) {
+		case GAME_STATE_CHANGED_EVENT:
+			onGameStateChanged((GameStateChangedEvent&) event);
+			break;
 		case ENTITY_CREATED_EVENT: {
 			EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
 			onEntityCreated(entityCreatedEvent);
@@ -155,6 +225,9 @@ void View::onEvent(Event& event) {
 			}
 			break;
 		}
+		case GAME_END_EVENT:
+			gameOver();
+			break;
 		default: {
 			const short eventType = event.getType();
 			std::stringstream ss;
@@ -257,4 +330,12 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}
+}
+
+void View::onGameStateChanged(GameStateChangedEvent& event) {
+	gameState = event.getState();
+}
+
+void View::gameOver(){
+	spriteMap.clear();
 }
