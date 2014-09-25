@@ -88,7 +88,6 @@ Application::~Application() {
 }
 
 void Application::load() {
-	//logic->generateLevel();
 }
 
 void Application::run() {
