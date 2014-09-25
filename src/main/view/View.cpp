@@ -23,6 +23,7 @@ View::View(IEventManagerPtr _eventManager,
 	window(_window),
 	userInput(_userInput),
 	spriteFactory(_sprite_factory) {
+	currentMenuPos = 0;
 }
 
 View::~View() {
@@ -194,6 +195,13 @@ void View::onEvent(Event& event) {
 			onEntityMoved(entityMovedEvent);
 			break;
 		}
+		case MOVE_MENU_POINTER_EVENT:
+		    DBG << "Moving Menu Pointer" << std::endl;
+		    moveMenuPointer((MoveMenuPointerEvent&) event);
+		    break;
+		case MENU_SELECT_EVENT:
+		    selectMenuItem();
+		    break;
 		case MENU_POINTER_CHANGE :{
 			MenuPointerChange menuPointerChange = (MenuPointerChange&) event;
 			const int newPos = menuPointerChange.getPos();
@@ -330,6 +338,77 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 
 void View::onGameStateChanged(GameStateChangedEvent& event) {
 	gameState = event.getState();
+}
+
+void View::moveMenuPointer(MoveMenuPointerEvent& event){
+	int rc = 0;
+	switch(event.getDirection()){
+		case DOWN:
+			currentMenuPos = ((++currentMenuPos) % 4);
+			break;
+
+		case UP:
+			currentMenuPos = --currentMenuPos;
+			if(currentMenuPos < 0){
+				currentMenuPos = 3;
+			}
+
+			break;
+
+		case NONE: //go nowhere. duh!
+			break;
+
+		default:
+			std::stringstream ss;
+			ss << "Unable to move menu pointer in direction: " << event.getDirection();
+		    ERR << ss.str() << std::endl;
+		    rc = 1;
+			break;
+	}
+
+	if(!rc){ //Above was OK
+		std::stringstream ss;
+		ss << "New position is: " << currentMenuPos;
+		DBG << ss.str() << std::endl;
+
+		MenuPointerChange menuPointerChange(currentMenuPos);
+		eventManager->fireEvent(menuPointerChange);
+	}
+}
+
+void View::selectMenuItem(){
+	//we have been told to activate whatever so go for it!
+	switch(currentMenuPos){
+		case MENU_START:{
+			INFO << "Start Game selected" << std::endl;
+			//We need to start a new game!
+			GameStartEvent gameStartEvent;
+			eventManager->fireEvent(gameStartEvent);
+			break;
+		}
+		case MENU_SETTINGS:{
+			//Do nothing for now
+			INFO << "Settings selected" << std::endl;
+			break;
+		}		
+		case MENU_CREDITS:{
+			//Do nothing for now
+			INFO << "Credits selected" << std::endl;
+			break;
+		}
+		case MENU_QUIT:{
+			//Let's quit!
+			INFO << "Quit selected" << std::endl;
+			window->close();
+			break;
+		}
+		default:{
+			std::stringstream ss;
+			ss << "Unkown Posistion: " << currentMenuPos;
+			ERR << ss.str() << std::endl;
+			break;
+		}
+	}
 }
 
 void View::gameOver(){
