@@ -10,12 +10,12 @@
 using namespace gs;
 
 SpriteFactory::~SpriteFactory() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void SpriteFactory::init() {
 	if (!texture.loadFromFile(SPRITE_SHEET)) {
-		ERR("Failed to load texture: " + std::string(SPRITE_SHEET));
+		ERR << "Failed to load texture: " << std::string(SPRITE_SHEET) << std::endl;
 	}
 }
 

@@ -4,149 +4,273 @@
  *
  * Created on October 3, 2013, 21:09 PM
  */
- 
+
 #include "Logger.h"
 
 using namespace gs;
 
-Logger* Logger::pLogger = NULL;
-
-Logger* Logger::getInstance() {
-	if (pLogger == NULL) {
-		pLogger = new Logger();
-	}
-	return pLogger;
-}
-
-void Logger::log(const std::string& message, LOGTYPE type, const std::string& source, int line) {
-	if (pLogger == NULL) {
-		//We need to initialise before we log out first time
-		pLogger = new Logger();
-	}
+LogBuffer::LogBuffer(LogOutput _output, LogType type) : 
+	output(_output),
+	screenSink(std::cout), 
+	fileSink(defaultFileName, std::ofstream::app),
+	isNewLine(true) {
 	
-	// Do first checks to determine if we should log
-	if (type != ERR_TYPE && level != FULL) {
-		//we do not log out INFO, WARN or DEBUG on anything BUT full
-		return;
-	} 
-	
-	//Now create the logging message
-	std::string line1;
-
-	//Get current date and time
-	time_t rawTime;
-	struct tm * timeinfo;
-	char timestamp [20];
-	time(&rawTime);
-	timeinfo = localtime (&rawTime);
-	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
-	
-	//Sort out string representation of type
-	switch (type) {
+	switch(type) {
 		case INFO_TYPE:
-			line1 = " - INFO";
+			label = "INFO";
+			color = WHITE;
 			break;
 		case WARN_TYPE:
-			line1 = " - WARN";
-			break;
+			label = "WARN";
+			color = YELLOW;
 		case ERR_TYPE:
-			line1 = " - ERR!";
-			break;
+			label = "ERROR";
+			color = RED;
 		case DEBUG_TYPE:
-			line1 = " - DEBUG";
+			label = "DBG";
+			color = GREEN;
 			break;
 	}
+    setp(buf, buf + (bufSize - 1));
+}
+
+LogBuffer::LogBuffer(LogOutput _output, LogType type, LogColor _color) : 
+	color(_color), 
+	output(_output),
+	screenSink(std::cout), 
+	fileSink(defaultFileName, std::ofstream::app),
+	isNewLine(true) {
 	
-	//Finally append the source (if supplied)
-	if (source.length() > 0) {
-		char numstr[21];
-		sprintf(numstr, "%d", line);
-		line1 = line1 + " - " + source + ":" + numstr;
+	switch(type) {
+		case INFO_TYPE:
+			label = "INFO";
+			break;
+		case WARN_TYPE:
+			label = "WARN";
+		case ERR_TYPE:
+			label = "ERROR";
+		case DEBUG_TYPE:
+			label = "DBG";
+			break;
 	}
-	
-	if(consoleOut) {
-#if defined(_WIN64) || defined(_WIN32)
-		//Windows specific code
-		HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
-		switch (type) {
-			case INFO_TYPE:
-				SetConsoleTextAttribute( hstdout, 0x0F );
-				break;
-			case DEBUG_TYPE:
-				SetConsoleTextAttribute( hstdout, 0x02 );
-				break;
-			case WARN_TYPE:
-				SetConsoleTextAttribute( hstdout, 0x06 );
-				break;
-			case ERR_TYPE:
-				SetConsoleTextAttribute( hstdout, 0x0C );
-				break;
-		}
-		std::cout << timestamp << line1 << " - " << message << std::endl;
-		//End Windows specific code
-#else
-		//UNIX specific code
-		std::string colour;
-		switch (type) {
-			case INFO_TYPE:
-				colour = "\033[0;37m";
-				break;
-			case DEBUG_TYPE:
-				colour = "\033[0;32m";
-				break;
-			case WARN_TYPE:
-				colour = "\033[0;33m";
-				break;
-			case ERR_TYPE:
-				colour = "\033[0;31m";
-				break;
-		}
-		
-		std::cout << colour << timestamp << line1 << " - " << message << std::endl;
-		//End UNIX specific code
-#endif
-	}
-	if (fileOut) {
-		//Output the plain text to the log file
-		std::ofstream logFile;
-		logFile.open ("console.log", std::fstream::out | std::fstream::app);
-		logFile << timestamp << line1 << " - " << message << std::endl;
-		logFile.close();
+	setp(buf, buf + (bufSize - 1));
+}
+
+LogBuffer::~LogBuffer() {
+	if (fileSink.is_open()) {
+		fileSink.close();
 	}
 }
 
-void Logger::changeLogging(bool file, bool console, LOGLEVEL newLevel) {
-	if(pLogger == NULL) {
-		//We need to initalise before we change the settings
-		pLogger = new Logger();
-	}
-	fileOut = file;
-	consoleOut = console;
-	level = newLevel;
+std::string LogBuffer::getColor() {
+	return getColor(color);
 }
 
-Logger::Logger() : fileOut(false), consoleOut(false), level(OFF) {
-	// Open the log file and make sure it is a new section 
+std::string LogBuffer::getColor(LogColor _color, bool bold) {
+	#if defined(_WIN64) || defined(_WIN32)
+	HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
+	switch (_color) {
+		case RED:
+			SetConsoleTextAttribute(hstdout, 4);
+			break;
+		case GREEN:
+			SetConsoleTextAttribute(hstdout, 2);
+			break;
+		case BLUE:
+			SetConsoleTextAttribute(hstdout, 1);
+			break;
+		case YELLOW:
+			SetConsoleTextAttribute(hstdout, 14);
+			break;
+		case PURPLE:
+			SetConsoleTextAttribute(hstdout, 5);
+			break;
+		case PINK:
+			SetConsoleTextAttribute(hstdout, 15);
+			break;
+		case BROWN:
+			SetConsoleTextAttribute(hstdout, 6);
+			break;
+		case GREY:
+			SetConsoleTextAttribute(hstdout, 8);
+			break;
+		case WHITE:
+			SetConsoleTextAttribute(hstdout, 15);
+			break;
+		case BLACK:
+			SetConsoleTextAttribute(hstdout, 0);
+			break;
+		case RESET:
+			SetConsoleTextAttribute(hstdout, OriginalColors);
+			break;
+	}
+	return "";
+	#else
+	std::string boldBit = bold ? "1" : "0";
+	switch (_color) {
+		case RED:
+			return "\033["+boldBit+";91m";
+		case GREEN:
+			return "\033["+boldBit+";32m";
+		case BLUE:
+			return "\033["+boldBit+";94m";
+		case YELLOW:
+			return "\033["+boldBit+";93m";
+		case PURPLE:
+			return "\033["+boldBit+";35m";
+		case PINK:
+			return "\033["+boldBit+";95m";
+		case BROWN:
+			return "\033["+boldBit+";31m";
+			break;
+		case GREY:
+			return "\033["+boldBit+";90m";
+			break;
+		case WHITE:
+			return "\033["+boldBit+";97;40m";
+			break;
+		case BLACK:
+			return "\033["+boldBit+";30;47m";
+			break;
+		case RESET:
+			return "\033["+boldBit+";39;49m";
+			
+	}
+	#endif
+}
+
+std::string LogBuffer::header() {
 	time_t rawTime;
-	struct tm * timeinfo;
-	char timestamp [20];
 	time(&rawTime);
-	timeinfo = localtime (&rawTime);
-	strftime (timestamp,30,"%d/%m/%Y %H:%M:%S",timeinfo);
-	
-	std::ofstream logFile;
-	logFile.open ("console.log", std::fstream::out | std::fstream::app);
-	logFile << std::endl ;
-	logFile << std::endl ;
-	logFile << "###########################################################################"
-		<< std::endl;
-	logFile << "## Space Evaders Console Log     -       " << timestamp << "             ##"
-		<< std::endl;
-	logFile << "###########################################################################"
-		<< std::endl;
-	logFile << std::endl;
-	logFile.close();
+	std::tm *lTime = std::localtime(&rawTime);
+	char timeBuf[100];
+	strftime(timeBuf, sizeof(timeBuf), "[%d/%m/%Y %H:%M:%S]", lTime);
+
+	return getColor(color, true) + std::string(timeBuf) + " - " + 
+		((label != "") ? (label + " - ") : "" );
 }
+
+void LogBuffer::setLabel(std::string _label) {
+	label = _label;
+}
+
+int LogBuffer::flushBuffer () {
+	int num = pptr()-pbase();
+	if (output == CONSOLE || output == BOTH) {
+		screenSink.write(buf, num);
+	}
+	if (output == FILE || output == BOTH) {
+		fileSink.write(buf, num);
+	}
+	if (screenSink.eof() && fileSink.eof()) {
+		return EOF;
+	}
+	pbump(-num); // reset put pointer accordingly
+	return num;
+}
+
+int LogBuffer::overflow(int c = EOF) {
+	int result = c;
+	if (isNewLine) {
+		if (output == CONSOLE || output == BOTH) {
+			screenSink << header();
+		} 
+		if (output == FILE || output == BOTH) {
+			fileSink << header();
+		}
+	}
+	if (c != EOF) {
+		*pptr() = c;
+		pbump(1);
+	}
+
+	result = flushBuffer();
+	isNewLine = c == '\n';
+	if (isNewLine) {
+		screenSink << getColor(RESET);
+		fileSink << getColor(RESET);
+	}
+	return (result == EOF) ? EOF : c;
+}
+
+int LogBuffer::sync() {
+	if (output == CONSOLE || output == BOTH) {
+			screenSink << std::flush;
+		} 
+		if (output == FILE || output == BOTH) {
+			fileSink << std::flush;
+		}
+	
+    return (flushBuffer() == EOF) ? -1 : 0;
+}
+
+void LogBuffer::setColor(LogColor _color) {
+	color = _color;
+}
+
+void LogBuffer::setOutput(LogOutput _output) {
+	output = _output;
+}
+
+void LogBuffer::setType(LogType type) {
+	switch(type) {
+		case INFO_TYPE:
+			label = "INFO";
+			break;
+		case WARN_TYPE:
+			label = "WARN";
+		case ERR_TYPE:
+			label = "ERROR";
+		case DEBUG_TYPE:
+			label = "DBG";
+			break;
+	}
+}
+
+Logger::Logger(LogOutput _output, LogType _type) :  
+	std::ios(0),
+	std::ostream(new LogBuffer(_output, _type))
+	{}
+
+Logger::Logger(LogOutput _output, LogType _type, LogColor _color) : 
+	std::ios(0),
+	std::ostream(new LogBuffer(_output, _type, _color))
+	{}
 
 Logger::~Logger() {
+	
+}
+
+void Logger::setOutput(LogOutput _output) {
+	LogBuffer *buf = static_cast<LogBuffer *>(rdbuf());
+	buf->setOutput(_output);
+}
+
+void Logger::setColor(LogColor _color) {
+	LogBuffer *buf = static_cast<LogBuffer *>(rdbuf());
+	buf->setColor(_color);
+}
+
+void Logger::setType(LogType _type) {
+	LogBuffer *buf = static_cast<LogBuffer *>(rdbuf());
+	buf->setType(_type);
+}
+
+LogHandler* LogHandler::pLogHandler = NULL;
+
+LogHandler* LogHandler::getInstance() {
+	if (pLogHandler == NULL) {
+		pLogHandler = new LogHandler();
+	}
+	return pLogHandler;
+}
+
+LogHandler::LogHandler() : 
+	warningLog(NO_OUTPUT, WARN_TYPE),
+	errorLog(NO_OUTPUT, ERR_TYPE),
+	infoLog(NO_OUTPUT, INFO_TYPE),
+	debugLog(NO_OUTPUT, DEBUG_TYPE) {
+}
+
+LogHandler::~LogHandler() {
 }

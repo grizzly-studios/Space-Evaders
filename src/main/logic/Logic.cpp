@@ -13,7 +13,7 @@ Logic::Logic(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventM
 }
 
 Logic::~Logic() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void Logic::update() {
@@ -34,7 +34,7 @@ void Logic::onEvent(Event& event) {
 			onGameStateChange((GameStateChangedEvent&) event);
 			break;
 		case CHANGE_PLAYER_DIRECTION_EVENT:
-			DBG("Change player direction");
+			DBG << "Change player direction" << std::endl;
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
 			break;
 		case MOVE_MENU_POINTER_EVENT:
@@ -129,7 +129,7 @@ void Logic::generateLevel() {
 		allPlayers.back()->getID(),
 		allPlayers.back()->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
-	DBG("Generated level");
+	DBG << "Generated level" << std::endl;
 }
 
 void Logic::onGameStateChange(GameStateChangedEvent& event) {

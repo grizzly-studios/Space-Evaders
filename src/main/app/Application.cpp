@@ -34,19 +34,25 @@ Application::Application(int argc, char** argv) {
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
 		} else if (arg == "-v"){
-			CHANGE_LOG(false, true, FULL);
+			LogHandler::getInstance()->debugLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->infoLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->warningLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->errorLog.setOutput(CONSOLE);
 		} else if(arg == "-vf"){
-			CHANGE_LOG(true, true, FULL);
+			LogHandler::getInstance()->debugLog.setOutput(BOTH);
+			LogHandler::getInstance()->infoLog.setOutput(BOTH);
+			LogHandler::getInstance()->warningLog.setOutput(BOTH);
+			LogHandler::getInstance()->errorLog.setOutput(BOTH);
 		}else{
-			WARN("Unknown Flag: " + arg);
+			WARN << "Unknown Flag: " << arg << std::endl;
 		}
 	}
 	//No point in INFO, WARN or DEBUG messages before this point
-	INFO("Application successfully created");
+	INFO << "Application successfully created" << std::endl;
 }
 
 void Application::init() { 
-	INFO("Begining init");
+	INFO << "Begining init" << std::endl;
 	eventManager = IEventManagerPtr(new EventManager);
 	
 	settings.antialiasingLevel = AL;
@@ -76,7 +82,7 @@ void Application::init() {
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
 
-	INFO("Ending init");
+	INFO << "Ending init" << std::endl;
 	
 	//Set initial GameState
 	GameStateChangedEvent gameStateChangedEvent(MENU);
@@ -84,7 +90,7 @@ void Application::init() {
 }
 
 Application::~Application() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void Application::load() {
@@ -94,7 +100,7 @@ void Application::run() {
 	
 	load();
 	
-	INFO("Beginning while loop");
+	INFO << "Beginning while loop" << std::endl;
 	while(window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {

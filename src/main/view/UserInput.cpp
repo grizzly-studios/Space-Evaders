@@ -19,7 +19,7 @@ UserInput::UserInput(
 }
 
 UserInput::~UserInput() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void UserInput::update() {
