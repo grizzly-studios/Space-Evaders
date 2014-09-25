@@ -60,7 +60,6 @@ private:
 	MobileEntityList mobileObjects;
 	PlayerList allPlayers;
 	BulletsList allBullets;
-	GameState gameState;
 
 	RenderWindowShPtr window;
 	
