@@ -7,7 +7,6 @@
 
 #include "Application.h"
 #include "../util/Logger.h"
-#include <sstream>
 
 using namespace gs;
 
