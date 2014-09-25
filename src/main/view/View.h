@@ -19,6 +19,7 @@
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/MenuPointerChange.h"
 #include "../event/GameStateChangedEvent.h"
+#include "../event/GameStartEvent.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 #include "UserInput.h"
@@ -51,6 +52,8 @@ private:
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
+	void moveMenuPointer(MoveMenuPointerEvent &event);
+	void selectMenuItem();
 
 	void inGameRender();
 	void pausedRender();
@@ -71,6 +74,7 @@ private:
 	GameState gameState;
 
 	int menuPos;
+	int currentMenuPos;
 };
 
 }
