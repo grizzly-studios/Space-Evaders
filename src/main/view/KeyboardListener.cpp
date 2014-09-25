@@ -168,7 +168,7 @@ void KeyboardListener::onEvent(Event& event) {
 			const short eventType = event.getType();
 			std::stringstream ss;
 			ss << "Un-Handled: " << eventType;
-		    ERR(ss.str());
+		    ERR << ss.str() << std::endl;
 			break;
 	}
 }

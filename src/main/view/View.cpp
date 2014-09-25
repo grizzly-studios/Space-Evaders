@@ -36,7 +36,7 @@ void View::init() {
 	menuPos = 222;
 	if(!font.loadFromFile("assets/arial.ttf"))
     {
-      ERR("Could not load font file");
+      ERR << "Could not load font file" << std::endl;
     }
 }
 
@@ -217,7 +217,7 @@ void View::onEvent(Event& event) {
 				default:{
 					std::stringstream ss;
 					ss << "Unkown Posistion: " << newPos;
-				    ERR(ss.str());
+				    ERR << ss.str() << std::endl;
 					break;
 				}
 
