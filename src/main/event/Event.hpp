@@ -2,6 +2,7 @@
 #define	EVENT_HPP
 
 #include "EventEnum.hpp"
+#include "../util/Logger.h"
 
 namespace gs {
 
@@ -16,6 +17,7 @@ public:
 	 * @return Event type
 	 */
 	virtual EventEnum getType() const = 0;
+	friend std::ostream & operator<<(std::ostream &logger, const Event& event);
 };
 
 }
