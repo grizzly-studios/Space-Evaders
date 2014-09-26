@@ -17,7 +17,6 @@
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
-#include "../event/GameStartEvent.h"
 #include "../event/MoveMenuPointerEvent.h"
 #include "../event/MenuPointerChange.h"
 
@@ -27,8 +26,6 @@
 
 #include "MenuItemEnum.hpp"
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include "../app/GameState.h"
 
 namespace gs {
@@ -37,11 +34,10 @@ typedef std::list<EntityShPtr> EntityList;
 typedef std::list<MobileEntityShPtr> MobileEntityList;
 typedef std::list<PlayerShPtr> PlayerList;
 typedef std::list<BulletsShPtr> BulletsList;
-typedef std::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
 
 class Logic : public ILogic, public IEventListener  {
 public:
-	Logic(IEventManagerPtr _eventManager, RenderWindowShPtr _window);
+	Logic(IEventManagerPtr _eventManager);
 	~Logic();
 	virtual void update();
 	virtual void onEvent(Event& event);
@@ -54,14 +50,11 @@ private:
 	sf::Clock *clock;
 	double accumulator;
 	double dt;
-	int currentMenuPos;
 
 	EntityList allObjects;
 	MobileEntityList mobileObjects;
 	PlayerList allPlayers;
 	BulletsList allBullets;
-
-	RenderWindowShPtr window;
 	
 	//Subroutines
 	void move();
@@ -75,8 +68,6 @@ private:
 	
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
-	void moveMenuPointer(MoveMenuPointerEvent &event);
-	void selectMenuItem();
 	
 	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
 };

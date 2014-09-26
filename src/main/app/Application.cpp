@@ -61,7 +61,7 @@ void Application::init() {
 		sf::Style::Close, settings));
 	window->setVerticalSyncEnabled(true);
 
-	logic = ILogicPtr(new Logic(eventManager, window));
+	logic = ILogicPtr(new Logic(eventManager));
 	
 	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
 	IUserInputShPtr userInput(new UserInput(eventManager,keyboard));
@@ -72,11 +72,11 @@ void Application::init() {
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
-	eventManager->addListener(MOVE_MENU_POINTER_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(MOVE_MENU_POINTER_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(keyboard));
-	eventManager->addListener(MENU_SELECT_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(MENU_SELECT_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(MENU_POINTER_CHANGE, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(GAME_START_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
