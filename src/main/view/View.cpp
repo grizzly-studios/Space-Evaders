@@ -178,7 +178,7 @@ void View::menuRender(){
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
-	INFO << "Received event: " << eventType << std::endl;
+	INFO << "Received event: " << event << std::endl;
 
 	switch (eventType) {
 		case GAME_STATE_CHANGED_EVENT:

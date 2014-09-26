@@ -18,6 +18,8 @@ enum EventEnum {
 	GAME_END_EVENT 					//8
 };
 
+extern const char* EventEnumText[];
+
 }
 
 #endif	/* EVENT_ENUM_HPP */
