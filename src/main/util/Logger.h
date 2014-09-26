@@ -165,6 +165,8 @@ private:
      * @return In success returns 0 or -1 on failure
      */
 	virtual int sync();
+
+	static int OriginalColors;
 };
 /** Logging output stream */
 class Logger : public std::ostream {

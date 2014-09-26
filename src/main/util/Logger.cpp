@@ -146,7 +146,7 @@ std::string LogBuffer::getColor(LogColor _color, bool bold) {
 std::string LogBuffer::header() {
 	time_t rawTime;
 	time(&rawTime);
-	std::tm *lTime = std::localtime(&rawTime);
+	tm *lTime = localtime(&rawTime);
 	char timeBuf[100];
 	strftime(timeBuf, sizeof(timeBuf), "[%d/%m/%Y %H:%M:%S]", lTime);
 
