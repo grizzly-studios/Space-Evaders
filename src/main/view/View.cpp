@@ -33,6 +33,11 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
+	menuPos = 222;
+	if(!font.loadFromFile("assets/arial.ttf"))
+    {
+      ERR << "Could not load font file" << std::endl;
+    }
 }
 
 void View::update() {
@@ -40,46 +45,192 @@ void View::update() {
 }
 
 void View::render() {
+	//First clear up then make the standards
 	window->clear();
-
-	// Draw background
 	for (RectShapeList::const_iterator it = stars.begin(); it != stars.end(); ++it) {
 		window->draw(*it);
 	}
 
-	// Draw entity sprites
+	//Now work out what else to draw
+	switch (gameState) {
+		case IN_GAME:
+			inGameRender();
+			break;
+		case PAUSED:
+			pausedRender();
+			break;
+		case LOADING:
+			loadingRender();
+			break;
+		case MENU:
+			menuRender();
+			break;
+	}
+
+	//Now display
+	window->display();
+}
+
+void View::inGameRender(){
+	// Draw entity sprites (GAME)
 	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
 		window->draw(it->second);
 	}
 
-	// Draw HUD sprites
+	// Draw HUD sprites (GAME)
 	for (SpriteList::const_iterator it = hudSprites.begin(); it != hudSprites.end();
 			++it) {
 		window->draw(*it);
 	}
-
-	window->display();
 }
+
+void View::pausedRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("PAUSED");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+
+	textBorder.setSize(sf::Vector2f(200, 22));
+	textBorder.setPosition(135,290);
+	text.setString("P to Continue");
+	text.setPosition(137,286);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	
+	textBorder.setPosition(135,324);
+	text.setString("Escape to Quit");
+	text.setPosition(137,320);
+	window->draw(textBorder);
+	window->draw(text);
+}
+
+void View::loadingRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("LOADING");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+}
+
+void View::menuRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	sf::CircleShape menuPoint;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+	
+	textBorder.setSize(sf::Vector2f(200, 22));
+	textBorder.setPosition(135,222);
+	text.setString("START EVADING");
+	text.setPosition(137,218);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("OPTIONS");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setPosition(135,290);
+	text.setString("CREDITS");
+	text.setPosition(137,286);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setSize(sf::Vector2f(64, 22));
+	textBorder.setPosition(135,324);
+	text.setString("QUIT");
+	text.setPosition(137,320);
+	window->draw(textBorder);
+	window->draw(text);
+
+	menuPoint.setRadius(10);
+	menuPoint.setFillColor(sf::Color::Blue);
+	menuPoint.setPosition(105,menuPos);
+	window->draw(menuPoint);
+}
+
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
 	INFO << "Received event: " << event << std::endl;
 
 	switch (eventType) {
-	case ENTITY_CREATED_EVENT: {
-		EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
-		onEntityCreated(entityCreatedEvent);
-		break;
-	}
-	case ENTITY_MOVED_EVENT: {
-		EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
-		onEntityMoved(entityMovedEvent);
-		break;
-	}
-	default: {
-		WARN << "Event wasn't handled" << std::endl;
-		break;
-	}
+		case GAME_STATE_CHANGED_EVENT:
+			onGameStateChanged((GameStateChangedEvent&) event);
+			break;
+		case ENTITY_CREATED_EVENT: {
+			EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
+			onEntityCreated(entityCreatedEvent);
+			break;
+		}
+		case ENTITY_MOVED_EVENT: {
+			EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
+			onEntityMoved(entityMovedEvent);
+			break;
+		}
+		case MENU_POINTER_CHANGE :{
+			MenuPointerChange menuPointerChange = (MenuPointerChange&) event;
+			const int newPos = menuPointerChange.getPos();
+			switch (newPos){
+				case MENU_START:{
+					menuPos = 222;
+					break;
+				}
+				case MENU_SETTINGS:{
+					menuPos = 256;
+					break;
+				}
+				case MENU_CREDITS:{
+					menuPos = 290;
+					break;
+				}
+				case MENU_QUIT:{
+					menuPos = 324;
+					break;
+				}
+				default:{
+					std::stringstream ss;
+					ss << "Unkown Posistion: " << newPos;
+				    ERR << ss.str() << std::endl;
+					break;
+				}
+
+			}
+			break;
+		}
+		case GAME_END_EVENT:
+			gameOver();
+			break;
+		default: {
+			WARN << "Event wasn't handled (" << eventType << ")" << std::endl;
+			break;
+		}
 	}
 }
 
@@ -90,8 +241,8 @@ void View::initBackground() {
 	const int SEED = 48;
 
 	std::mt19937 randomNumGen(SEED);
-	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
-	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
+	std::uniform_int_distribution<int> distX(0, WIDTH);
+	std::uniform_int_distribution<int> distY(0, HEIGHT);
 	std::function<int()> genX(std::bind(distX, randomNumGen));
 	std::function<int()> genY(std::bind(distY, randomNumGen));
 	
@@ -175,4 +326,12 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}
+}
+
+void View::onGameStateChanged(GameStateChangedEvent& event) {
+	gameState = event.getState();
+}
+
+void View::gameOver(){
+	spriteMap.clear();
 }

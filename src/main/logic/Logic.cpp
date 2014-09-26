@@ -1,13 +1,15 @@
 #include "Logic.h"
 
 #include "../util/Logger.h"
+#include <sstream>
 
 using namespace gs;
 
-Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
+Logic::Logic(IEventManagerPtr _eventManager, RenderWindowShPtr _window) : eventManager(_eventManager),window(_window) {
 	clock = new sf::Clock();
 	accumulator = 0;
 	dt = 12500;
+	currentMenuPos = 0;
 }
 
 Logic::~Logic() {
@@ -28,11 +30,31 @@ void Logic::update() {
 
 void Logic::onEvent(Event& event) {
 	switch (event.getType()) {
+	    case GAME_STATE_CHANGED_EVENT:
+			onGameStateChange((GameStateChangedEvent&) event);
+			break;
 		case CHANGE_PLAYER_DIRECTION_EVENT:
 			DBG << "Change player direction" << std::endl;
 			onChangePlayerDirection((ChangePlayerDirectionEvent&) event);
 			break;
+		case MOVE_MENU_POINTER_EVENT:
+		    DBG << "Moving Menu Pointer" << std::endl;
+		    moveMenuPointer((MoveMenuPointerEvent&) event);
+		    break;
+		case MENU_SELECT_EVENT:
+		    selectMenuItem();
+		    break;
+		case GAME_START_EVENT:
+			startNewGame();
+			break;
+		case GAME_END_EVENT:
+			gameEnd();
+			break;
 		default:
+		    const short eventType = event.getType();
+			std::stringstream ss;
+			ss << "Un-Handled: " << eventType;
+		    ERR << ss.str() << std::endl;
 			break;
 	}
 }
@@ -108,4 +130,106 @@ void Logic::generateLevel() {
 		allPlayers.back()->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
 	DBG << "Generated level" << std::endl;
+}
+
+void Logic::onGameStateChange(GameStateChangedEvent& event) {
+	const short newState = event.getState();
+	std::stringstream ss;
+	ss << "Changing game state to " << newState;
+	DBG << ss.str() << std::endl;
+}
+
+
+void Logic::moveMenuPointer(MoveMenuPointerEvent& event){
+	int rc = 0;
+	switch(event.getDirection()){
+		case DOWN:
+			currentMenuPos = ((++currentMenuPos) % 4);
+			break;
+
+		case UP:
+			currentMenuPos = --currentMenuPos;
+			if(currentMenuPos < 0){
+				currentMenuPos = 3;
+			}
+
+			break;
+
+		case NONE: //go nowhere. duh!
+			break;
+
+		default:
+			std::stringstream ss;
+			ss << "Unable to move menu pointer in direction: " << event.getDirection();
+		    ERR << ss.str() << std::endl;
+		    rc = 1;
+			break;
+	}
+
+	if(!rc){ //Above was OK
+		std::stringstream ss;
+		ss << "New position is: " << currentMenuPos;
+		DBG << ss.str() << std::endl;
+
+		MenuPointerChange menuPointerChange(currentMenuPos);
+		eventManager->fireEvent(menuPointerChange);
+	}
+}
+
+void Logic::selectMenuItem(){
+	//we have been told to activate whatever so go for it!
+	switch(currentMenuPos){
+		case MENU_START:{
+			INFO << "Start Game selected" << std::endl;
+			//We need to start a new game!
+			GameStartEvent gameStartEvent;
+			eventManager->fireEvent(gameStartEvent);
+			break;
+		}
+		case MENU_SETTINGS:{
+			//Do nothing for now
+			INFO << "Settings selected" << std::endl;
+			break;
+		}		
+		case MENU_CREDITS:{
+			//Do nothing for now
+			INFO << "Credits selected" << std::endl;
+			break;
+		}
+		case MENU_QUIT:{
+			//Let's quit!
+			INFO << "Quit selected" << std::endl;
+			window->close();
+			break;
+		}
+		default:{
+			std::stringstream ss;
+			ss << "Unkown Posistion: " << currentMenuPos;
+			ERR << ss.str() << std::endl;
+			break;
+		}
+	}
+}
+
+void Logic::startNewGame(){
+	//Ok so we're going to start a new game
+	//first set the loading screen
+	GameStateChangedEvent gameStateChangedEvent(LOADING);
+	eventManager->fireEvent(gameStateChangedEvent);
+	//Now we need to initalise everything
+	generateLevel();
+	//Now we're done show the game!
+	GameStateChangedEvent gameStateChangedEvent2(IN_GAME);
+	eventManager->fireEvent(gameStateChangedEvent2);
+
+}
+
+void Logic::gameEnd(){
+	//Ok so we're ending the game just go back to menu and tidy up
+	GameStateChangedEvent gameStateChangedEvent(MENU);
+	eventManager->fireEvent(gameStateChangedEvent);
+
+	allPlayers.clear();
+	mobileObjects.clear();
+	allObjects.clear();
 }
