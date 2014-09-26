@@ -57,7 +57,7 @@ bool EventManager::fireEvent(Event& event) const {
 	}
 
 	if (!success) {
-		WARN << "Failed to fire event as there were no listeners for the event type" << std::endl;
+		WARN << "Failed to fire event as there were no listeners for the event type " << event << std::endl;
 	}
 
 	return success;
