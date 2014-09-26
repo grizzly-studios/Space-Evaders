@@ -17,7 +17,10 @@ public:
 	 * @return Event type
 	 */
 	virtual EventEnum getType() const = 0;
-	friend std::ostream & operator<<(std::ostream &logger, const Event& event);
+	friend std::ostream & operator<<(std::ostream &logger, const Event& event)
+	{
+		return logger << EventEnumText[event.getType()];
+	}
 };
 
 }
