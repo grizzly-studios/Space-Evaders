@@ -19,6 +19,8 @@ enum EventEnum {
 	MENU_ACTION_EVENT				//9
 };
 
+extern const char* EventEnumText[];
+
 }
 
 #endif	/* EVENT_ENUM_HPP */
