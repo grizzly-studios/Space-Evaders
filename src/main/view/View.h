@@ -53,6 +53,7 @@ private:
 	void onEntityMoved(EntityMovedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
 	void moveMenuPointer(MoveMenuPointerEvent &event);
+	void moveMenuPointer(MenuActionEvent &event);
 	void selectMenuItem();
 
 	void inGameRender();

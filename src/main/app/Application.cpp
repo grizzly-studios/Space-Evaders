@@ -81,6 +81,7 @@ void Application::init() {
 	eventManager->addListener(GAME_START_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(MENU_ACTION_EVENT, MAKE_EVENT_LISTENER(view));
 
 	INFO << "Ending init" << std::endl;
 	

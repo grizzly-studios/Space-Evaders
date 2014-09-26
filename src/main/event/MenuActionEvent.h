@@ -14,17 +14,17 @@ namespace gs {
 
 class MenuActionEvent : public Event {
 public:
+	enum Action {UP, DOWN, SELECT};
+	
 	MenuActionEvent(Action _action) : action(_action) {};
 
 	virtual EventEnum getType() const {
 		return MENU_ACTION_EVENT;
 	}
 
-	Direction getAction() const {
+	Action getAction() const {
 		return action;
 	}
-	
-	static enum Action {UP, DOWN, SELECT};
 
 private:
 	Action action;
