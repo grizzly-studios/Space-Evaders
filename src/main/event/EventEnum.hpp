@@ -13,6 +13,8 @@ enum EventEnum {
 	CHANGE_PLAYER_DIRECTION_EVENT
 };
 
+extern const char* EventEnumText[];
+
 }
 
 #endif	/* EVENT_ENUM_HPP */
