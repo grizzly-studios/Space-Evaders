@@ -15,7 +15,8 @@ enum EventEnum {
 	GAME_START_EVENT,				//5
 	MENU_SELECT_EVENT,				//6
 	MENU_POINTER_CHANGE,			//7
-	GAME_END_EVENT 					//8
+	GAME_END_EVENT, 				//8
+	MENU_ACTION_EVENT				//9
 };
 
 }
