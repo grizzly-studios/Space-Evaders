@@ -119,7 +119,7 @@ public:
      * @param type Log type
      */
 	void setType(LogType type);
-	
+
 protected:
 	/** Buffer size */
 	static const int bufSize = 1;
@@ -137,6 +137,7 @@ protected:
 	std::ofstream fileSink;
 	/** Denotes whether the next character is a new line */
 	bool isNewLine;
+
 	/** Generates the formatted date and time header for each line
 	 * 
      * @return Formatted header string containing time and date
@@ -152,6 +153,9 @@ protected:
      * @return Number of characters written to the output buffers or EOF if the streambuf is empty
      */
 	int flushBuffer();
+
+	/** Stores information about what the window colours were before start */
+	static int OriginalColors;
 	
 private:
 	/** Virtual function to be used internally to place a character in the overflow
