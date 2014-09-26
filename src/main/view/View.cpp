@@ -196,11 +196,6 @@ void View::onEvent(Event& event) {
 			onEntityMoved(entityMovedEvent);
 			break;
 		}
-		case MOVE_MENU_POINTER_EVENT: {
-		    DBG << "Moving Menu Pointer" << std::endl;
-		    moveMenuPointer((MoveMenuPointerEvent&) event);
-		    break;
-		}
 		case MENU_SELECT_EVENT: {
 		    selectMenuItem();
 		    break;
@@ -351,42 +346,6 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 
 void View::onGameStateChanged(GameStateChangedEvent& event) {
 	gameState = event.getState();
-}
-
-void View::moveMenuPointer(MoveMenuPointerEvent& event){
-	int rc = 0;
-	switch(event.getDirection()){
-		case DOWN:
-			currentMenuPos = ((++currentMenuPos) % 4);
-			break;
-
-		case UP:
-			currentMenuPos = --currentMenuPos;
-			if(currentMenuPos < 0){
-				currentMenuPos = 3;
-			}
-
-			break;
-
-		case NONE: //go nowhere. duh!
-			break;
-
-		default:
-			std::stringstream ss;
-			ss << "Unable to move menu pointer in direction: " << event.getDirection();
-		    ERR << ss.str() << std::endl;
-		    rc = 1;
-			break;
-	}
-
-	if(!rc){ //Above was OK
-		std::stringstream ss;
-		ss << "New position is: " << currentMenuPos;
-		DBG << ss.str() << std::endl;
-
-		MenuPointerChange menuPointerChange(currentMenuPos);
-		eventManager->fireEvent(menuPointerChange);
-	}
 }
 
 void View::moveMenuPointer(MenuActionEvent& event){

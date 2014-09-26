@@ -110,8 +110,8 @@ void KeyboardListener::pausedUpdate() {
 	}
 
 	if (resetDirection) {
-		MoveMenuPointerEvent moveMenuPointerEvent(NONE);
-		eventManager->fireEvent(moveMenuPointerEvent);
+		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		//eventManager->fireEvent(moveMenuPointerEvent);
 	}
 }
 
@@ -159,8 +159,8 @@ void KeyboardListener::menuUpdate() {
 	}
 
 	if (resetDirection) {
-		MoveMenuPointerEvent moveMenuPointerEvent(NONE);
-		eventManager->fireEvent(moveMenuPointerEvent);
+		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		//eventManager->fireEvent(moveMenuPointerEvent);
 	}
 }
 
