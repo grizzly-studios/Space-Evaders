@@ -17,7 +17,6 @@
 
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
-#include "../event/MenuSelectEvent.h"
 #include "../event/GameEndEvent.h"
 #include "../event/MenuActionEvent.h"
 

@@ -196,10 +196,6 @@ void View::onEvent(Event& event) {
 			onEntityMoved(entityMovedEvent);
 			break;
 		}
-		case MENU_SELECT_EVENT: {
-		    selectMenuItem();
-		    break;
-		}
 		case MENU_POINTER_CHANGE : {
 			MenuPointerChange menuPointerChange = (MenuPointerChange&) event;
 			const int newPos = menuPointerChange.getPos();
