@@ -23,9 +23,11 @@ LogBuffer::LogBuffer(LogOutput _output, LogType type) :
 		case WARN_TYPE:
 			label = "WARN";
 			color = YELLOW;
+			break;
 		case ERR_TYPE:
 			label = "ERROR";
 			color = RED;
+			break;
 		case DEBUG_TYPE:
 			label = "DBG";
 			color = GREEN;
@@ -47,8 +49,10 @@ LogBuffer::LogBuffer(LogOutput _output, LogType type, LogColor _color) :
 			break;
 		case WARN_TYPE:
 			label = "WARN";
+			break;
 		case ERR_TYPE:
 			label = "ERROR";
+			break;
 		case DEBUG_TYPE:
 			label = "DBG";
 			break;
