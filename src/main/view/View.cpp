@@ -136,7 +136,6 @@ void View::loadingRender(){
 void View::menuRender(){
 	sf::Text text;
 	sf::RectangleShape textBorder;
-	sf::CircleShape menuPoint;
 	textBorder.setFillColor(sf::Color::Black);
 	text.setFont(font);
 	text.setCharacterSize(24);
