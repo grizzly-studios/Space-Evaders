@@ -119,6 +119,11 @@ public:
      * @param type Log type
      */
 	void setType(LogType type);
+
+
+
+
+	
 	
 protected:
 	/** Buffer size */
@@ -166,7 +171,6 @@ private:
      */
 	virtual int sync();
 
-	static int OriginalColors;
 };
 /** Logging output stream */
 class Logger : public std::ostream {
@@ -202,7 +206,10 @@ public:
      * @param type New type
      */
 	void setType(LogType type);
+
 private:
+
+	
 };
 /** Log Handler Singleton */
 class LogHandler {
@@ -221,6 +228,12 @@ public:
 	/** Debug output log stream */
 	Logger debugLog;
 
+#if defined(_WIN64) || defined(_WIN32)
+	/* Only in the windows code */
+	short getOriginalColor();
+#endif
+
+
 private:
 	/** Constructor */
 	LogHandler();
@@ -228,8 +241,16 @@ private:
 	virtual ~LogHandler();
 	/** Pointer to this singleton */
 	static LogHandler* pLogHandler;
+
+#if defined(_WIN64) || defined(_WIN32)
+	/* Only in the windows code */
+	short OriginalColors;
+#endif
+
 };
 
 }
+
+
 
 #endif	/* LOGGER_H */

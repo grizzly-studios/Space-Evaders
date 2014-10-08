@@ -105,7 +105,7 @@ std::string LogBuffer::getColor(LogColor _color, bool bold) {
 			SetConsoleTextAttribute(hstdout, 0);
 			break;
 		case RESET:
-			SetConsoleTextAttribute(hstdout, OriginalColors);
+			SetConsoleTextAttribute(hstdout, LogHandler::getInstance()->getOriginalColor());
 			break;
 	}
 	return "";
@@ -146,7 +146,11 @@ std::string LogBuffer::getColor(LogColor _color, bool bold) {
 std::string LogBuffer::header() {
 	time_t rawTime;
 	time(&rawTime);
+#if defined(_WIN64) || defined(_WIN32)
 	tm *lTime = localtime(&rawTime);
+#else
+	std::tm *lTime = std::localtime(&rawTime);
+#endif
 	char timeBuf[100];
 	strftime(timeBuf, sizeof(timeBuf), "[%d/%m/%Y %H:%M:%S]", lTime);
 
@@ -274,7 +278,26 @@ LogHandler::LogHandler() :
 	errorLog(NO_OUTPUT, ERR_TYPE),
 	infoLog(NO_OUTPUT, INFO_TYPE),
 	debugLog(NO_OUTPUT, DEBUG_TYPE) {
+
+#if defined(_WIN64) || defined(_WIN32)
+	HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
+	_CONSOLE_SCREEN_BUFFER_INFO info;
+	GetConsoleScreenBufferInfo(hstdout, &info);
+	OriginalColors = info.wAttributes;
+	SetConsoleTextAttribute(hstdout, 15);
+#endif
+
 }
 
 LogHandler::~LogHandler() {
+#if defined(_WIN64) || defined(_WIN32)	
+	HANDLE hstdout = GetStdHandle( STD_OUTPUT_HANDLE );
+	SetConsoleTextAttribute(hstdout, OriginalColors);
+#endif
 }
+
+#if defined(_WIN64) || defined(_WIN32)
+short LogHandler::getOriginalColor(){
+	return OriginalColors;
+}
+#endif
