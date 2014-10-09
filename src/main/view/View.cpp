@@ -222,7 +222,6 @@ void View::onEvent(Event& event) {
 				    ERR << ss.str() << std::endl;
 					break;
 				}
-
 			}
 			break;
 		}
@@ -240,7 +239,10 @@ void View::onEvent(Event& event) {
 			break;
 		}
 		default: {
-			WARN << "Event wasn't handled (" << eventType << ")" << std::endl;
+			const short eventType = event.getType();
+			std::stringstream ss;
+			ss << "Un-Handled: " << eventType;
+		    ERR << ss.str() << std::endl;
 			break;
 		}
 	}
