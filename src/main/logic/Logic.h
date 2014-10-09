@@ -17,7 +17,6 @@
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
-#include "../event/MoveMenuPointerEvent.h"
 #include "../event/MenuPointerChange.h"
 
 #include "MobileEntity.h"

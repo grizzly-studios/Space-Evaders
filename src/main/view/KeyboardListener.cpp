@@ -110,8 +110,8 @@ void KeyboardListener::pausedUpdate() {
 	}
 
 	if (resetDirection) {
-		MoveMenuPointerEvent moveMenuPointerEvent(NONE);
-		eventManager->fireEvent(moveMenuPointerEvent);
+		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		//eventManager->fireEvent(moveMenuPointerEvent);
 	}
 }
 
@@ -124,8 +124,10 @@ void KeyboardListener::menuUpdate() {
 	//We're in a menu update
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) != previousState[sf::Keyboard::Down]) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			MoveMenuPointerEvent moveMenuPointerEvent(DOWN);
-			eventManager->fireEvent(moveMenuPointerEvent);
+			//MoveMenuPointerEvent moveMenuPointerEvent(DOWN);
+			//eventManager->fireEvent(moveMenuPointerEvent);
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::DOWN);
+			eventManager->fireEvent(menuActionEvent);
 		} else {
 			resetDirection = true;
 		}
@@ -134,8 +136,10 @@ void KeyboardListener::menuUpdate() {
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) != previousState[sf::Keyboard::Up]) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			MoveMenuPointerEvent moveMenuPointerEvent(UP);
-			eventManager->fireEvent(moveMenuPointerEvent);
+			//MoveMenuPointerEvent moveMenuPointerEvent(UP);
+			//eventManager->fireEvent(moveMenuPointerEvent);
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::UP);
+			eventManager->fireEvent(menuActionEvent);
 		} else {
 			resetDirection = true;
 		}
@@ -144,8 +148,10 @@ void KeyboardListener::menuUpdate() {
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) != previousState[sf::Keyboard::Return]) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
-			MenuSelectEvent menuSelectEvent;
-			eventManager->fireEvent(menuSelectEvent);
+			//MenuSelectEvent menuSelectEvent;
+			//eventManager->fireEvent(menuSelectEvent);
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::SELECT);
+			eventManager->fireEvent(menuActionEvent);
 		} else {
 			resetDirection = true;
 		}
@@ -153,8 +159,8 @@ void KeyboardListener::menuUpdate() {
 	}
 
 	if (resetDirection) {
-		MoveMenuPointerEvent moveMenuPointerEvent(NONE);
-		eventManager->fireEvent(moveMenuPointerEvent);
+		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		//eventManager->fireEvent(moveMenuPointerEvent);
 	}
 }
 

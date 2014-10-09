@@ -203,9 +203,10 @@ void View::onEvent(Event& event) {
 	INFO << "Received event: " << event << std::endl;
 
 	switch (eventType) {
-		case GAME_STATE_CHANGED_EVENT:
+		case GAME_STATE_CHANGED_EVENT: {
 			onGameStateChanged((GameStateChangedEvent&) event);
 			break;
+		}
 		case ENTITY_CREATED_EVENT: {
 			EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
 			onEntityCreated(entityCreatedEvent);
@@ -216,21 +217,24 @@ void View::onEvent(Event& event) {
 			onEntityMoved(entityMovedEvent);
 			break;
 		}
-		case MOVE_MENU_POINTER_EVENT:
-		    DBG << "Moving Menu Pointer" << std::endl;
-		    moveMenuPointer((MoveMenuPointerEvent&) event);
-		    break;
-		case MENU_SELECT_EVENT:
-		    selectMenuItem();
-		    break;
-		case MENU_POINTER_CHANGE :{
+		case MENU_POINTER_CHANGE : {
 			MenuPointerChange menuPointerChange = (MenuPointerChange&) event;
 			menuPos = menuPointerChange.getPos();
 			break;
 		}
-		case GAME_END_EVENT:
+		case GAME_END_EVENT: {
 			gameOver();
 			break;
+		}
+		case MENU_ACTION_EVENT: {
+			MenuActionEvent menuActionEvent = (MenuActionEvent&) event;
+			if (menuActionEvent.getAction() == MenuActionEvent::Action::SELECT) {
+				selectMenuItem();
+			} else {
+				moveMenuPointer(menuActionEvent);
+			}
+			break;
+		}
 		default: {
 			const short eventType = event.getType();
 			std::stringstream ss;
@@ -339,27 +343,26 @@ void View::onGameStateChanged(GameStateChangedEvent& event) {
 	gameState = event.getState();
 }
 
-void View::moveMenuPointer(MoveMenuPointerEvent& event){
+void View::moveMenuPointer(MenuActionEvent& event){
 	int rc = 0;
-	switch(event.getDirection()){
-		case DOWN:
+	switch(event.getAction()){
+		case MenuActionEvent::Action::DOWN:
 			currentMenuPos = ((++currentMenuPos) % 4);
 			break;
 
-		case UP:
+		case MenuActionEvent::Action::UP:
 			currentMenuPos = --currentMenuPos;
 			if(currentMenuPos < 0){
 				currentMenuPos = 3;
 			}
-
 			break;
 
-		case NONE: //go nowhere. duh!
+		case MenuActionEvent::Action::SELECT: //go nowhere. duh!
 			break;
 
 		default:
 			std::stringstream ss;
-			ss << "Unable to move menu pointer in direction: " << event.getDirection();
+			ss << "Unable to move menu pointer in direction: " << event.getAction();
 		    ERR << ss.str() << std::endl;
 		    rc = 1;
 			break;
