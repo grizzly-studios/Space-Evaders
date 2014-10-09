@@ -6,6 +6,8 @@
  */
 
 #include "KeyboardListener.h"
+#include "../util/Logger.h"
+#include <sstream>
 
 namespace gs {
 
@@ -19,7 +21,6 @@ KeyboardListener::~KeyboardListener() {
 }
 
 void KeyboardListener::update() {
-	
 	switch (gameState) {
 		case IN_GAME:
 			inGameUpdate();
@@ -69,39 +70,92 @@ void KeyboardListener::inGameUpdate() {
 		previousState[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
 	}
 	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P) != previousState[sf::Keyboard::P])  {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+			GameStateChangedEvent gameStateChangedEvent(PAUSED);
+			eventManager->fireEvent(gameStateChangedEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::P] = sf::Keyboard::isKeyPressed(sf::Keyboard::P);
+	}
+
 	if (resetDirection) {
 		ChangePlayerDirectionEvent changePlayerDirectionEvent(NONE);
-			eventManager->fireEvent(changePlayerDirectionEvent);
-	}
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-		GameStateChangedEvent gameStateChangedEvent(PAUSED);
-		eventManager->fireEvent(gameStateChangedEvent);
-	}
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		GameStateChangedEvent gameStateChangedEvent(MENU);
-		eventManager->fireEvent(gameStateChangedEvent);
+		eventManager->fireEvent(changePlayerDirectionEvent);
 	}
 }
 
 void KeyboardListener::pausedUpdate() {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-		GameStateChangedEvent gameStateChangedEvent(IN_GAME);
-		eventManager->fireEvent(gameStateChangedEvent);
+	bool resetDirection = false;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P) != previousState[sf::Keyboard::P])  {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+			GameStateChangedEvent gameStateChangedEvent(IN_GAME);
+			eventManager->fireEvent(gameStateChangedEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::P] = sf::Keyboard::isKeyPressed(sf::Keyboard::P);
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		GameStateChangedEvent gameStateChangedEvent(MENU);
-		eventManager->fireEvent(gameStateChangedEvent);
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) != previousState[sf::Keyboard::Escape])  {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			GameEndEvent gameEndEvent;
+			eventManager->fireEvent(gameEndEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Escape] = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
+	}
+
+	if (resetDirection) {
+		MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		eventManager->fireEvent(moveMenuPointerEvent);
 	}
 }
 
 void KeyboardListener::loadingUpdate() {
-	
+	//Do nothing! We're Loading
 }
 
 void KeyboardListener::menuUpdate() {
-	
+	bool resetDirection = false;
+	//We're in a menu update
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) != previousState[sf::Keyboard::Down]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			MoveMenuPointerEvent moveMenuPointerEvent(DOWN);
+			eventManager->fireEvent(moveMenuPointerEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) != previousState[sf::Keyboard::Up]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			MoveMenuPointerEvent moveMenuPointerEvent(UP);
+			eventManager->fireEvent(moveMenuPointerEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Up] = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) != previousState[sf::Keyboard::Return]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+			MenuSelectEvent menuSelectEvent;
+			eventManager->fireEvent(menuSelectEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Return] = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
+	}
+
+	if (resetDirection) {
+		MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		eventManager->fireEvent(moveMenuPointerEvent);
+	}
 }
 
 void KeyboardListener::onEvent(Event& event) {
@@ -111,6 +165,10 @@ void KeyboardListener::onEvent(Event& event) {
 			onGameStateChanged((GameStateChangedEvent&) event);
 			break;
 		default:
+			const short eventType = event.getType();
+			std::stringstream ss;
+			ss << "Un-Handled: " << eventType;
+		    ERR << ss.str() << std::endl;
 			break;
 	}
 }

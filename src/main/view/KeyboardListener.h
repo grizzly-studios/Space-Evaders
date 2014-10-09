@@ -17,6 +17,9 @@
 
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
+#include "../event/MoveMenuPointerEvent.h"
+#include "../event/MenuSelectEvent.h"
+ #include "../event/GameEndEvent.h"
 
 #include "../app/GameState.h"
 #include "../logic/MobileEntity.h"

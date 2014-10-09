@@ -72,11 +72,20 @@ void Application::init() {
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(MOVE_MENU_POINTER_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(keyboard));
+	eventManager->addListener(MENU_SELECT_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(MENU_POINTER_CHANGE, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(GAME_START_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
 
 	INFO << "Ending init" << std::endl;
 	
 	//Set initial GameState
-	GameStateChangedEvent gameStateChangedEvent(IN_GAME);
+	GameStateChangedEvent gameStateChangedEvent(MENU);
 	eventManager->fireEvent(gameStateChangedEvent);
 }
 
@@ -85,7 +94,6 @@ Application::~Application() {
 }
 
 void Application::load() {
-	logic->generateLevel();
 }
 
 void Application::run() {
@@ -96,15 +104,8 @@ void Application::run() {
 	while(window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
-
 			if (event.type == sf::Event::Closed) {
 				window->close();
-			}
-			if (event.type == sf::Event::KeyPressed) {
-				if (event.key.code == sf::Keyboard::Escape) {
-					INFO << "Request to close window registered - closing window" << std::endl;
-					window->close();
-				}
 			}
 		}
 
