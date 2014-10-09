@@ -5,6 +5,8 @@ The brain child and virginity shattering creation of Grizzly Studios
 
 ## Lines of Code
 The develop branch has 1085 lines of code at 13/10/2013.
+The develop branch has 2483 lines of code at 09/10/2014.
+
 
 On a unix system you can count the lines of code by running:
 
