@@ -14,7 +14,7 @@ enum GameState {
 	IN_GAME,
 	PAUSED,
 	LOADING,
-	MENU,
+	MENU
 };
 
 }

@@ -23,6 +23,7 @@ View::View(IEventManagerPtr _eventManager,
 	window(_window),
 	userInput(_userInput),
 	spriteFactory(_sprite_factory) {
+	currentMenuPos = 0;
 }
 
 View::~View() {
@@ -33,6 +34,11 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
+	menuPos = 0;
+	if(!font.loadFromFile("assets/arial.ttf"))
+    {
+      ERR << "Could not load font file" << std::endl;
+    }
 }
 
 void View::update() {
@@ -40,46 +46,202 @@ void View::update() {
 }
 
 void View::render() {
+	//First clear up then make the standards
 	window->clear();
-
-	// Draw background
 	for (RectShapeList::const_iterator it = stars.begin(); it != stars.end(); ++it) {
 		window->draw(*it);
 	}
 
-	// Draw entity sprites
+	//Now work out what else to draw
+	switch (gameState) {
+		case IN_GAME:
+			inGameRender();
+			break;
+		case PAUSED:
+			pausedRender();
+			break;
+		case LOADING:
+			loadingRender();
+			break;
+		case MENU:
+			menuRender();
+			break;
+	}
+
+	//Now display
+	window->display();
+}
+
+void View::inGameRender(){
+	// Draw entity sprites (GAME)
 	for (SpriteMap::const_iterator it = spriteMap.begin(); it != spriteMap.end(); ++it) {
 		window->draw(it->second);
 	}
 
-	// Draw HUD sprites
+	// Draw HUD sprites (GAME)
 	for (SpriteList::const_iterator it = hudSprites.begin(); it != hudSprites.end();
 			++it) {
 		window->draw(*it);
 	}
-
-	window->display();
 }
+
+void View::pausedRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("PAUSED");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+
+	textBorder.setSize(sf::Vector2f(200, 22));
+	textBorder.setPosition(135,290);
+	text.setString("P to Continue");
+	text.setPosition(137,286);
+	window->draw(textBorder);
+	window->draw(text);
+	
+	
+	textBorder.setPosition(135,324);
+	text.setString("Escape to Quit");
+	text.setPosition(137,320);
+	window->draw(textBorder);
+	window->draw(text);
+}
+
+void View::loadingRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setPosition(135,256);
+	text.setString("LOADING");
+	text.setPosition(137,252);
+	window->draw(textBorder);
+	window->draw(text);
+}
+
+void View::menuRender(){
+	sf::Text text;
+	sf::RectangleShape textBorder;
+	textBorder.setFillColor(sf::Color::Black);
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setColor(sf::Color::Red);
+	text.setStyle(sf::Text::Bold);
+	
+	textBorder.setSize(sf::Vector2f(200, 22));
+	textBorder.setOrigin(sf::Vector2f(textBorder.getGlobalBounds().width/2, 0));
+	textBorder.setPosition(WIDTH/2,222);
+	text.setString("START EVADING");
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
+	text.setPosition(WIDTH/2,218);
+	if (menuPos == 0 ) {
+		text.setColor(sf::Color::White);
+	} else {
+		text.setColor(sf::Color::Red);
+	}
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setSize(sf::Vector2f(120, 22));
+	textBorder.setOrigin(sf::Vector2f(textBorder.getGlobalBounds().width/2, 0));
+	textBorder.setPosition(WIDTH/2,256);
+	text.setString("OPTIONS");
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
+	text.setPosition(WIDTH/2,252);
+	if (menuPos == 1 ) {
+		text.setColor(sf::Color::White);
+	} else {
+		text.setColor(sf::Color::Red);
+	}
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setPosition(WIDTH/2,290);
+	text.setString("CREDITS");
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
+	text.setPosition(WIDTH/2,286);
+	if (menuPos == 2 ) {
+		text.setColor(sf::Color::White);
+	} else {
+		text.setColor(sf::Color::Red);
+	}
+	window->draw(textBorder);
+	window->draw(text);
+	
+	textBorder.setSize(sf::Vector2f(64, 22));
+	textBorder.setOrigin(sf::Vector2f(textBorder.getGlobalBounds().width/2, 0));
+	textBorder.setPosition(WIDTH/2,324);
+	text.setString("QUIT");
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
+	text.setPosition(WIDTH/2,320);
+	if (menuPos == 3 ) {
+		text.setColor(sf::Color::White);
+	} else {
+		text.setColor(sf::Color::Red);
+	}
+	window->draw(textBorder);
+	window->draw(text);
+}
+
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
 	INFO << "Received event: " << event << std::endl;
 
 	switch (eventType) {
-	case ENTITY_CREATED_EVENT: {
-		EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
-		onEntityCreated(entityCreatedEvent);
-		break;
-	}
-	case ENTITY_MOVED_EVENT: {
-		EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
-		onEntityMoved(entityMovedEvent);
-		break;
-	}
-	default: {
-		WARN << "Event wasn't handled" << std::endl;
-		break;
-	}
+		case GAME_STATE_CHANGED_EVENT: {
+			onGameStateChanged((GameStateChangedEvent&) event);
+			break;
+		}
+		case ENTITY_CREATED_EVENT: {
+			EntityCreatedEvent& entityCreatedEvent = (EntityCreatedEvent&) event;
+			onEntityCreated(entityCreatedEvent);
+			break;
+		}
+		case ENTITY_MOVED_EVENT: {
+			EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
+			onEntityMoved(entityMovedEvent);
+			break;
+		}
+		case MENU_POINTER_CHANGE : {
+			MenuPointerChange menuPointerChange = (MenuPointerChange&) event;
+			menuPos = menuPointerChange.getPos();
+			break;
+		}
+		case GAME_END_EVENT: {
+			gameOver();
+			break;
+		}
+		case MENU_ACTION_EVENT: {
+			MenuActionEvent menuActionEvent = (MenuActionEvent&) event;
+			if (menuActionEvent.getAction() == MenuActionEvent::Action::SELECT) {
+				selectMenuItem();
+			} else {
+				moveMenuPointer(menuActionEvent);
+			}
+			break;
+		}
+		default: {
+			const short eventType = event.getType();
+			std::stringstream ss;
+			ss << "Un-Handled: " << eventType;
+		    ERR << ss.str() << std::endl;
+			break;
+		}
 	}
 }
 
@@ -90,8 +252,8 @@ void View::initBackground() {
 	const int SEED = 48;
 
 	std::mt19937 randomNumGen(SEED);
-	std::uniform_int_distribution<int> distX(SCREEN_SPRITE_WIDTH, WIDTH - SCREEN_SPRITE_WIDTH);
-	std::uniform_int_distribution<int> distY(SCREEN_SPRITE_WIDTH, HEIGHT - SCREEN_SPRITE_WIDTH);
+	std::uniform_int_distribution<int> distX(0, WIDTH);
+	std::uniform_int_distribution<int> distY(0, HEIGHT);
 	std::function<int()> genX(std::bind(distX, randomNumGen));
 	std::function<int()> genY(std::bind(distY, randomNumGen));
 	
@@ -175,4 +337,82 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}
+}
+
+void View::onGameStateChanged(GameStateChangedEvent& event) {
+	gameState = event.getState();
+}
+
+void View::moveMenuPointer(MenuActionEvent& event){
+	int rc = 0;
+	switch(event.getAction()){
+		case MenuActionEvent::Action::DOWN:
+			currentMenuPos = ((++currentMenuPos) % 4);
+			break;
+
+		case MenuActionEvent::Action::UP:
+			currentMenuPos = --currentMenuPos;
+			if(currentMenuPos < 0){
+				currentMenuPos = 3;
+			}
+			break;
+
+		case MenuActionEvent::Action::SELECT: //go nowhere. duh!
+			break;
+
+		default:
+			std::stringstream ss;
+			ss << "Unable to move menu pointer in direction: " << event.getAction();
+		    ERR << ss.str() << std::endl;
+		    rc = 1;
+			break;
+	}
+
+	if(!rc){ //Above was OK
+		std::stringstream ss;
+		ss << "New position is: " << currentMenuPos;
+		DBG << ss.str() << std::endl;
+
+		MenuPointerChange menuPointerChange(currentMenuPos);
+		eventManager->fireEvent(menuPointerChange);
+	}
+}
+
+void View::selectMenuItem(){
+	//we have been told to activate whatever so go for it!
+	switch(currentMenuPos){
+		case MENU_START:{
+			INFO << "Start Game selected" << std::endl;
+			//We need to start a new game!
+			GameStartEvent gameStartEvent;
+			eventManager->fireEvent(gameStartEvent);
+			break;
+		}
+		case MENU_SETTINGS:{
+			//Do nothing for now
+			INFO << "Settings selected" << std::endl;
+			break;
+		}		
+		case MENU_CREDITS:{
+			//Do nothing for now
+			INFO << "Credits selected" << std::endl;
+			break;
+		}
+		case MENU_QUIT:{
+			//Let's quit!
+			INFO << "Quit selected" << std::endl;
+			window->close();
+			break;
+		}
+		default:{
+			std::stringstream ss;
+			ss << "Unkown Posistion: " << currentMenuPos;
+			ERR << ss.str() << std::endl;
+			break;
+		}
+	}
+}
+
+void View::gameOver(){
+	spriteMap.clear();
 }
