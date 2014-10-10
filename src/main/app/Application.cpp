@@ -69,6 +69,8 @@ void Application::init() {
 	view = IViewPtr(new View(eventManager, window, userInput, spriteFactory));
 	view->init();
 
+
+
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
@@ -84,7 +86,7 @@ void Application::init() {
 	INFO << "Ending init" << std::endl;
 	
 	//Set initial GameState
-	GameStateChangedEvent gameStateChangedEvent(MENU);
+	GameStateChangedEvent gameStateChangedEvent(INTRO);
 	eventManager->fireEvent(gameStateChangedEvent);
 }
 

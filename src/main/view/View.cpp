@@ -24,6 +24,9 @@ View::View(IEventManagerPtr _eventManager,
 	userInput(_userInput),
 	spriteFactory(_sprite_factory) {
 	currentMenuPos = 0;
+	/* At the very start we need to be loading */
+	gameState = LOADING;
+	introCycle = 0;
 }
 
 View::~View() {
@@ -31,6 +34,7 @@ View::~View() {
 }
 
 void View::init() {
+	render(); /* Will load the LOADING screen */
 	spriteFactory->init();
 	initBackground();
 	initHud();
@@ -39,6 +43,12 @@ void View::init() {
     {
       ERR << "Could not load font file" << std::endl;
     }
+
+    if(!logoTex.loadFromFile("assets/logo.png")){
+		ERR << "Unable to open assets/logo.png" << std::endl;
+	} else {
+		logoTex.setRepeated(false);		
+	}
 }
 
 void View::update() {
@@ -65,6 +75,9 @@ void View::render() {
 			break;
 		case MENU:
 			menuRender();
+			break;
+		case INTRO:
+			introRender();
 			break;
 	}
 
@@ -114,6 +127,34 @@ void View::pausedRender(){
 	text.setPosition(137,320);
 	window->draw(textBorder);
 	window->draw(text);
+}
+
+void View::introRender(){
+	// OK first work out where we are in terms of rendering the intro
+	sf::Sprite logo;
+	int fade;
+	if(introCycle > 255 && introCycle <= 384){
+		fade = 255;
+	} else if(introCycle > 384){
+		fade = 255 - (introCycle - 384);
+		if(fade <= 0){
+			/* change state to menu */
+			GameStateChangedEvent gameStateChangedEvent(MENU);
+			eventManager->fireEvent(gameStateChangedEvent);
+		}
+	} else {
+		fade = introCycle;
+	}
+
+	logo.setColor(sf::Color(fade,fade,fade,fade));
+
+	logo.setTexture(logoTex);
+	logo.setOrigin(sf::Vector2f(logo.getGlobalBounds().width/2,logo.getGlobalBounds().height/2));
+	logo.setPosition(WIDTH/2,HEIGHT/2);
+	logo.scale(sf::Vector2f(1.5f, 1.5f));
+	window->draw(logo);
+
+	introCycle += 2;
 }
 
 void View::loadingRender(){
