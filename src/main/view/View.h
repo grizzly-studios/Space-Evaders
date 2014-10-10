@@ -25,6 +25,7 @@
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
 #include "../logic/MenuItemEnum.hpp"
+#include "Credits.h"
 
 #include "../app/GameState.h"
 
@@ -72,6 +73,8 @@ private:
 	SpriteList hudSprites;
 	sf::Font font;
 	GameState gameState;
+	
+	ICreditsShPtr credits;
 
 	int menuPos;
 	int currentMenuPos;

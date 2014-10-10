@@ -17,7 +17,6 @@ public:
 	Credits();
 	virtual ~Credits();
 	
-	virtual void update();
 	virtual void render();
 private:
 

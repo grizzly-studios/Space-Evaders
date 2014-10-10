@@ -22,7 +22,8 @@ View::View(IEventManagerPtr _eventManager,
 	ISpriteFactoryShPtr _sprite_factory) : eventManager(_eventManager),
 	window(_window),
 	userInput(_userInput),
-	spriteFactory(_sprite_factory) {
+	spriteFactory(_sprite_factory),
+	credits() {
 	currentMenuPos = 0;
 }
 

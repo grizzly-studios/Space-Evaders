@@ -15,10 +15,6 @@ Credits::Credits() {
 Credits::~Credits() {
 }
 
-void Credits::update() {
-	
-}
-
 void Credits::render() {
 	
 }

@@ -14,7 +14,6 @@ namespace gs {
 	
 class ICredits {
 public:
-	virtual void update() = 0;
 	virtual void render() = 0;
 };
 
