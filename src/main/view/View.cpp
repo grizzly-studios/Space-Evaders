@@ -276,17 +276,15 @@ void View::onGameStateChanged(GameStateChangedEvent& event) {
 }
 
 void View::moveMenuPointer(MenuActionEvent& event){
-	int rc = 0;
 	switch(event.getAction()){
 		case MenuActionEvent::Action::DOWN:
-			currentMenuPos = ((++currentMenuPos) % 4);
+			std::static_pointer_cast<IMenuScreen>
+				(screens[MENU_SCREEN])->moveMenuPos(-1);
 			break;
 
 		case MenuActionEvent::Action::UP:
-			currentMenuPos = --currentMenuPos;
-			if(currentMenuPos < 0){
-				currentMenuPos = 3;
-			}
+			std::static_pointer_cast<IMenuScreen>
+				(screens[MENU_SCREEN])->moveMenuPos(1);
 			break;
 
 		case MenuActionEvent::Action::SELECT: //go nowhere. duh!
@@ -296,17 +294,7 @@ void View::moveMenuPointer(MenuActionEvent& event){
 			std::stringstream ss;
 			ss << "Unable to move menu pointer in direction: " << event.getAction();
 		    ERR << ss.str() << std::endl;
-		    rc = 1;
 			break;
-	}
-
-	if(!rc){ //Above was OK
-		std::stringstream ss;
-		ss << "New position is: " << currentMenuPos;
-		DBG << ss.str() << std::endl;
-		
-		std::static_pointer_cast<IMenuScreen>
-				(screens[MENU_SCREEN])->setMenuPos(currentMenuPos);
 	}
 }
 

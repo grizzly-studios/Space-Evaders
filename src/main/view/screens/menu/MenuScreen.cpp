@@ -28,6 +28,17 @@ void MenuScreen::setMenuPos(int _menuPos) {
 	menuPos = _menuPos;
 }
 
+void MenuScreen::moveMenuPos(int movement) {
+	int intrimMenuPos = menuPos;
+	intrimMenuPos = intrimMenuPos - movement;
+	intrimMenuPos = intrimMenuPos % 4;
+	if (intrimMenuPos < 0){
+		intrimMenuPos = intrimMenuPos + 4;
+	}
+	menuPos = intrimMenuPos;
+	DBG << "New menu position: " << menuPos << std::endl;
+}
+
 void MenuScreen::render(RenderWindowShPtr window) {
 	//Don't know why this bit is needed ---
 	sf::Font font;

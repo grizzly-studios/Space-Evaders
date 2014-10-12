@@ -18,6 +18,7 @@ public:
 	virtual void render(RenderWindowShPtr) = 0;
 	
 	virtual void setMenuPos(int) = 0;
+	virtual void moveMenuPos(int) = 0;
 };
 
 typedef std::shared_ptr<IMenuScreen> IMenuScreenShPtr;

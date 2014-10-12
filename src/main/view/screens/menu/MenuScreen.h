@@ -28,6 +28,7 @@ public:
 	void render(RenderWindowShPtr);
 	
 	void setMenuPos(int);
+	void moveMenuPos(int);
 private:
 	IStyleManagerShPtr styleManager;
 	int menuPos;
