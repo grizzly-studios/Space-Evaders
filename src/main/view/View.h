@@ -17,7 +17,6 @@
 
 #include "../event/EntityCreatedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
-#include "../event/MenuPointerChange.h"
 #include "../event/GameStateChangedEvent.h"
 #include "../event/GameStartEvent.h"
 #include "../event/IEventListener.hpp"
