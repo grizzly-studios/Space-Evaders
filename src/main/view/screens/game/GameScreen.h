@@ -8,11 +8,11 @@
 #ifndef GAMESCREEN_H
 #define	GAMESCREEN_H
 
-#include "../../IScreen.h"
+#include "IGameScreen.h"
 
 namespace gs {
 
-class GameScreen :public IScreen {
+class GameScreen :public IGameScreen {
 public:
 	GameScreen();
 	virtual ~GameScreen();
