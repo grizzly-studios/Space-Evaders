@@ -68,6 +68,11 @@ void Application::init() {
 	ISpriteFactoryShPtr spriteFactory(new SpriteFactory());
 	view = IViewPtr(new View(eventManager, window, userInput, spriteFactory));
 	view->init();
+	
+	IStyleManagerShPtr styleManager(new StyleManager());
+	styleManager->setFont("assets/arial.ttf");
+	IMenuScreenShPtr menuScreen(new MenuScreen(styleManager));
+	view->addScreen(MENU_SCREEN, menuScreen);
 
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
@@ -75,7 +80,6 @@ void Application::init() {
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(view));
 	//eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(keyboard));
-	eventManager->addListener(MENU_POINTER_CHANGE, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(GAME_START_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));

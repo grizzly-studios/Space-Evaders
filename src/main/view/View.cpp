@@ -34,7 +34,6 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
-	menuPos = 0;
 	if(!font.loadFromFile("assets/arial.ttf"))
     {
       ERR << "Could not load font file" << std::endl;
@@ -43,6 +42,10 @@ void View::init() {
 
 void View::update() {
 	userInput->update();
+}
+
+void View::addScreen(ScreensEnum screenEnum, IScreenShPtr screenPtr) {
+	screens[screenEnum] = screenPtr;
 }
 
 void View::render() {
@@ -64,10 +67,9 @@ void View::render() {
 			loadingRender();
 			break;
 		case MENU:
-			menuRender();
+			screens[MENU_SCREEN]->render(window);
 			break;
 	}
-
 	//Now display
 	window->display();
 }
@@ -133,71 +135,6 @@ void View::loadingRender(){
 	window->draw(text);
 }
 
-void View::menuRender(){
-	sf::Text text;
-	sf::RectangleShape textBorder;
-	textBorder.setFillColor(sf::Color::Black);
-	text.setFont(font);
-	text.setCharacterSize(24);
-	text.setColor(sf::Color::Red);
-	text.setStyle(sf::Text::Bold);
-	
-	textBorder.setSize(sf::Vector2f(200, 22));
-	textBorder.setOrigin(sf::Vector2f(textBorder.getGlobalBounds().width/2, 0));
-	textBorder.setPosition(WIDTH/2,222);
-	text.setString("START EVADING");
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
-	text.setPosition(WIDTH/2,218);
-	if (menuPos == 0 ) {
-		text.setColor(sf::Color::White);
-	} else {
-		text.setColor(sf::Color::Red);
-	}
-	window->draw(textBorder);
-	window->draw(text);
-	
-	textBorder.setSize(sf::Vector2f(120, 22));
-	textBorder.setOrigin(sf::Vector2f(textBorder.getGlobalBounds().width/2, 0));
-	textBorder.setPosition(WIDTH/2,256);
-	text.setString("OPTIONS");
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
-	text.setPosition(WIDTH/2,252);
-	if (menuPos == 1 ) {
-		text.setColor(sf::Color::White);
-	} else {
-		text.setColor(sf::Color::Red);
-	}
-	window->draw(textBorder);
-	window->draw(text);
-	
-	textBorder.setPosition(WIDTH/2,290);
-	text.setString("CREDITS");
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
-	text.setPosition(WIDTH/2,286);
-	if (menuPos == 2 ) {
-		text.setColor(sf::Color::White);
-	} else {
-		text.setColor(sf::Color::Red);
-	}
-	window->draw(textBorder);
-	window->draw(text);
-	
-	textBorder.setSize(sf::Vector2f(64, 22));
-	textBorder.setOrigin(sf::Vector2f(textBorder.getGlobalBounds().width/2, 0));
-	textBorder.setPosition(WIDTH/2,324);
-	text.setString("QUIT");
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width/2,0));
-	text.setPosition(WIDTH/2,320);
-	if (menuPos == 3 ) {
-		text.setColor(sf::Color::White);
-	} else {
-		text.setColor(sf::Color::Red);
-	}
-	window->draw(textBorder);
-	window->draw(text);
-}
-
-
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
 	INFO << "Received event: " << event << std::endl;
@@ -215,11 +152,6 @@ void View::onEvent(Event& event) {
 		case ENTITY_MOVED_EVENT: {
 			EntityMovedEvent& entityMovedEvent = (EntityMovedEvent&) event;
 			onEntityMoved(entityMovedEvent);
-			break;
-		}
-		case MENU_POINTER_CHANGE : {
-			MenuPointerChange menuPointerChange = (MenuPointerChange&) event;
-			menuPos = menuPointerChange.getPos();
 			break;
 		}
 		case GAME_END_EVENT: {
@@ -372,9 +304,9 @@ void View::moveMenuPointer(MenuActionEvent& event){
 		std::stringstream ss;
 		ss << "New position is: " << currentMenuPos;
 		DBG << ss.str() << std::endl;
-
-		MenuPointerChange menuPointerChange(currentMenuPos);
-		eventManager->fireEvent(menuPointerChange);
+		
+		std::static_pointer_cast<IMenuScreen>
+				(screens[MENU_SCREEN])->setMenuPos(currentMenuPos);
 	}
 }
 
