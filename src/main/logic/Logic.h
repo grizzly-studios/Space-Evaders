@@ -58,6 +58,7 @@ private:
 	//Subroutines
 	void move();
 	void collisionDetection();
+	void boundscheck();
 
 	void startNewGame();
 	void gameEnd();

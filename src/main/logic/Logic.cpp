@@ -25,6 +25,7 @@ void Logic::update() {
 
 	move();
 	collisionDetection();
+	boundscheck();
 }
 
 void Logic::onEvent(Event& event) {
@@ -82,6 +83,17 @@ void Logic::collisionDetection() {
 	}
 }
 
+void Logic::boundscheck(){
+	//Scan for player collisions
+	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+		sf::FloatRect pos = (*it)->getGeo();
+		DBG << "Left Pos: " << pos.left << " Top pos: " << pos.top <<  " Right pos: " << (pos.left + pos.width) << " Bot pos: " << (pos.top + pos.height) << std::endl;
+		//if()
+	}
+	//Scan for bullets collisions
+
+}
+
 void Logic::integrate() {
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->integrate(dt);
@@ -125,10 +137,7 @@ void Logic::generateLevel() {
 }
 
 void Logic::onGameStateChange(GameStateChangedEvent& event) {
-	const short newState = event.getState();
-	std::stringstream ss;
-	ss << "Changing game state to " << newState;
-	DBG << ss.str() << std::endl;
+	DBG << "Changing game state to " << event.getState() << std::endl;
 }
 
 void Logic::startNewGame(){
