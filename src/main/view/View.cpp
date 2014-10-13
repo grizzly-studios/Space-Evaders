@@ -141,6 +141,7 @@ void View::introRender(){
 			/* change state to menu */
 			GameStateChangedEvent gameStateChangedEvent(MENU);
 			eventManager->fireEvent(gameStateChangedEvent);
+			return;
 		}
 	} else {
 		fade = introCycle;
