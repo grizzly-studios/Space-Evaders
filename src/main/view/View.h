@@ -20,7 +20,6 @@
 
 #include "../event/EntityCreatedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
-#include "../event/MenuPointerChange.h"
 #include "../event/GameStateChangedEvent.h"
 #include "../event/GameStartEvent.h"
 #include "../event/IEventListener.hpp"
@@ -34,7 +33,6 @@
 namespace gs {
 
 // TODO: Extract this typdef to a single place (also defined in Application.h at present)
-typedef std::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
 typedef std::list<sf::RectangleShape> RectShapeList;
 typedef std::map<short, sf::Sprite> SpriteMap;
 typedef std::list<sf::Sprite> SpriteList;
@@ -49,6 +47,7 @@ public:
 	virtual void update();
 	virtual void render();
 	virtual void onEvent(Event& event);
+	virtual void addScreen(IScreenShPtr);
 private:
 	void initBackground();
 	void initHud();
@@ -61,9 +60,6 @@ private:
 	void loadAssets();
 
 	void inGameRender();
-	void pausedRender();
-	void loadingRender();
-	void menuRender();
 	void introRender();
 
 	void gameOver();
@@ -84,10 +80,9 @@ private:
 	GameState gameState;
 
 	sf::Texture* p_logoTex;
-
-	int menuPos;
-	int currentMenuPos = 0; /* Default */
 	int introCycle;
+	
+	std::map<ScreensEnum, IScreenShPtr> screens;
 };
 
 }
