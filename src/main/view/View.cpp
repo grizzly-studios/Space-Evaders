@@ -45,6 +45,10 @@ void View::update() {
 }
 
 void View::addScreen(IScreenShPtr screenPtr) {
+	if (screens.find(screenPtr->getType()) != screens.end()) {
+		WARN << "Screen " << *screenPtr << 
+			" already registered to the View. Overwriting previous instance." << std::endl;
+	}
 	screens[screenPtr->getType()] = screenPtr;
 }
 
