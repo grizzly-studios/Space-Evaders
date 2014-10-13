@@ -291,9 +291,7 @@ void View::moveMenuPointer(MenuActionEvent& event){
 			break;
 
 		default:
-			std::stringstream ss;
-			ss << "Unable to move menu pointer in direction: " << event.getAction();
-		    ERR << ss.str() << std::endl;
+			ERR << "Unable to move menu pointer in direction: " << event.getAction() << std::endl;
 			break;
 	}
 }
