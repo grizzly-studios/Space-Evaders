@@ -8,7 +8,8 @@ namespace gs {
  */
 enum EntityEnum {
 	PLAYER_ENTITY,
-	ENEMY_ENTITY
+	ENEMY_ENTITY,
+	BULLET_ENTITY
 };
 
 }

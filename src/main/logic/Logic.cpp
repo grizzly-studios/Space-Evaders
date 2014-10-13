@@ -171,7 +171,7 @@ void Logic::generateBullets() {
 	}
 
 	for (int i=0; i<NUM_ENEMIES_NOT_FIRING; i++) {
-		int indexToRemove = randomNumberGenerator.randomNumberInRange(0, firingEnemyIndices.size());
+		int indexToRemove = randomNumberGenerator.randomNumberInRange(0, firingEnemyIndices.size() -1);
 		firingEnemyIndices.remove(indexToRemove);
 	}
 
@@ -192,5 +192,15 @@ void Logic::generateBullets() {
 
 		// Position of the tile containing the bullet
 		const sf::Vector2f bulletTilePos = getTilePosition(1 + (*it), 2);
+		allBullets.push_back(BulletsShPtr(new Bullets(DOWN, 0.0001)));
+		allBullets.back()->setGeo(bulletTilePos.x, bulletTilePos.y, TILE_WIDTH, TILE_WIDTH);
+		mobileObjects.push_back(allBullets.back());
+		allObjects.push_back(allBullets.back());
+
+		EntityCreatedEvent entityCreatedEvent(
+			allObjects.back()->getID(),
+			BULLET_ENTITY,
+			allObjects.back()->getGeo());
+		eventManager->fireEvent(entityCreatedEvent);
 	}
 }

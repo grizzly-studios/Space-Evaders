@@ -208,6 +208,10 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 			spriteCol = 3;
 			spriteRow = 1;
 			break;
+		case BULLET_ENTITY:
+			spriteCol = 3;
+			spriteRow = 2;
+			break;
 	}
 
 	sf::Sprite sprite = spriteFactory->createSprite(spriteCol, spriteRow);
