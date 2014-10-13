@@ -2,7 +2,7 @@
  * File:   IPausedScreen.h
  * Author: williampoynter
  *
- * Created on October 13, 2014, 18:08 PM
+ * Created on October 13, 2014, 06:08 PM
  */
 
 #ifndef IPAUSEDSCREEN_H

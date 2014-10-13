@@ -2,7 +2,7 @@
  * File:   PausedScreen.cpp
  * Author: williampoynter
  * 
- * Created on October 13, 2014, 18:08 AM
+ * Created on October 13, 2014, 06:08 PM
  */
 
 #include "PausedScreen.h"

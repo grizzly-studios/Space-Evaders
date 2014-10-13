@@ -1,28 +1,28 @@
 /* 
- * File:   PausedScreen.h
+ * File:   LoadingScreen.h
  * Author: williampoynter
  *
- * Created on October 13, 2014, 06:08 PM
+ * Created on October 13, 2014, 09:26 PM
  */
 
-#ifndef PAUSEDSCREEN_H
-#define	PAUSEDSCREEN_H
+#ifndef LOADINGSCREEN_H
+#define	LOADINGSCREEN_H
 
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
-#include "IPausedScreen.h"
+#include "ILoadingScreen.h"
 
 #include "../../../util/Logger.h"
 #include "../../StyleManager.h"
 
 namespace gs {
 
-class PausedScreen : public IPausedScreen {
+class LoadingScreen : public ILoadingScreen {
 public:
-	PausedScreen();
-	PausedScreen(IStyleManagerShPtr);
-	virtual ~PausedScreen();
+	LoadingScreen();
+	LoadingScreen(IStyleManagerShPtr);
+	virtual ~LoadingScreen();
 	
 	void update();
 	void render(RenderWindowShPtr);
@@ -35,5 +35,5 @@ private:
 
 }
 
-#endif	/* PAUSEDSCREEN_H */
+#endif	/* LOADINGSCREEN_H */
 

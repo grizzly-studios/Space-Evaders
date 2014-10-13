@@ -55,7 +55,6 @@ private:
 	void selectMenuItem();
 
 	void inGameRender();
-	void loadingRender();
 
 	void gameOver();
 

@@ -67,7 +67,7 @@ void View::render() {
 			screens[PAUSED_SCREEN]->render(window);
 			break;
 		case LOADING:
-			loadingRender();
+			screens[LOADING_SCREEN]->render(window);
 			break;
 		case MENU:
 			screens[MENU_SCREEN]->render(window);
@@ -88,23 +88,6 @@ void View::inGameRender(){
 			++it) {
 		window->draw(*it);
 	}
-}
-
-void View::loadingRender(){
-	sf::Text text;
-	sf::RectangleShape textBorder;
-	textBorder.setFillColor(sf::Color::Black);
-	text.setFont(font);
-	text.setCharacterSize(24);
-	text.setColor(sf::Color::Red);
-	text.setStyle(sf::Text::Bold);
-
-	textBorder.setSize(sf::Vector2f(120, 22));
-	textBorder.setPosition(135,256);
-	text.setString("LOADING");
-	text.setPosition(137,252);
-	window->draw(textBorder);
-	window->draw(text);
 }
 
 void View::onEvent(Event& event) {
