@@ -86,7 +86,7 @@ private:
 	sf::Texture* p_logoTex;
 
 	int menuPos;
-	int currentMenuPos;
+	int currentMenuPos = 0; /* Default */
 	int introCycle;
 };
 

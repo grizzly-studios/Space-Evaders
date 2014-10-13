@@ -29,6 +29,7 @@ void KeyboardListener::update() {
 			pausedUpdate();
 			break;
 		case LOADING:
+		case INTRO:
 			loadingUpdate();
 			break;
 		case MENU:

@@ -40,7 +40,6 @@ void View::init() {
 	initHud();
 	menuPos = 0;
 	loadAssets();
-	
 }
 
 void View::loadAssets(){
@@ -412,11 +411,12 @@ void View::moveMenuPointer(MenuActionEvent& event){
 	int rc = 0;
 	switch(event.getAction()){
 		case MenuActionEvent::Action::DOWN:
-			currentMenuPos = ((++currentMenuPos) % 4);
+			currentMenuPos++;
+			currentMenuPos = currentMenuPos % 4;
 			break;
 
 		case MenuActionEvent::Action::UP:
-			currentMenuPos = --currentMenuPos;
+			currentMenuPos--;
 			if(currentMenuPos < 0){
 				currentMenuPos = 3;
 			}
