@@ -74,9 +74,11 @@ void Application::init() {
 	IMenuScreenShPtr menuScreen(new MenuScreen(styleManager));
 	IPausedScreenShPtr pausedScreen(new PausedScreen(styleManager));
 	ILoadingScreenShPtr loadingScreen(new LoadingScreen(styleManager));
+	IIntroScreenShPtr introScreen(new IntroScreen(styleManager, eventManager));
 	view->addScreen(menuScreen);
 	view->addScreen(pausedScreen);
 	view->addScreen(loadingScreen);
+	view->addScreen(introScreen);
 
 
 

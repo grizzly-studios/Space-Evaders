@@ -5,17 +5,6 @@
 #include <map>
 #include <list>
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-
-#include <SFML/Audio.hpp>
-
 #include "IView.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
@@ -72,15 +61,7 @@ private:
 	RectShapeList stars;
 	SpriteMap spriteMap;
 	SpriteList hudSprites;
-	sf::Font font;
-	sf::Texture logoTex;
-	sf::Image logoImg;
-	sf::SoundBuffer logoSound;
-	sf::Sound logSound;
 	GameState gameState;
-
-	sf::Texture* p_logoTex;
-	int introCycle;
 	
 	std::map<ScreensEnum, IScreenShPtr> screens;
 };

@@ -34,34 +34,6 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
-	loadAssets();
-}
-
-void View::loadAssets(){
-	/* Start of Fonts */
-	if(!font.loadFromFile("assets/arial.ttf"))
-    {
-      ERR << "Could not load font file" << std::endl;
-    }
-    /* End of Fonts */
-
-    /* Start of Textures */
-    if(!logoTex.loadFromFile("assets/logo.png")){
-		ERR << "Unable to open assets/logo.png" << std::endl;
-	} else {
-		logoTex.setRepeated(false);		
-	}
-	/* End of Textures */
-
-	/* Start of Sounds */
-	if(!logoSound.loadFromFile("assets/logoPLACEHOLDER.ogg")){
-		ERR << "Unable to open assets/logoPLACEHOLDER.ogg" << std::endl;
-	}
-	/* End of Sounds */
-
-	/* Start of Music */
-
-	/* End of Music */
 }
 
 void View::update() {
@@ -98,7 +70,7 @@ void View::render() {
 			screens[MENU_SCREEN]->render(window);
 			break;
 		case INTRO:
-			introRender();
+			screens[INTRO_SCREEN]->render(window);
 			break;
 	}
 	//Now display
@@ -116,39 +88,6 @@ void View::inGameRender(){
 			++it) {
 		window->draw(*it);
 	}
-}
-
-void View::introRender(){
-	// OK first work out where we are in terms of rendering the intro
-	sf::Sprite logo;
-	int fade;
-	if(introCycle > 255 && introCycle <= 319){
-		fade = 255;
-		if(logSound.getStatus() == sf::SoundSource::Status::Stopped){
-			logSound.setBuffer(logoSound);
-			logSound.play();
-		}
-	} else if(introCycle > 319){
-		fade = 255 - (introCycle - 319);
-		if(fade <= 0){
-			/* change state to menu */
-			GameStateChangedEvent gameStateChangedEvent(MENU);
-			eventManager->fireEvent(gameStateChangedEvent);
-			return;
-		}
-	} else {
-		fade = introCycle;
-	}
-
-	logo.setColor(sf::Color(fade,fade,fade,fade));
-
-	logo.setTexture(logoTex);
-	logo.setOrigin(sf::Vector2f(logo.getGlobalBounds().width/2,logo.getGlobalBounds().height/2));
-	logo.setPosition(WIDTH/2,HEIGHT/2);
-	logo.scale(sf::Vector2f(1.5f, 1.5f));
-	window->draw(logo);
-
-	introCycle += 2;
 }
 
 void View::onEvent(Event& event) {
