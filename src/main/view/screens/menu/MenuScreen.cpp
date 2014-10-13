@@ -39,6 +39,10 @@ void MenuScreen::moveMenuPos(int movement) {
 	DBG << "New menu position: " << menuPos << std::endl;
 }
 
+int MenuScreen::getMenuPos() {
+	return menuPos;
+}
+
 ScreensEnum MenuScreen::getType() const {
 	return MENU_SCREEN;
 }

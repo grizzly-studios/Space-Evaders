@@ -10,6 +10,8 @@
 
 #include "../../IScreen.h"
 
+#define MENU_CAST std::static_pointer_cast<IMenuScreen>(screens[MENU_SCREEN])
+
 namespace gs {
 	
 class IMenuScreen : public IScreen {
@@ -19,6 +21,7 @@ public:
 	
 	virtual void setMenuPos(int) = 0;
 	virtual void moveMenuPos(int) = 0;
+	virtual int getMenuPos() = 0;
 	
 	virtual ScreensEnum getType() const = 0;
 };

@@ -22,9 +22,8 @@ View::View(IEventManagerPtr _eventManager,
 	ISpriteFactoryShPtr _sprite_factory) : eventManager(_eventManager),
 	window(_window),
 	userInput(_userInput),
-	spriteFactory(_sprite_factory) {
-	currentMenuPos = 0;
-}
+	spriteFactory(_sprite_factory) 
+{}
 
 View::~View() {
 	DBG << "Destroyed" << std::endl;
@@ -282,13 +281,11 @@ void View::onGameStateChanged(GameStateChangedEvent& event) {
 void View::moveMenuPointer(MenuActionEvent& event){
 	switch(event.getAction()){
 		case MenuActionEvent::Action::DOWN:
-			std::static_pointer_cast<IMenuScreen>
-				(screens[MENU_SCREEN])->moveMenuPos(-1);
+			MENU_CAST->moveMenuPos(-1);
 			break;
 
 		case MenuActionEvent::Action::UP:
-			std::static_pointer_cast<IMenuScreen>
-				(screens[MENU_SCREEN])->moveMenuPos(1);
+			MENU_CAST->moveMenuPos(1);
 			break;
 
 		case MenuActionEvent::Action::SELECT: //go nowhere. duh!
@@ -302,7 +299,7 @@ void View::moveMenuPointer(MenuActionEvent& event){
 
 void View::selectMenuItem(){
 	//we have been told to activate whatever so go for it!
-	switch(currentMenuPos){
+	switch(MENU_CAST->getMenuPos()){
 		case MENU_START:{
 			INFO << "Start Game selected" << std::endl;
 			//We need to start a new game!
@@ -327,9 +324,7 @@ void View::selectMenuItem(){
 			break;
 		}
 		default:{
-			std::stringstream ss;
-			ss << "Unkown Posistion: " << currentMenuPos;
-			ERR << ss.str() << std::endl;
+			ERR << "Unknown menu selection" << MENU_CAST->getMenuPos() << std::endl;
 			break;
 		}
 	}

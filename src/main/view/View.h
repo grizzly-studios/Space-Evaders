@@ -72,8 +72,6 @@ private:
 	GameState gameState;
 	
 	std::map<ScreensEnum, IScreenShPtr> screens;
-
-	int currentMenuPos;
 };
 
 }

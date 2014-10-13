@@ -31,6 +31,7 @@ public:
 	
 	void setMenuPos(int);
 	void moveMenuPos(int);
+	int getMenuPos();
 private:
 	IStyleManagerShPtr styleManager;
 	int menuPos;
