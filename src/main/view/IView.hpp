@@ -3,6 +3,11 @@
 
 #include <memory>
 
+//Screens
+#include "screens/menu/MenuScreen.h"
+#include "screens/paused/PausedScreen.h"
+#include "screens/loading/LoadingScreen.h"
+
 namespace gs {
 
 class IView {
@@ -10,6 +15,8 @@ public:
 	virtual void init() = 0;
 	virtual void update() = 0;
 	virtual void render() = 0;
+	virtual void addScreen(IScreenShPtr) = 0;
+	
 };
 
 typedef std::shared_ptr<IView> IViewPtr;
