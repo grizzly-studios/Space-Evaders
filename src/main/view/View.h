@@ -44,7 +44,7 @@ public:
 	virtual void update();
 	virtual void render();
 	virtual void onEvent(Event& event);
-	virtual void addScreen(ScreensEnum, IScreenShPtr);
+	virtual void addScreen(IScreenShPtr);
 private:
 	void initBackground();
 	void initHud();

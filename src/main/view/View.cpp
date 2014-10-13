@@ -44,8 +44,8 @@ void View::update() {
 	userInput->update();
 }
 
-void View::addScreen(ScreensEnum screenEnum, IScreenShPtr screenPtr) {
-	screens[screenEnum] = screenPtr;
+void View::addScreen(IScreenShPtr screenPtr) {
+	screens[screenPtr->getType()] = screenPtr;
 }
 
 void View::render() {

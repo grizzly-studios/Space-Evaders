@@ -72,7 +72,7 @@ void Application::init() {
 	IStyleManagerShPtr styleManager(new StyleManager());
 	styleManager->setFont("assets/arial.ttf");
 	IMenuScreenShPtr menuScreen(new MenuScreen(styleManager));
-	view->addScreen(MENU_SCREEN, menuScreen);
+	view->addScreen(menuScreen);
 
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
