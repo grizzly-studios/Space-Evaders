@@ -19,6 +19,10 @@ void GameScreen::update() {
 	
 }
 
+ScreensEnum GameScreen::getType() const {
+	return GAME_SCREEN;
+}
+
 void GameScreen::render(RenderWindowShPtr window) {
 	
 }

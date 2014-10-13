@@ -27,6 +27,8 @@ public:
 	void update();
 	void render(RenderWindowShPtr);
 	
+	virtual ScreensEnum getType() const;
+	
 	void setMenuPos(int);
 	void moveMenuPos(int);
 private:

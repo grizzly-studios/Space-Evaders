@@ -16,6 +16,8 @@ class IGameScreen : public IScreen {
 public:
 	virtual void update() = 0;
 	virtual void render(RenderWindowShPtr) = 0;
+	
+	virtual ScreensEnum getType() const = 0;
 };
 
 typedef std::shared_ptr<IGameScreen> IGameScreenShPtr;

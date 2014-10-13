@@ -12,6 +12,9 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "screens/ScreensEnum.h"
+#include "../util/Logger.h"
+
 namespace gs {
 
 typedef std::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
@@ -20,6 +23,14 @@ class IScreen {
 public:
 	virtual void update() = 0;
 	virtual void render(RenderWindowShPtr) = 0;
+	
+	virtual ScreensEnum getType() const = 0;
+	
+	friend std::ostream & operator<<(std::ostream &logger, const IScreen& screen)
+	{
+		return logger << ScreensEnumText[screen.getType()];
+	}
+	
 };
 
 typedef std::shared_ptr<IScreen> IScreenShPtr;

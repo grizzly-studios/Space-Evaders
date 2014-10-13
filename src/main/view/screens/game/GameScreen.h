@@ -19,6 +19,8 @@ public:
 	
 	void update();
 	void render(RenderWindowShPtr);
+	
+	virtual ScreensEnum getType() const;
 private:
 
 };

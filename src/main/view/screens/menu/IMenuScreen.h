@@ -19,6 +19,8 @@ public:
 	
 	virtual void setMenuPos(int) = 0;
 	virtual void moveMenuPos(int) = 0;
+	
+	virtual ScreensEnum getType() const = 0;
 };
 
 typedef std::shared_ptr<IMenuScreen> IMenuScreenShPtr;

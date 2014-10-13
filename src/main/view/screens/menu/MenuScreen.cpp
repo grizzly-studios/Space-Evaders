@@ -39,6 +39,10 @@ void MenuScreen::moveMenuPos(int movement) {
 	DBG << "New menu position: " << menuPos << std::endl;
 }
 
+ScreensEnum MenuScreen::getType() const {
+	return MENU_SCREEN;
+}
+
 void MenuScreen::render(RenderWindowShPtr window) {
 	//Don't know why this bit is needed ---
 	sf::Font font;
