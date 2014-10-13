@@ -39,16 +39,35 @@ void View::init() {
 	initBackground();
 	initHud();
 	menuPos = 0;
+	loadAssets();
+	
+}
+
+void View::loadAssets(){
+	/* Start of Fonts */
 	if(!font.loadFromFile("assets/arial.ttf"))
     {
       ERR << "Could not load font file" << std::endl;
     }
+    /* End of Fonts */
 
+    /* Start of Textures */
     if(!logoTex.loadFromFile("assets/logo.png")){
 		ERR << "Unable to open assets/logo.png" << std::endl;
 	} else {
 		logoTex.setRepeated(false);		
 	}
+	/* End of Textures */
+
+	/* Start of Sounds */
+	if(!logoSound.loadFromFile("assets/logoPLACEHOLDER.ogg")){
+		ERR << "Unable to open assets/logoPLACEHOLDER.ogg" << std::endl;
+	}
+	/* End of Sounds */
+
+	/* Start of Music */
+
+	/* End of Music */
 }
 
 void View::update() {
@@ -133,10 +152,14 @@ void View::introRender(){
 	// OK first work out where we are in terms of rendering the intro
 	sf::Sprite logo;
 	int fade;
-	if(introCycle > 255 && introCycle <= 384){
+	if(introCycle > 255 && introCycle <= 319){
 		fade = 255;
-	} else if(introCycle > 384){
-		fade = 255 - (introCycle - 384);
+		if(logSound.getStatus() == sf::SoundSource::Status::Stopped){
+			logSound.setBuffer(logoSound);
+			logSound.play();
+		}
+	} else if(introCycle > 319){
+		fade = 255 - (introCycle - 319);
 		if(fade <= 0){
 			/* change state to menu */
 			GameStateChangedEvent gameStateChangedEvent(MENU);

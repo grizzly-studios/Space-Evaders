@@ -14,6 +14,8 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 
+#include <SFML/Audio.hpp>
+
 #include "IView.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
@@ -56,6 +58,8 @@ private:
 	void moveMenuPointer(MenuActionEvent &event);
 	void selectMenuItem();
 
+	void loadAssets();
+
 	void inGameRender();
 	void pausedRender();
 	void loadingRender();
@@ -75,6 +79,8 @@ private:
 	sf::Font font;
 	sf::Texture logoTex;
 	sf::Image logoImg;
+	sf::SoundBuffer logoSound;
+	sf::Sound logSound;
 	GameState gameState;
 
 	sf::Texture* p_logoTex;
