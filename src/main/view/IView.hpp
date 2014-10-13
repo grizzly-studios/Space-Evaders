@@ -5,6 +5,7 @@
 
 //Screens
 #include "screens/menu/MenuScreen.h"
+#include "screens/paused/PausedScreen.h"
 
 namespace gs {
 

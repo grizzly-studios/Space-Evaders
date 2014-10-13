@@ -64,7 +64,7 @@ void View::render() {
 			inGameRender();
 			break;
 		case PAUSED:
-			pausedRender();
+			screens[PAUSED_SCREEN]->render(window);
 			break;
 		case LOADING:
 			loadingRender();
@@ -88,37 +88,6 @@ void View::inGameRender(){
 			++it) {
 		window->draw(*it);
 	}
-}
-
-void View::pausedRender(){
-	sf::Text text;
-	sf::RectangleShape textBorder;
-	textBorder.setFillColor(sf::Color::Black);
-	text.setFont(font);
-	text.setCharacterSize(24);
-	text.setColor(sf::Color::Red);
-	text.setStyle(sf::Text::Bold);
-
-	textBorder.setSize(sf::Vector2f(120, 22));
-	textBorder.setPosition(135,256);
-	text.setString("PAUSED");
-	text.setPosition(137,252);
-	window->draw(textBorder);
-	window->draw(text);
-
-	textBorder.setSize(sf::Vector2f(200, 22));
-	textBorder.setPosition(135,290);
-	text.setString("P to Continue");
-	text.setPosition(137,286);
-	window->draw(textBorder);
-	window->draw(text);
-	
-	
-	textBorder.setPosition(135,324);
-	text.setString("Escape to Quit");
-	text.setPosition(137,320);
-	window->draw(textBorder);
-	window->draw(text);
 }
 
 void View::loadingRender(){
