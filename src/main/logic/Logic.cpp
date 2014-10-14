@@ -115,8 +115,16 @@ void Logic::boundscheck(){
 
 		//At this point the player will have been moved to a point that is within the bounds of the level
 	}
-	//Scan for bullets gone off screen (to remove)
 
+	//Scan for bullets gone off screen (to remove)
+	for (BulletsList::iterator it = allBullets.begin(); it != allBullets.end(); it++) {
+		sf::FloatRect pos = (*it)->getGeo();
+		if(pos.top >= ((HEIGHT - SCREEN_SPRITE_WIDTH) + 4)){
+			//Bullet is now 4 pixels under the HUD so remove it
+			DBG << "Erasing Bullet ID: " << (*it)->getID() << std::endl;
+			allBullets.erase(it);
+		}
+	}
 }
 
 void Logic::integrate() {
