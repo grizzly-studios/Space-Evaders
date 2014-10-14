@@ -83,14 +83,39 @@ void Logic::collisionDetection() {
 	}
 }
 
+// TODO: Refactor (duplicate constants in application layer)
+#define WIDTH 480
+#define HEIGHT 640
+
+#define SCREEN_SPRITE_WIDTH 32
+
 void Logic::boundscheck(){
-	//Scan for player collisions
+	//Scan for player collisions here we just bump them around
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
 		sf::FloatRect pos = (*it)->getGeo();
-		DBG << "Left Pos: " << pos.left << " Top pos: " << pos.top <<  " Right pos: " << (pos.left + pos.width) << " Bot pos: " << (pos.top + pos.height) << std::endl;
-		//if()
+		if(pos.left <= (SCREEN_SPRITE_WIDTH + 2)){
+			//Too far left
+			(*it)->setPosition((SCREEN_SPRITE_WIDTH + 4),  pos.top);
+		}
+
+		if((pos.left + pos.width) >= (WIDTH - (SCREEN_SPRITE_WIDTH + 2))){
+			//Too far right
+			(*it)->setPosition((WIDTH - (SCREEN_SPRITE_WIDTH + 4) - pos.width),  pos.top);
+		}
+
+		if(pos.top <= (SCREEN_SPRITE_WIDTH + 2)){
+			//Too far up
+			(*it)->setPosition(pos.left, (SCREEN_SPRITE_WIDTH + 4));
+		}
+
+		if((pos.top + pos.height) >= (HEIGHT - (SCREEN_SPRITE_WIDTH + 2))){
+			//Too far down
+			(*it)->setPosition(pos.left, (HEIGHT - (SCREEN_SPRITE_WIDTH + 4) - pos.height));
+		}
+
+		//At this point the player will have been moved to a point that is within the bounds of the level
 	}
-	//Scan for bullets collisions
+	//Scan for bullets gone off screen (to remove)
 
 }
 
