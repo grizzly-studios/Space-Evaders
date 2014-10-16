@@ -1,6 +1,7 @@
 # Define the following machine dependent settings in Makefile.config:
 # COMPILE - SFML inlcude dir flag (& C++11 flag for Windows & Linux)
 # LINK - SFML library dir flag & libraries to link against
+# TESTLINK - GoogleTest libraries dir flag & libraries to link against
 include Makefile.config
 
 EXEC = SpaceEvaders
@@ -61,19 +62,19 @@ static: $(OUT)$(LIBNAME)
 
 test: $(OUT)$(EXEC)Test
 
-$(OUT)$(LIBNAME): $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
+$(OBJDIR)$(LIBNAME): $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
 	@echo "<<< Creating Library >>>"
-	@mkdir -p $(OUT)
-	$(AXX) $(OUT)$(LIBNAME) $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
+	@mkdir -p $(OBJDIR)
+	$(AXX) $(OBJDIR)$(LIBNAME) $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
 
 test/%.o: test/%.cpp $(HEADERS)
 	@echo "<<< Compiling >>> "$<
 	$(CXX) $(CXXFLAGS) $< -o $@
 	@echo ""
 
-$(OUT)$(EXEC)Test: $(OUT)$(LIBNAME) $(TESTOBJ)
+$(OUT)$(EXEC)Test: $(OBJDIR)$(LIBNAME) $(TESTOBJ)
 	@echo "<<< Linking Test >>>"
-	$(CXX) $(TESTOBJ) -o $@ $(LINK) $(TESTLINK) $(OUT)$(LIBNAME)
+	$(CXX) $(TESTOBJ) -o $@ $(LINK) $(TESTLINK) $(OBJDIR)$(LIBNAME)
 
 clobber:
 	@echo "<<< Clobbering >>>"
