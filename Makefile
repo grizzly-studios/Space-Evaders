@@ -4,6 +4,7 @@
 include Makefile.config
 
 EXEC = SpaceEvaders
+LIBNAME = libspace-evaders.a
 CXXFLAGS = -c -Wall $(COMPILE)
 OBJDIR = build/
 OUT = bin/
@@ -12,6 +13,10 @@ rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 ifndef CXX
     CXX = g++
+endif
+
+ifndef AXX
+    AXX = ar rvs
 endif
 
 ifeq ($(mode),release)
@@ -27,6 +32,8 @@ endif
 SOURCES := $(call rwildcard,src/,*.cpp)
 HEADERS := $(call rwildcard,src/,*.h*)
 OBJECTS := $(patsubst src/main/%,$(OBJDIR)%,$(SOURCES:.cpp=.o))
+TESTSRC := $(call rwildcard,test/,*.cpp)
+TESTOBJ := $(TESTSRC:.cpp=.o)
 
 build: $(OUT)$(EXEC)
 
@@ -49,6 +56,24 @@ clean:
 	@echo "<<< Cleaning >>>"
 	rm -rf $(OBJDIR)
 	rm -rf $(OUT)
+
+static: $(OUT)$(LIBNAME) 
+
+test: $(OUT)$(EXEC)Test
+
+$(OUT)$(LIBNAME): $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
+	@echo "<<< Creating Library >>>"
+	@mkdir -p $(OUT)
+	$(AXX) $(OUT)$(LIBNAME) $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
+
+test/%.o: test/%.cpp $(HEADERS)
+	@echo "<<< Compiling >>> "$<
+	$(CXX) $(CXXFLAGS) $< -o $@
+	@echo ""
+
+$(OUT)$(EXEC)Test: $(OUT)$(LIBNAME) $(TESTOBJ)
+	@echo "<<< Linking Test >>>"
+	$(CXX) $(TESTOBJ) -o $@ $(LINK) $(TESTLINK) $(OUT)$(LIBNAME)
 
 clobber:
 	@echo "<<< Clobbering >>>"
