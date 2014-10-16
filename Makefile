@@ -17,7 +17,7 @@ ifndef CXX
 endif
 
 ifndef AXX
-    AXX = ar rvs
+    AXX = ar rs
 endif
 
 ifeq ($(mode),release)
@@ -34,7 +34,7 @@ SOURCES := $(call rwildcard,src/,*.cpp)
 HEADERS := $(call rwildcard,src/,*.h*)
 OBJECTS := $(patsubst src/main/%,$(OBJDIR)%,$(SOURCES:.cpp=.o))
 TESTSRC := $(call rwildcard,test/,*.cpp)
-TESTOBJ := $(TESTSRC:.cpp=.o)
+TESTOBJ := $(patsubst test/%,test/$(OBJDIR)%,$(TESTSRC:.cpp=.o))
 
 build: $(OUT)$(EXEC)
 
@@ -57,6 +57,7 @@ clean:
 	@echo "<<< Cleaning >>>"
 	rm -rf $(OBJDIR)
 	rm -rf $(OUT)
+	rm -rf test/$(OBJDIR)
 
 static: $(OUT)$(LIBNAME) 
 
@@ -67,16 +68,19 @@ $(OBJDIR)$(LIBNAME): $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
 	@mkdir -p $(OBJDIR)
 	$(AXX) $(OBJDIR)$(LIBNAME) $(patsubst $(OBJDIR)main.o,,$(OBJECTS))
 
-test/%.o: test/%.cpp $(HEADERS)
+test/$(OBJDIR)%.o: test/%.cpp $(HEADERS)
+	@mkdir -p $(dir $@)
 	@echo "<<< Compiling >>> "$<
 	$(CXX) $(CXXFLAGS) $< -o $@
 	@echo ""
 
 $(OUT)$(EXEC)Test: $(OBJDIR)$(LIBNAME) $(TESTOBJ)
 	@echo "<<< Linking Test >>>"
+	@mkdir -p $(OUT)
 	$(CXX) $(TESTOBJ) -o $@ $(LINK) $(TESTLINK) $(OBJDIR)$(LIBNAME)
 
 clobber:
 	@echo "<<< Clobbering >>>"
 	rm -rf build/
 	rm -rf bin/
+	rm -rf test/build/
