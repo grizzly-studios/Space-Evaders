@@ -213,6 +213,21 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 	spriteMap[event.getEntityId()] = sprite;
 }
 
+void View::onEntityDeleted(EntityDeletedEvent& event) {
+	const short entityId = event.getEntityId();
+	
+
+	// Check if we already have a sprite associated with this id
+	if (spriteMap.find(entityId) == spriteMap.end()) {
+		WARN << "Sprite  with ID "<< entityId << " has already been destroyed" << std::endl;
+		return;
+	}
+
+	INFO << "Entity deleted with id: " << entityId << std::endl;
+
+	spriteMap.erase(event.getEntityId());
+}
+
 void View::onEntityMoved(EntityMovedEvent& event) {
 	const short entityId = event.getEntityId();
 	INFO << "Entity moved with id: " << entityId << std::endl;

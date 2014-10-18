@@ -123,6 +123,8 @@ void Logic::boundscheck(){
 			//Bullet is now 4 pixels under the HUD so remove it
 			DBG << "Erasing Bullet ID: " << (*it)->getID() << std::endl;
 			allBullets.erase(it);
+			EntityDeletedEvent entityDeletedEvent((*it)->getID());
+			eventManager->fireEvent(entityDeletedEvent);
 		}
 	}
 }
