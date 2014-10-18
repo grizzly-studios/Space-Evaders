@@ -23,7 +23,7 @@ public:
 	 * @return Event type
 	 */
 	virtual EventEnum getType() const {
-		return ENTITY_CREATED_EVENT;
+		return ENTITY_DELETED_EVENT;
 	}
 
 	/**
