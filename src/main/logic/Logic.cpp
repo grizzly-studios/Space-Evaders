@@ -83,34 +83,28 @@ void Logic::collisionDetection() {
 	}
 }
 
-// TODO: Refactor (duplicate constants in application layer)
-#define WIDTH 480
-#define HEIGHT 640
-
-#define SCREEN_SPRITE_WIDTH 32
-
 void Logic::boundsCheck(){
 	//Scan for player collisions here we just bump them around
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
 		sf::FloatRect pos = (*it)->getGeo();
-		if(pos.left <= (SCREEN_SPRITE_WIDTH + 2)){
+		if(pos.left <= (GBL::SCREEN_SPRITE_WIDTH + 2)){
 			//Too far left
-			(*it)->setPosition((SCREEN_SPRITE_WIDTH + 4),  pos.top);
+			(*it)->setPosition((GBL::SCREEN_SPRITE_WIDTH + 4),  pos.top);
 		}
 
-		if((pos.left + pos.width) >= (WIDTH - (SCREEN_SPRITE_WIDTH + 2))){
+		if((pos.left + pos.width) >= (GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH + 2))){
 			//Too far right
-			(*it)->setPosition((WIDTH - (SCREEN_SPRITE_WIDTH + 4) - pos.width),  pos.top);
+			(*it)->setPosition((GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.width),  pos.top);
 		}
 
-		if(pos.top <= (SCREEN_SPRITE_WIDTH + 2)){
+		if(pos.top <= (GBL::SCREEN_SPRITE_WIDTH + 2)){
 			//Too far up
-			(*it)->setPosition(pos.left, (SCREEN_SPRITE_WIDTH + 4));
+			(*it)->setPosition(pos.left, (GBL::SCREEN_SPRITE_WIDTH + 4));
 		}
 
-		if((pos.top + pos.height) >= (HEIGHT - (SCREEN_SPRITE_WIDTH + 2))){
+		if((pos.top + pos.height) >= (GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH + 2))){
 			//Too far down
-			(*it)->setPosition(pos.left, (HEIGHT - (SCREEN_SPRITE_WIDTH + 4) - pos.height));
+			(*it)->setPosition(pos.left, (GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.height));
 		}
 
 		//At this point the player will have been moved to a point that is within the bounds of the level
@@ -119,7 +113,7 @@ void Logic::boundsCheck(){
 	//Scan for bullets gone off screen (to remove)
 	for (BulletsList::iterator it = allBullets.begin(); it != allBullets.end(); it++) {
 		sf::FloatRect pos = (*it)->getGeo();
-		if(pos.top >= ((HEIGHT - SCREEN_SPRITE_WIDTH) + 4)){
+		if(pos.top >= ((GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH) + 4)){
 			//Bullet is now 4 pixels under the HUD so remove it
 			DBG << "Erasing Bullet ID: " << (*it)->getID() << std::endl;
 			allBullets.erase(it);

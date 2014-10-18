@@ -27,6 +27,7 @@
 #include "../logic/MenuItemEnum.hpp"
 
 #include "../app/GameState.h"
+#include "../app/Globals.h"
 
 namespace gs {
 
