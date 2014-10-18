@@ -153,6 +153,23 @@ void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
 	allObjects.push_back(allBullets.back());
 }
 
+void Logic::removeEntity(unsigned int entityID) {
+	class cleaner {
+		unsigned int ID;
+	public:
+		cleaner(unsigned int _ID) : ID(_ID) {}
+		bool operator() (const EntityShPtr& value) {
+			return value->getID() == ID;
+		}
+	};
+	allObjects.remove_if(cleaner(entityID));
+	mobileObjects.remove_if(cleaner(entityID));
+	allPlayers.remove_if(cleaner(entityID));
+	allBullets.remove_if(cleaner(entityID));
+	EntityDeletedEvent entityDeletedEvent(entityID);
+	eventManager->fireEvent(entityDeletedEvent);
+}
+
 void Logic::generateLevel() {
 	allPlayers.push_back(PlayerShPtr(new Player()));
 	allPlayers.back()->setGeo(100,100,30,30);

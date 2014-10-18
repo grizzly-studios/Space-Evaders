@@ -71,6 +71,7 @@ private:
 	void onGameStateChange(GameStateChangedEvent &event);
 	
 	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
+	void removeEntity(unsigned int entityID);
 };
 
 }
