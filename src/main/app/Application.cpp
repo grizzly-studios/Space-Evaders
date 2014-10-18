@@ -60,6 +60,8 @@ void Application::init() {
 	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
 		sf::Style::Close, settings));
 	window->setVerticalSyncEnabled(true);
+	sf::View renderView(sf::FloatRect(0, 0, GBL::WIDTH, GBL::HEIGHT));
+	window->setView(renderView);
 
 	logic = ILogicPtr(new Logic(eventManager));
 	
