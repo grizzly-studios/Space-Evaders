@@ -25,7 +25,7 @@ void Logic::update() {
 
 	move();
 	collisionDetection();
-	boundscheck();
+	boundsCheck();
 }
 
 void Logic::onEvent(Event& event) {
@@ -89,7 +89,7 @@ void Logic::collisionDetection() {
 
 #define SCREEN_SPRITE_WIDTH 32
 
-void Logic::boundscheck(){
+void Logic::boundsCheck(){
 	//Scan for player collisions here we just bump them around
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
 		sf::FloatRect pos = (*it)->getGeo();
