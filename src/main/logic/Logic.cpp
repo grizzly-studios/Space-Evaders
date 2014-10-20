@@ -86,7 +86,7 @@ void Logic::collisionDetection() {
 void Logic::boundsCheck(){
 	//Scan for player collisions here we just bump them around
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		sf::FloatRect pos = (*it)->getGeo();
+		/*sf::FloatRect pos = (*it)->getGeo();
 		if(pos.left <= (GBL::SCREEN_SPRITE_WIDTH + 2)){
 			//Too far left
 			(*it)->setPosition((GBL::SCREEN_SPRITE_WIDTH + 4),  pos.top);
@@ -108,6 +108,23 @@ void Logic::boundsCheck(){
 		}
 
 		//At this point the player will have been moved to a point that is within the bounds of the level
+		 */
+		sf::Vector2f offset;
+		if ((*it)->isOutOfBounds(sf::FloatRect(
+			GBL::SCREEN_SPRITE_WIDTH,
+			GBL::SCREEN_SPRITE_WIDTH,
+			GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH * 2),
+			GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH * 2)),offset)) {
+			if (offset.x > 0) {
+				(*it)->disableDir(RIGHT);
+			} else if (offset.x < 0) {
+				(*it)->disableDir(LEFT);
+			} else if (offset.y > 0) {
+				(*it)->disableDir(DOWN);
+			}
+		} else {
+			(*it)->enableAllDir();
+		}
 	}
 
 	//Scan for bullets gone off screen (to remove)
@@ -142,7 +159,7 @@ void Logic::interpolate(const double &remainder) {
 
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		(*it)->setDirection(event.getDirection());
+		(*it)->safeSetDirection(event.getDirection());
 	}
 }
 
@@ -172,7 +189,7 @@ void Logic::removeEntity(unsigned int entityID) {
 
 void Logic::generateLevel() {
 	allPlayers.push_back(PlayerShPtr(new Player()));
-	allPlayers.back()->setGeo(100,100,30,30);
+	allPlayers.back()->setGeo(100,100,GBL::SCREEN_SPRITE_WIDTH,GBL::SCREEN_SPRITE_WIDTH);
 	mobileObjects.push_back(allPlayers.back());
 	allObjects.push_back(allPlayers.back());
 	EntityCreatedEvent entityCreatedEvent(

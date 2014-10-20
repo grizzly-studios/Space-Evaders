@@ -15,6 +15,7 @@ MobileEntity::MobileEntity() : Entity() {
 MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
 	mag = orig.getMagnitude();
 	dir = orig.getDirection();
+	disabledDirections = orig.getDisabledDirections();
 }
 
 MobileEntity::~MobileEntity() {
@@ -34,6 +35,16 @@ Direction MobileEntity::getDirection() const {
 
 void MobileEntity::setDirection(Direction _dir) {
 	dir = _dir;
+}
+
+bool MobileEntity::safeSetDirection(Direction _dir, Direction fallback) {
+	if (!isDirDisabled(_dir)) {
+		dir = _dir;
+		return true;
+	} else {
+		dir = fallback;
+		return false;
+	}
 }
 
 sf::Vector2f MobileEntity::getVector(const double& dt) const {
@@ -71,6 +82,8 @@ sf::Vector2f MobileEntity::getVector(const double& dt) const {
 			x_mag = 0;
 			y_mag = 0;
 			break;
+		default:
+			break;
 	}
 
 	vector.x = x_mag * dt;
@@ -103,6 +116,33 @@ bool MobileEntity::detectCollision(const Entity &entity) {
 	return geo.intersects(entity.getGeo());
 }
 
+bool MobileEntity::isOutOfBounds(const sf::FloatRect& bounds) {
+	sf::FloatRect intersect;
+	if (geo.intersects(bounds,intersect)) {
+		if (intersect.height >= geo.height &&
+			intersect.width >= geo.width) {
+			return false;
+		}	
+	}
+	return true;
+}
+
+bool MobileEntity::isOutOfBounds(const sf::FloatRect& bounds, sf::Vector2f& offset) {
+	sf::FloatRect intersect;
+	if (geo.intersects(bounds,intersect)) {
+		if (intersect.height >= geo.height &&
+			intersect.width >= geo.width) {
+			return false;
+		} else {
+			offset.x = (geo.left - intersect.left) + 
+				((geo.left + geo.width) - (intersect.left + intersect.width));
+			offset.y = (geo.top - intersect.top) + 
+				((geo.top + geo.height) - (intersect.top + intersect.height));
+		}
+	}
+	return true;
+}
+
 void MobileEntity::setPosition(const sf::Vector2f& pos) {
 	Entity::setPosition(pos);
 	state[0] = state[1] = pos;
@@ -121,4 +161,33 @@ void MobileEntity::setGeo(const sf::FloatRect& _geo) {
 void MobileEntity::setGeo(float x, float y, float w, float h) {
 	Entity::setGeo(x,y,w,h);
 	state[0] = state[1] = sf::Vector2f(x,y);
+}
+
+void MobileEntity::disableDir(Direction _dir) {
+	disabledDirections.push_back(_dir);
+	if (dir == _dir) {
+		dir = NONE;
+	}
+}
+
+void MobileEntity::enableDir(Direction _dir) {
+	disabledDirections.remove(_dir);
+}
+
+void MobileEntity::enableAllDir() {
+	disabledDirections.clear();
+}
+
+std::list<Direction> MobileEntity::getDisabledDirections() const {
+	return disabledDirections;
+}
+
+bool MobileEntity::isDirDisabled(Direction _dir) {
+	for (std::list<Direction>::iterator it = disabledDirections.begin();
+		it != disabledDirections.end(); it++) {
+		if (*it == _dir) {
+			return true;
+		}
+	}
+	return false;
 }

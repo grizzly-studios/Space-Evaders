@@ -9,10 +9,11 @@
 #define	MOBILEENTITY_H
 
 #include "Entity.h"
+#include <list>
 
 namespace gs {
 	
-enum Direction {NONE, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT};
+enum Direction {NONE, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT, DIRCOUNT};
 
 /**
  * Base class for all moving objects
@@ -34,6 +35,7 @@ public:
 	void setMagnitude(float _mag);
 	Direction getDirection() const;
 	void setDirection(Direction _dir);
+	bool safeSetDirection(Direction _dir, Direction fallback = NONE);
 	void setPosition(const sf::Vector2f &pos);
 	void setPosition(float x, float y);
 	void setGeo(const sf::FloatRect &_geo);
@@ -50,10 +52,18 @@ public:
 	virtual void integrate(const double &dt);
 	virtual void interpolate(const double &alpha);
 	virtual bool detectCollision(const Entity &entity);
+	virtual bool isOutOfBounds(const sf::FloatRect &bound);
+	virtual bool isOutOfBounds(const sf::FloatRect &bounds, sf::Vector2f& offset);
+	virtual void disableDir(Direction _dir);
+	virtual void enableDir(Direction _dir);
+	virtual void enableAllDir();
+	virtual std::list<Direction> getDisabledDirections() const;
+	virtual bool isDirDisabled(Direction _dir);
 protected:
 	float mag;
 	Direction dir;
 	sf::Vector2f state[2];
+	std::list<Direction> disabledDirections;
 	
 	virtual sf::Vector2f getVector(const double & dt) const;
 };
