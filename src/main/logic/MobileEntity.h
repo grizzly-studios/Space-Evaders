@@ -9,6 +9,7 @@
 #define	MOBILEENTITY_H
 
 #include "Entity.h"
+#include "../app/Globals.h"
 
 namespace gs {
 	
@@ -38,6 +39,7 @@ public:
 	void setPosition(float x, float y);
 	void setGeo(const sf::FloatRect &_geo);
 	void setGeo(float x, float y, float w, float h);
+	virtual Direction isOutOfBounds() = 0; /* Returns if out of bounds and the direction it is out of bounds */
 	
 	/**
 	 * Movement function
@@ -50,12 +52,16 @@ public:
 	virtual void integrate(const double &dt);
 	virtual void interpolate(const double &alpha);
 	virtual bool detectCollision(const Entity &entity);
+	
 protected:
 	float mag;
 	Direction dir;
 	sf::Vector2f state[2];
 	
 	virtual sf::Vector2f getVector(const double & dt) const;
+
+	Direction shortToDirection(short dir);
+
 };
 
 typedef std::shared_ptr<MobileEntity> MobileEntityShPtr;
