@@ -30,14 +30,22 @@ public:
 	MobileEntity(const MobileEntity& orig);
 	virtual ~MobileEntity();
 
-	float getMagnitude() const;
-	void setMagnitude(float _mag);
-	Direction getDirection() const;
-	void setDirection(Direction _dir);
+	float getMaxSpeed() const;
+	void setMaxSpeed(float _max_speed);
+	sf::Vector2f getVelocity() const;
+	void setVelocity(const sf::Vector2f &_velocity);
+	float getMass() const;
+	void setMass(float _mass);
+	sf::Vector2f getForce() const;
+	void setForce(const sf::Vector2f &_force);
+	sf::Vector2f getFriction() const;
+	void setFriction(const sf::Vector2f &_friction);
 	void setPosition(const sf::Vector2f &pos);
 	void setPosition(float x, float y);
 	void setGeo(const sf::FloatRect &_geo);
 	void setGeo(float x, float y, float w, float h);
+	bool hasMoved();
+	virtual sf::Vector2f getVector(const Direction &dir, const float &mag) const;
 	
 	/**
 	 * Movement function
@@ -51,11 +59,12 @@ public:
 	virtual void interpolate(const double &alpha);
 	virtual bool detectCollision(const Entity &entity);
 protected:
-	float mag;
-	Direction dir;
-	sf::Vector2f state[2];
-	
-	virtual sf::Vector2f getVector(const double & dt) const;
+	float max_speed;			// unit: pixel/microseconds
+	sf::Vector2f velocity;		// unit: pixel/microseconds
+	float mass;					// unit: ermmmm
+	sf::Vector2f friction;	// unit: ermmmm
+	sf::Vector2f force;			// unit: ermmmm
+	sf::Vector2f state[3];
 };
 
 typedef std::shared_ptr<MobileEntity> MobileEntityShPtr;

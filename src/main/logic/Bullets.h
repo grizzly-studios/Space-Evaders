@@ -15,7 +15,7 @@ namespace gs {
 class Bullets : public MobileEntity {
 public:
 	Bullets();
-	Bullets(Direction _dir, float _mag);
+	Bullets(float _max_speed);
 	Bullets(const Bullets& orig);
 	virtual ~Bullets();
 

@@ -12,14 +12,12 @@ using namespace gs;
 Bullets::Bullets() : MobileEntity() {
 	//Setting default behaviour for bullets
     name = "Bullets";
-    mag = 100.f/1000000.f;	// unit: pixel/microseconds
-    dir = DOWN;
+    max_speed = 100.f/1000000.f;	// unit: pixel/microseconds
 }
 
-Bullets::Bullets(Direction _dir, float _mag) : MobileEntity() {
+Bullets::Bullets(float _max_speed) : MobileEntity() {
 	name = "Bullets";
-    dir = _dir;
-    mag = _mag;
+    max_speed = _max_speed;
 }
 
 Bullets::Bullets(const Bullets& orig) : MobileEntity(orig) {

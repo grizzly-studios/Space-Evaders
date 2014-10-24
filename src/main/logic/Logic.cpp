@@ -92,7 +92,7 @@ void Logic::interpolate(const double &remainder) {
 	const double alpha  = remainder / dt;
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->interpolate(alpha);
-		if ((*it)->getMagnitude() > 0 && (*it)->getDirection() != NONE) {
+		if ((*it)->hasMoved()) {
 			EntityMovedEvent entityMovedEvent((*it)->getID(),(*it)->getPosition());
 			eventManager->fireEvent(entityMovedEvent);
 		}
@@ -101,12 +101,12 @@ void Logic::interpolate(const double &remainder) {
 
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		(*it)->setDirection(event.getDirection());
+		(*it)->setForce((*it)->getVector(event.getDirection(), 50.f/1000000.f));
 	}
 }
 
-void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
-	allBullets.push_back(BulletsShPtr(new Bullets(dir, mag)));
+void Logic::addBullets(float max_speed, sf::FloatRect geo) {
+	allBullets.push_back(BulletsShPtr(new Bullets(max_speed)));
 	allBullets.back()->setGeo(geo);
 	mobileObjects.push_back(allBullets.back());
 	allObjects.push_back(allBullets.back());

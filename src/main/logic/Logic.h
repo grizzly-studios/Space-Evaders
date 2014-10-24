@@ -67,7 +67,7 @@ private:
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
 	
-	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
+	void addBullets(float max_speed, sf::FloatRect geo);
 };
 
 }
