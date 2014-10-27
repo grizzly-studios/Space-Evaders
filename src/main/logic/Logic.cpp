@@ -8,7 +8,8 @@ using namespace gs;
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 	clock = new sf::Clock();
 	accumulator = 0;
-	dt = 12500;
+	MobileEntity::seth(12500);
+
 }
 
 Logic::~Logic() {
@@ -52,9 +53,9 @@ void Logic::onEvent(Event& event) {
 }
 
 void Logic::move() {
-	while(accumulator >= dt) {
+	while(accumulator >= MobileEntity::geth()) {
 		integrate();
-		accumulator -= dt;
+		accumulator -= MobileEntity::geth();
 	}
 	interpolate(accumulator);
 }
@@ -84,12 +85,12 @@ void Logic::collisionDetection() {
 
 void Logic::integrate() {
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
-		(*it)->integrate(dt);
+		(*it)->integrate();
 	}
 }
 
 void Logic::interpolate(const double &remainder) {
-	const double alpha  = remainder / dt;
+	const double alpha  = remainder / MobileEntity::geth();
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->interpolate(alpha);
 		if ((*it)->hasMoved()) {
@@ -105,8 +106,8 @@ void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	}
 }
 
-void Logic::addBullets(float max_speed, sf::FloatRect geo) {
-	allBullets.push_back(BulletsShPtr(new Bullets(max_speed)));
+void Logic::addBullets(sf::Vector2f velocity, sf::FloatRect geo) {
+	allBullets.push_back(BulletsShPtr(new Bullets(velocity)));
 	allBullets.back()->setGeo(geo);
 	mobileObjects.push_back(allBullets.back());
 	allObjects.push_back(allBullets.back());

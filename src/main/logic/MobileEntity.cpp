@@ -17,6 +17,8 @@ MobileEntity::MobileEntity() :
 Entity(),
 velocity(0,0),
 force(0,0) {
+	using namespace std::placeholders;
+	acceleration = std::bind(DefaultAccelerator, _1, _2, _3, _4, _5, _6, _7);
 }
 
 MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
@@ -44,6 +46,15 @@ sf::Vector2f MobileEntity::getVelocity() const {
 
 void MobileEntity::setVelocity(const sf::Vector2f &_velocity) {
 	velocity = _velocity;
+	
+	float dist_x = velocity.x * 4 * h;
+	float dist_y = velocity.y * 4 * h;
+	
+	state[0].x = state[1].x - dist_x;
+	state[2].x = state[1].x + dist_x;
+	
+	state[0].y = state[1].y - dist_y;
+	state[2].y = state[1].y + dist_y;
 }
 
 float MobileEntity::getMass() const {
@@ -112,21 +123,74 @@ sf::Vector2f MobileEntity::getVector(const Direction &dir, const float &mag) con
 	return vector;
 }
 
-void MobileEntity::move(const double& dt) {
-	/*sf::Vector2f vector = getVector(dt);
-
-	geo.left = vector.x;
-	geo.top = vector.y;*/
-}
-
-void MobileEntity::integrate(const double& dt) {
+void MobileEntity::integrate() {
 		
 	state[0] = state[1];
 	state[1] = state[2];
 	
-	double A = pow(dt,2) / mass;
+	sf::Vector2f accel = acceleration(h, state, mass, max_speed, velocity, friction, force);
 	
-	//Max Speed
+	state[2].x = (2 * state[1].x) - state[0].x + (pow(h,2) * accel.x);
+	state[2].y = (2 * state[1].y) - state[0].y + (pow(h,2) * accel.y);
+	
+	velocity.x = (state[2].x - state[0].x)/ (2 * h);
+	velocity.y = (state[2].y - state[0].y)/ (2 * h);
+}
+
+void MobileEntity::interpolate(const double& alpha) {
+	geo.left = state[2].x * alpha + state[1].x * (1. - alpha);
+	geo.top = state[2].y * alpha + state[1].y * (1. - alpha);
+}
+
+bool MobileEntity::detectCollision(const Entity &entity) {
+	return geo.intersects(entity.getGeo());
+}
+
+void MobileEntity::setPosition(const sf::Vector2f& pos) {
+	Entity::setPosition(pos);
+	state[0] = state[1] = state[2] = pos;
+	setVelocity(velocity);
+}
+
+void MobileEntity::setPosition(float x, float y) {
+	Entity::setPosition(x,y);
+	state[0] = state[1] = state[2] = sf::Vector2f(x,y);
+	setVelocity(velocity);
+}
+
+void MobileEntity::setGeo(const sf::FloatRect& _geo) {
+	Entity::setGeo(_geo);
+	state[0] = state[1] = state[2] = sf::Vector2f(_geo.left,_geo.top);
+	setVelocity(velocity);
+}
+
+void MobileEntity::setGeo(float x, float y, float w, float h) {
+	Entity::setGeo(x,y,w,h);
+	state[0] = state[1] = state[2] = sf::Vector2f(x,y);
+	setVelocity(velocity);
+}
+
+bool MobileEntity::hasMoved() {
+	return state[1] != state[2];
+}
+
+double MobileEntity::h = 0;
+
+void MobileEntity::setAccelerationFunc(AccelerationFunc fn) {
+	acceleration = fn;
+}
+
+sf::Vector2f gs::DefaultAccelerator(
+		double h,
+		sf::Vector2f* state,
+		float mass,
+		float max_speed,
+		sf::Vector2f velocity,
+		sf::Vector2f friction,
+		sf::Vector2f force
+) {
+	sf::Vector2f output;
+
 	sf::Vector2f applied_force;
 	sf::Vector2f applied_friction;
 	if (fabs(velocity.x) > max_speed && fabs(force.x) > fabs(friction.x)) {
@@ -158,51 +222,8 @@ void MobileEntity::integrate(const double& dt) {
 		applied_friction.y = -1 * (velocity.y/fabs(velocity.y)) * friction.y;
 	}
 	
-	state[2].x = (2 * state[1].x) - state[0].x + (A * (applied_force.x + applied_friction.x));
-	state[2].y = (2 * state[1].y) - state[0].y + (A * (applied_force.y + applied_friction.y));
+	output.x = (applied_force.x + applied_friction.x) / mass;
+	output.y = (applied_force.y + applied_friction.y) / mass;
 	
-	velocity.x = (state[2].x - state[0].x)/ (2 * dt);
-	velocity.y = (state[2].y - state[0].y)/ (2 * dt);
-	
-
-	DBG << "integrate applied_force x:" << applied_force.x << "\t y: " << applied_force.y << std::endl;
-	DBG << "integrate applied_friction x:" << applied_friction.x << "\t y: " << applied_friction.y << std::endl;
-	DBG << "integrate velocity x:" << velocity.x << "\t y: " << velocity.y << std::endl;
-	
-	DBG << "integrate state[0] x:" << state[0].x << "\t y: " << state[0].y << std::endl;
-	DBG << "integrate state[1] x:" << state[1].x << "\t y: " << state[1].y << std::endl;
-	DBG << "integrate state[2] x:" << state[2].x << "\t y: " << state[2].y << std::endl;
-}
-
-void MobileEntity::interpolate(const double& alpha) {
-	geo.left = state[2].x * alpha + state[1].x * (1. - alpha);
-	geo.top = state[2].y * alpha + state[1].y * (1. - alpha);
-}
-
-bool MobileEntity::detectCollision(const Entity &entity) {
-	return geo.intersects(entity.getGeo());
-}
-
-void MobileEntity::setPosition(const sf::Vector2f& pos) {
-	Entity::setPosition(pos);
-	state[0] = state[1] = state[2] = pos;
-}
-
-void MobileEntity::setPosition(float x, float y) {
-	Entity::setPosition(x,y);
-	state[0] = state[1] = state[2] = sf::Vector2f(x,y);
-}
-
-void MobileEntity::setGeo(const sf::FloatRect& _geo) {
-	Entity::setGeo(_geo);
-	state[0] = state[1] = state[2] = sf::Vector2f(_geo.left,_geo.top);
-}
-
-void MobileEntity::setGeo(float x, float y, float w, float h) {
-	Entity::setGeo(x,y,w,h);
-	state[0] = state[1] = state[2] = sf::Vector2f(x,y);
-}
-
-bool MobileEntity::hasMoved() {
-	return state[1] != state[2];
+	return output;
 }
