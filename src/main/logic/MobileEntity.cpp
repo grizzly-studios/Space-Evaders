@@ -101,16 +101,20 @@ sf::Vector2f MobileEntity::getVector(const Direction &dir, const float &mag) con
 			y_mag = 0;
 			break;
 		case UPRIGHT :
-			x_mag *= -1;
+			x_mag *= rootTwoOverTwo;
+			y_mag *= -rootTwoOverTwo;
+			break;
 		case DOWNRIGHT :
 			x_mag *= rootTwoOverTwo;
 			y_mag *= rootTwoOverTwo;
 			break;
 		case UPLEFT :
-			x_mag *= -1;
-		case DOWNLEFT :
-			x_mag *= rootTwoOverTwo;
+			x_mag *= -rootTwoOverTwo;
 			y_mag *= -rootTwoOverTwo;
+			break;
+		case DOWNLEFT :
+			x_mag *= -rootTwoOverTwo;
+			y_mag *= rootTwoOverTwo;
 			break;
 		case NONE :
 			x_mag = 0;
