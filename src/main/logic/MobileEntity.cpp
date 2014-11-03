@@ -6,6 +6,7 @@
  */
 
 #include "MobileEntity.h"
+#include "../util/Logger.h"
 
 using namespace gs;
 
@@ -190,4 +191,53 @@ bool MobileEntity::isDirDisabled(Direction _dir) {
 		}
 	}
 	return false;
+}
+
+/* Takes an int input and converts to Direction Enum. *
+ * Uses Bit comparison 							 	  *
+ * Top (8), Left (4), Right (2), Bot (1).             *
+ * Which means:                                       *
+ * 		0 = No Direction 							  *
+ * 		1 = Bot   		 							  *
+ * 		2 = Right     								  *
+ * 		3 = Bot-Right 	 							  *
+ * 		4 = Left 		 							  *
+ * 		5 = Bot-Left 	 							  *
+ * 		8 = Top 		 							  *
+ *     10 = Top-Right                                 *
+ *     12 = Top-Left                                  *
+ * Others = INVALID                                   */
+Direction MobileEntity::shortToDirection(short dir){
+	switch(dir){
+		case 0:
+			return NONE;
+
+		case 1:
+			return DOWN;
+
+		case 2:
+			return RIGHT;
+
+		case 3:
+			return DOWNRIGHT;
+
+		case 4:
+			return LEFT;
+
+		case 5:
+			return DOWNLEFT;
+
+		case 8:
+			return UP;
+
+		case 10:
+			return UPRIGHT;
+
+		case 12:
+			return UPLEFT;
+
+		default:
+			ERR << "Invalid Short value: " << dir << std::endl;
+			return NONE;
+	}
 }

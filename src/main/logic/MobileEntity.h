@@ -10,6 +10,7 @@
 
 #include "Entity.h"
 #include <list>
+#include "../app/Globals.h"
 
 namespace gs {
 	
@@ -40,6 +41,7 @@ public:
 	void setPosition(float x, float y);
 	void setGeo(const sf::FloatRect &_geo);
 	void setGeo(float x, float y, float w, float h);
+	virtual Direction isOutOfBounds() = 0; /* Returns if out of bounds and the direction it is out of bounds */
 	
 	/**
 	 * Movement function
@@ -59,6 +61,7 @@ public:
 	virtual void enableAllDir();
 	virtual std::list<Direction> getDisabledDirections() const;
 	virtual bool isDirDisabled(Direction _dir);
+
 protected:
 	float mag;
 	Direction dir;
@@ -66,6 +69,9 @@ protected:
 	std::list<Direction> disabledDirections;
 	
 	virtual sf::Vector2f getVector(const double & dt) const;
+
+	Direction shortToDirection(short dir);
+
 };
 
 typedef std::shared_ptr<MobileEntity> MobileEntityShPtr;

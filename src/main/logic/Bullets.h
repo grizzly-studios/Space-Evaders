@@ -19,6 +19,7 @@ public:
 	Bullets(const Bullets& orig);
 	virtual ~Bullets();
 
+	Direction isOutOfBounds();
 private:
 };
 
