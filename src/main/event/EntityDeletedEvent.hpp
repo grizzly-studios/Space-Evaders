@@ -6,14 +6,13 @@
 namespace gs {
 
 /**
- * Event representing the creation of an entity.
+ * Event representing the deletion of an entity.
  */
 class EntityDeletedEvent : public Event {
 public:
 	/**
 	 * Constructor
 	 * @param _entityId Entity id
-	 * @param _geo Rectangle representing the entity position and dimensions
 	 */
 	EntityDeletedEvent(short _entityId) : entityId(_entityId)
 	{}

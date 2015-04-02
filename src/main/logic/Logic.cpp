@@ -86,52 +86,6 @@ void Logic::collisionDetection() {
 void Logic::boundsCheck(){
 	//Scan for player collisions here we just bump them around
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		/*sf::FloatRect pos = (*it)->getGeo();
-		if(pos.left <= (GBL::SCREEN_SPRITE_WIDTH + 2)){
-			//Too far left
-			(*it)->setPosition((GBL::SCREEN_SPRITE_WIDTH + 4),  pos.top);
-=======
-		Direction oOB = (*it)->isOutOfBounds();
-		sf::FloatRect pos = (*it)->getGeo();
-		switch(oOB){
-			case LEFT:
-				(*it)->setPosition((GBL::SCREEN_SPRITE_WIDTH + 4),  pos.top);
-				break;
-
-			case RIGHT:
-				(*it)->setPosition((GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.width),  pos.top);
-				break;
-
-			case UP:
-				(*it)->setPosition(pos.left, (GBL::SCREEN_SPRITE_WIDTH + 4));
-				break;
-
-			case DOWN:
-				(*it)->setPosition(pos.left, (GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.height));
-				break;
-
-			case UPLEFT:
-				(*it)->setPosition((GBL::SCREEN_SPRITE_WIDTH + 4), (GBL::SCREEN_SPRITE_WIDTH + 4));
-				break;
-
-			case UPRIGHT:
-				(*it)->setPosition((GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.width), (GBL::SCREEN_SPRITE_WIDTH + 4));
-				break;
-
-			case DOWNLEFT:
-				(*it)->setPosition((GBL::SCREEN_SPRITE_WIDTH + 4), (GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.height));
-				break;
-
-			case DOWNRIGHT:
-				(*it)->setPosition((GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.width), (GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH + 4) - pos.height));
-				break;
-
-			case NONE:
-				// Not out of bounds so ignore
-				break;
-		}
-		//At this point the player will have been moved to a point that is within the bounds of the level
-		 */
 		sf::Vector2f offset;
 		if ((*it)->MobileEntity::isOutOfBounds(sf::FloatRect(
 			GBL::SCREEN_SPRITE_WIDTH,
