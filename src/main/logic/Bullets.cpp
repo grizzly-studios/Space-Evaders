@@ -11,8 +11,8 @@ using namespace gs;
 
 Bullets::Bullets() : MobileEntity() {
 	//Setting default behaviour for bullets
-    name = "Bullets";
-    max_speed = 100.f/1000000.f;	// unit: pixel/microseconds
+	name = "Bullets";
+	max_speed = 100.f/1000000.f;	// unit: pixel/microseconds
 	mass = 100000;
 	friction.x = 25.f/1000000.f;
 	friction.y = 0.f;
@@ -20,7 +20,7 @@ Bullets::Bullets() : MobileEntity() {
 
 Bullets::Bullets(sf::Vector2f velocity) : MobileEntity() {
 	name = "Bullets";
-    max_speed = 100.f/1000000.f;	// unit: pixel/microseconds
+	max_speed = 100.f/1000000.f;	// unit: pixel/microseconds
 	mass = 100000;
 	friction.x = 25.f/1000000.f;
 	friction.y = 0.f;
