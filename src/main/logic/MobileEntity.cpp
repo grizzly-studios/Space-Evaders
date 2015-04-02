@@ -13,6 +13,8 @@
 
 using namespace gs;
 
+double MobileEntity::h = 0;
+
 MobileEntity::MobileEntity() : 
 Entity(),
 velocity(0,0),
@@ -47,8 +49,8 @@ sf::Vector2f MobileEntity::getVelocity() const {
 void MobileEntity::setVelocity(const sf::Vector2f &_velocity) {
 	velocity = _velocity;
 	
-	float dist_x = velocity.x * 4 * h;
-	float dist_y = velocity.y * 4 * h;
+	float dist_x = velocity.x * h;
+	float dist_y = velocity.y * h;
 	
 	state[0].x = state[1].x - dist_x;
 	state[2].x = state[1].x + dist_x;
@@ -177,8 +179,6 @@ void MobileEntity::setGeo(float x, float y, float w, float h) {
 bool MobileEntity::hasMoved() {
 	return state[1] != state[2];
 }
-
-double MobileEntity::h = 0;
 
 void MobileEntity::setAccelerationFunc(AccelerationFunc fn) {
 	acceleration = fn;
