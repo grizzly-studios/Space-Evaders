@@ -11,15 +11,20 @@ using namespace gs;
 
 Bullets::Bullets() : MobileEntity() {
 	//Setting default behaviour for bullets
-    name = "Bullets";
-    mag = 100.f/1000000.f;	// unit: pixel/microseconds
-    dir = DOWN;
+	name = "Bullets";
+	max_speed = 100.f/1000000.f;	// unit: pixel/microseconds
+	mass = 100000;
+	friction.x = 25.f/1000000.f;
+	friction.y = 0.f;
 }
 
-Bullets::Bullets(Direction _dir, float _mag) : MobileEntity() {
+Bullets::Bullets(sf::Vector2f velocity) : MobileEntity() {
 	name = "Bullets";
-    dir = _dir;
-    mag = _mag;
+	max_speed = 100.f/1000000.f;	// unit: pixel/microseconds
+	mass = 100000;
+	friction.x = 25.f/1000000.f;
+	friction.y = 0.f;
+	setVelocity(velocity);
 }
 
 Bullets::Bullets(const Bullets& orig) : MobileEntity(orig) {

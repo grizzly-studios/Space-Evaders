@@ -8,7 +8,8 @@ using namespace gs;
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
 	clock = new sf::Clock();
 	accumulator = 0;
-	dt = 12500;
+	MobileEntity::seth(12500);
+
 }
 
 Logic::~Logic() {
@@ -52,9 +53,9 @@ void Logic::onEvent(Event& event) {
 }
 
 void Logic::move() {
-	while(accumulator >= dt) {
+	while(accumulator >= MobileEntity::geth()) {
 		integrate();
-		accumulator -= dt;
+		accumulator -= MobileEntity::geth();
 	}
 	interpolate(accumulator);
 }
@@ -84,15 +85,15 @@ void Logic::collisionDetection() {
 
 void Logic::integrate() {
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
-		(*it)->integrate(dt);
+		(*it)->integrate();
 	}
 }
 
 void Logic::interpolate(const double &remainder) {
-	const double alpha  = remainder / dt;
+	const double alpha  = remainder / MobileEntity::geth();
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->interpolate(alpha);
-		if ((*it)->getMagnitude() > 0 && (*it)->getDirection() != NONE) {
+		if ((*it)->hasMoved()) {
 			EntityMovedEvent entityMovedEvent((*it)->getID(),(*it)->getPosition());
 			eventManager->fireEvent(entityMovedEvent);
 		}
@@ -101,12 +102,12 @@ void Logic::interpolate(const double &remainder) {
 
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		(*it)->setDirection(event.getDirection());
+		(*it)->setForce((*it)->getVector(event.getDirection(), 50.f/1000000.f));
 	}
 }
 
-void Logic::addBullets(Direction dir, float mag, sf::FloatRect geo) {
-	allBullets.push_back(BulletsShPtr(new Bullets(dir, mag)));
+void Logic::addBullets(sf::Vector2f velocity, sf::FloatRect geo) {
+	allBullets.push_back(BulletsShPtr(new Bullets(velocity)));
 	allBullets.back()->setGeo(geo);
 	mobileObjects.push_back(allBullets.back());
 	allObjects.push_back(allBullets.back());
