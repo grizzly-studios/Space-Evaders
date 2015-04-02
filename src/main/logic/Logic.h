@@ -49,7 +49,6 @@ private:
 	
 	sf::Clock *clock;
 	double accumulator;
-	double dt;
 
 	EntityList allObjects;
 	MobileEntityList mobileObjects;
@@ -70,7 +69,7 @@ private:
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
 	
-	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
+	void addBullets(sf::Vector2f velocity, sf::FloatRect geo);
 	void removeEntity(unsigned int entityID);
 };
 

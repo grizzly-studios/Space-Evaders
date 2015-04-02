@@ -8,47 +8,87 @@
 #include "MobileEntity.h"
 #include "../util/Logger.h"
 
+#include <cmath>
+
+#include "../util/Logger.h"
+
 using namespace gs;
 
-MobileEntity::MobileEntity() : Entity() {
+double MobileEntity::h = 0;
+
+MobileEntity::MobileEntity() : 
+Entity(),
+velocity(0,0),
+force(0,0) {
+	using namespace std::placeholders;
+	acceleration = std::bind(DefaultAccelerator, _1, _2, _3, _4, _5, _6, _7);
 }
 
 MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
-	mag = orig.getMagnitude();
-	dir = orig.getDirection();
 	disabledDirections = orig.getDisabledDirections();
+	max_speed = orig.getMaxSpeed();
+	mass = orig.getMass();
+	friction = orig.getFriction();
+	setGeo(orig.getGeo());
 }
 
 MobileEntity::~MobileEntity() {
 }
 
-float MobileEntity::getMagnitude() const {
-	return mag;
+float MobileEntity::getMaxSpeed() const {
+	return max_speed;
 }
 
-void MobileEntity::setMagnitude(float _mag) {
-	mag = _mag;
+void MobileEntity::setMaxSpeed(float _max_speed) {
+	max_speed = _max_speed;
 }
 
-Direction MobileEntity::getDirection() const {
-	return dir;
+sf::Vector2f MobileEntity::getVelocity() const {
+	return velocity;
 }
 
-void MobileEntity::setDirection(Direction _dir) {
-	dir = _dir;
+void MobileEntity::setVelocity(const sf::Vector2f &_velocity) {
+	velocity = _velocity;
+	
+	float dist_x = velocity.x * h;
+	float dist_y = velocity.y * h;
+	
+	state[0].x = state[1].x - dist_x;
+	state[2].x = state[1].x + dist_x;
+	
+	state[0].y = state[1].y - dist_y;
+	state[2].y = state[1].y + dist_y;
 }
 
-bool MobileEntity::safeSetDirection(Direction _dir, Direction fallback) {
-	if (!isDirDisabled(_dir)) {
-		dir = _dir;
-		return true;
-	} else {
-		dir = fallback;
-		return false;
-	}
+float MobileEntity::getMass() const {
+	return mass;
 }
 
-sf::Vector2f MobileEntity::getVector(const double& dt) const {
+void MobileEntity::setMass(float _mass) {
+	mass = _mass;
+}
+
+sf::Vector2f MobileEntity::getFriction() const {
+	return friction;
+}
+
+void MobileEntity::setFriction(const sf::Vector2f &_friction) {
+	friction = _friction;
+}
+
+sf::Vector2f MobileEntity::getForce() const {
+	return force;
+}
+
+void MobileEntity::setForce(const sf::Vector2f &_force) {
+	force = _force;
+}
+
+void MobileEntity::safeSetForce(const sf::Vector2f &_force) {
+	force = _force;
+}
+
+sf::Vector2f MobileEntity::getVector(const Direction &dir, const float &mag) const {
 	sf::Vector2f vector;
 	
 	float x_mag = mag;
@@ -68,16 +108,20 @@ sf::Vector2f MobileEntity::getVector(const double& dt) const {
 			y_mag = 0;
 			break;
 		case UPRIGHT :
-			x_mag *= -1;
+			x_mag *= rootTwoOverTwo;
+			y_mag *= -rootTwoOverTwo;
+			break;
 		case DOWNRIGHT :
 			x_mag *= rootTwoOverTwo;
 			y_mag *= rootTwoOverTwo;
 			break;
 		case UPLEFT :
-			x_mag *= -1;
-		case DOWNLEFT :
-			x_mag *= rootTwoOverTwo;
+			x_mag *= -rootTwoOverTwo;
 			y_mag *= -rootTwoOverTwo;
+			break;
+		case DOWNLEFT :
+			x_mag *= -rootTwoOverTwo;
+			y_mag *= rootTwoOverTwo;
 			break;
 		case NONE :
 			x_mag = 0;
@@ -86,31 +130,29 @@ sf::Vector2f MobileEntity::getVector(const double& dt) const {
 		default:
 			break;
 	}
-
-	vector.x = x_mag * dt;
-	vector.y = y_mag * dt;
+	
+	vector.x = x_mag;
+	vector.y = y_mag;
 	return vector;
 }
 
-void MobileEntity::move(const double& dt) {
-	sf::Vector2f vector = getVector(dt);
-
-	geo.left = vector.x;
-	geo.top = vector.y;
-}
-
-void MobileEntity::integrate(const double& dt) {
-	sf::Vector2f vector = getVector(dt);
-	
+void MobileEntity::integrate() {
+		
 	state[0] = state[1];
+	state[1] = state[2];
 	
-	state[1].x += vector.x;
-	state[1].y += vector.y;
+	sf::Vector2f accel = acceleration(h, state, mass, max_speed, velocity, friction, force);
+	
+	state[2].x = (2 * state[1].x) - state[0].x + (pow(h,2) * accel.x);
+	state[2].y = (2 * state[1].y) - state[0].y + (pow(h,2) * accel.y);
+	
+	velocity.x = (state[2].x - state[0].x)/ (2 * h);
+	velocity.y = (state[2].y - state[0].y)/ (2 * h);
 }
 
 void MobileEntity::interpolate(const double& alpha) {
-	geo.left = state[1].x * alpha + state[0].x * (1. - alpha);
-	geo.top = state[1].y * alpha + state[0].y * (1. - alpha);
+	geo.left = state[2].x * alpha + state[1].x * (1. - alpha);
+	geo.top = state[2].y * alpha + state[1].y * (1. - alpha);
 }
 
 bool MobileEntity::detectCollision(const Entity &entity) {
@@ -146,28 +188,53 @@ bool MobileEntity::isOutOfBounds(const sf::FloatRect& bounds, sf::Vector2f& offs
 
 void MobileEntity::setPosition(const sf::Vector2f& pos) {
 	Entity::setPosition(pos);
-	state[0] = state[1] = pos;
+	state[0] = state[1] = state[2] = pos;
+	setVelocity(velocity);
 }
 
 void MobileEntity::setPosition(float x, float y) {
 	Entity::setPosition(x,y);
-	state[0] = state[1] = sf::Vector2f(x,y);
+	state[0] = state[1] = state[2] = sf::Vector2f(x,y);
+	setVelocity(velocity);
 }
 
 void MobileEntity::setGeo(const sf::FloatRect& _geo) {
 	Entity::setGeo(_geo);
-	state[0] = state[1] = sf::Vector2f(_geo.left,_geo.top);
+	state[0] = state[1] = state[2] = sf::Vector2f(_geo.left,_geo.top);
+	setVelocity(velocity);
 }
 
 void MobileEntity::setGeo(float x, float y, float w, float h) {
 	Entity::setGeo(x,y,w,h);
-	state[0] = state[1] = sf::Vector2f(x,y);
+	state[0] = state[1] = state[2] = sf::Vector2f(x,y);
+	setVelocity(velocity);
 }
 
 void MobileEntity::disableDir(Direction _dir) {
 	disabledDirections.push_back(_dir);
-	if (dir == _dir) {
-		dir = NONE;
+	stop(_dir);
+}
+
+void MobileEntity::stop(Direction blockDir) {
+	if ((blockDir == ALL || blockDir == UPRIGHT ||
+		blockDir == RIGHT || blockDir == DOWNRIGHT) &&
+		state[2].x > state[0].x	) {
+		state[0].x = state[2].x = state[1].x;
+	}
+	if ((blockDir == ALL || blockDir == UPLEFT ||
+		blockDir == LEFT || blockDir == DOWNLEFT) &&
+		state[2].x < state[0].x	) {
+		state[0].x = state[2].x = state[1].x;
+	}
+	if ((blockDir == ALL || blockDir == DOWNLEFT ||
+		blockDir == DOWN || blockDir == DOWNRIGHT) &&
+		state[2].y > state[0].y	) {
+		state[0].y = state[2].y = state[1].y;
+	}
+	if ((blockDir == ALL || blockDir == UPLEFT ||
+		blockDir == UP || blockDir == UPRIGHT) &&
+		state[2].y < state[0].y	) {
+		state[0].y = state[2].y = state[1].y;
 	}
 }
 
@@ -240,4 +307,60 @@ Direction MobileEntity::shortToDirection(short dir){
 			ERR << "Invalid Short value: " << dir << std::endl;
 			return NONE;
 	}
+}
+
+bool MobileEntity::hasMoved() {
+	return state[1] != state[2];
+}
+
+void MobileEntity::setAccelerationFunc(AccelerationFunc fn) {
+	acceleration = fn;
+}
+
+sf::Vector2f gs::DefaultAccelerator(
+		double h,
+		sf::Vector2f* state,
+		float mass,
+		float max_speed,
+		sf::Vector2f velocity,
+		sf::Vector2f friction,
+		sf::Vector2f force
+) {
+	sf::Vector2f output;
+
+	sf::Vector2f applied_force;
+	sf::Vector2f applied_friction;
+	if (fabs(velocity.x) > max_speed && fabs(force.x) > fabs(friction.x)) {
+		applied_force.x = -friction.x;
+	} else {
+		applied_force.x = force.x;
+	}
+	if (fabs(velocity.y) > max_speed && fabs(force.y) > fabs(friction.y)) {
+		applied_force.y = -friction.y;
+	} else {
+		applied_force.y = force.y;
+	}
+	
+	if (fabs(velocity.x) < 0.000002 && applied_friction.x == 0) {
+		state[0].x = state[1].x;
+	}
+	if (fabs(velocity.y) < 0.000002 && applied_friction.y == 0) {
+		state[0].y = state[1].y;
+	}
+
+	if (fabs(velocity.x) < 0.000002) {
+		applied_friction.x = 0;
+	} else {
+		applied_friction.x = -1 * (velocity.x/fabs(velocity.x)) * friction.x;
+	}
+	if (fabs(velocity.y) < 0.000002) {
+		applied_friction.y = 0;
+	} else {
+		applied_friction.y = -1 * (velocity.y/fabs(velocity.y)) * friction.y;
+	}
+	
+	output.x = (applied_force.x + applied_friction.x) / mass;
+	output.y = (applied_force.y + applied_friction.y) / mass;
+	
+	return output;
 }
