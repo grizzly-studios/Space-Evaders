@@ -48,8 +48,10 @@ public:
 	
 private:
 	IEventManagerPtr eventManager;
+	GameState gameState;
 	
 	sf::Clock *clock;
+	double gameTime;
 	RandomNumberGenerator randomNumberGenerator;
 	double accumulator;
 
@@ -60,11 +62,14 @@ private:
 
 	int level;
 	int wave;
+	double nextBulletSpawn;
+	int bulletInterval;
 	
 	//Subroutines
 	void move();
 	void collisionDetection();
 	void boundsCheck();
+	void spawn();
 
 	void startNewGame();
 	void gameEnd();

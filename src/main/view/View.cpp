@@ -14,15 +14,6 @@
 
 using namespace gs;
 
-namespace {
-
-sf::Vector2f convertToScreenCoords(const sf::Vector2f& logicCoords) {
-	// Add offset for the HUD border
-	return sf::Vector2f(logicCoords.x + GBL::SCREEN_SPRITE_WIDTH, logicCoords.y + GBL::SCREEN_SPRITE_WIDTH);
-}
-
-}
-
 View::View(IEventManagerPtr _eventManager,
 	RenderWindowShPtr _window,
 	IUserInputShPtr _userInput,
@@ -277,7 +268,7 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 	}
 
 	sf::Sprite sprite = spriteFactory->createSprite(spriteCol, spriteRow);
-	sprite.setPosition(convertToScreenCoords(event.getPosition()));
+	sprite.setPosition(event.getPosition());
 	// Logic dimensions map to screen pixels 1:1
 	sprite.setScale(event.getDimensions() / (float) GBL::SCREEN_SPRITE_WIDTH);
 
@@ -306,7 +297,7 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);
 	if (it != spriteMap.end()) {
-		it->second.setPosition(convertToScreenCoords(event.getPosition()));
+		it->second.setPosition(event.getPosition());
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}

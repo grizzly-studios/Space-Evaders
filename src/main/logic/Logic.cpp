@@ -11,7 +11,7 @@
 #define ROWS 20
 #define NUMBER_LEVELS 3
 #define MIN_NUMBER_WAVES 4				// player can move back, and can hence play more than this no. of waves
-#define NUMBER_ENEMIES COLS-2
+#define NUMBER_ENEMIES COLS
 #define MIN_LEVEL_START_SPEED 150.0		// units/sec (pixels in this simplistic mapping)
 #define MAX_BULLET_SPEED 450.0			// max speed is the same for each level
 #define LEVEL_START_SPEED_INCREMENT ((MAX_BULLET_SPEED - MIN_LEVEL_START_SPEED) / (NUMBER_LEVELS - 1))
@@ -24,8 +24,8 @@ sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
 	sf::Vector2f vec;
 
 	if (colIndex >= 0 && colIndex < COLS && rowIndex >= 0 && rowIndex < ROWS) {
-		vec.x = colIndex * TILE_WIDTH;
-		vec.y = rowIndex * TILE_WIDTH;
+		vec.x = colIndex * TILE_WIDTH + TILE_WIDTH;
+		vec.y = rowIndex * TILE_WIDTH + TILE_WIDTH;
 	} else {
 		ERR << "Tile indices out of range" << std::endl;
 	}
@@ -38,6 +38,7 @@ sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
 	randomNumberGenerator(time(NULL)), level(1), wave(1) {
 	clock = new sf::Clock();
+	gameTime = 0;
 	accumulator = 0;
 	MobileEntity::seth(12500);
 
@@ -54,11 +55,16 @@ void Logic::update() {
 	if (interval > 250000) {
 		interval = 250000;
 	}
-	accumulator += interval;
 
-	move();
-	collisionDetection();
-	boundsCheck();
+	if (gameState == IN_GAME) {
+		accumulator += interval;
+		gameTime += elapsed.asMilliseconds();
+
+		move();
+		collisionDetection();
+		boundsCheck();
+		spawn();
+	}
 }
 
 void Logic::onEvent(Event& event) {
@@ -147,6 +153,13 @@ void Logic::boundsCheck(){
 	}
 }
 
+void Logic::spawn() {
+	if (gameTime > nextBulletSpawn) {
+		nextBulletSpawn += bulletInterval;
+		generateBullets();
+	}
+}
+
 void Logic::integrate() {
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->integrate();
@@ -211,7 +224,7 @@ void Logic::generateLevel() {
 
 	// Create enemies
 	for (int i=0; i<NUMBER_ENEMIES; i++) {
-		const sf::Vector2f enemyPos = getTilePosition(1 + i, 2);
+		const sf::Vector2f enemyPos = getTilePosition(i, 1);
 		allObjects.push_back(EnemyShPtr(new Enemy()));
 		allObjects.back()->setGeo(enemyPos.x, enemyPos.y, TILE_WIDTH, TILE_WIDTH);
 
@@ -223,7 +236,10 @@ void Logic::generateLevel() {
 	}
 
 	INFO << "Generated level" << std::endl;
+
 	generateBullets();
+	bulletInterval = 3000;
+	nextBulletSpawn = gameTime + bulletInterval;
 }
 
 void Logic::generateBullets() {
@@ -255,7 +271,7 @@ void Logic::generateBullets() {
 		std::cout << "Generating bullet: " << (*it) << std::endl;
 
 		// Position of the tile containing the bullet
-		const sf::Vector2f bulletTilePos = getTilePosition(1 + (*it), 2);
+		const sf::Vector2f bulletTilePos = getTilePosition((*it), 2);
 		allBullets.push_back(BulletsShPtr(new Bullets(sf::Vector2f(0, 0.0001))));
 		allBullets.back()->setGeo(bulletTilePos.x, bulletTilePos.y, TILE_WIDTH, TILE_WIDTH);
 		mobileObjects.push_back(allBullets.back());
@@ -270,6 +286,7 @@ void Logic::generateBullets() {
 }
 
 void Logic::onGameStateChange(GameStateChangedEvent& event) {
+	gameState = event.getState();
 	DBG << "Changing game state to " << event.getState() << std::endl;
 }
 
