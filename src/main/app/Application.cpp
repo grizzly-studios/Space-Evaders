@@ -92,11 +92,11 @@ void Application::init() {
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(view));
-	//eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(keyboard));
 	eventManager->addListener(GAME_START_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(MENU_ACTION_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(PLAYER_DESTROYED_EVENT, MAKE_EVENT_LISTENER(view));
 
 	INFO << "Ending init" << std::endl;
 	

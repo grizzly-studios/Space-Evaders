@@ -107,7 +107,10 @@ void Logic::collisionDetection() {
 		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), *it));
 		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
 			if((*it)->detectCollision(**iter)) {	//Collision
-				//Fire player collision event
+				PlayerDestroyedEvent playerDestroyedEvent((*it)->getID());
+				eventManager->fireEvent(playerDestroyedEvent);
+				removeEntity((*it)->getID());
+				break;
 			}
 		}
 	}
@@ -258,17 +261,13 @@ void Logic::generateBullets() {
 	level = 3;	// TODO: Remove
 	wave = 4;	// TODO: Remove
 	float minSpeedForLevel = MIN_LEVEL_START_SPEED + (LEVEL_START_SPEED_INCREMENT * (level -1));
-	std::cout << "minSpeedForLevel " << level << ": " << minSpeedForLevel << std::endl;
 
 	float waveSpeedIncrement = (MAX_BULLET_SPEED - minSpeedForLevel) / (MIN_NUMBER_WAVES - 1);
-	std::cout << "waveSpeedIncrement: " << waveSpeedIncrement << std::endl;
 
 	float speedForWave = minSpeedForLevel + (waveSpeedIncrement * (wave -1));
-	std::cout << "speedForWave " << wave << ": " << speedForWave << std::endl;
 
 	for (std::list<int>::const_iterator it=firingEnemyIndices.begin();
 		it!=firingEnemyIndices.end(); ++it) {
-		std::cout << "Generating bullet: " << (*it) << std::endl;
 
 		// Position of the tile containing the bullet
 		const sf::Vector2f bulletTilePos = getTilePosition((*it), 2);
