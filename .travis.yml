@@ -6,5 +6,5 @@ compiler:
 before_install:
   - wget http://www.sfml-dev.org/files/SFML-2.2-linux-gcc-64-bit.tar.gz
   - tar -xzvf SFML-2.2-linux-gcc-64-bit.tar.gz
-  - cp -r SFML-2.2/include/SFML /usr/include/.
-  - cp -r SFML-2.2/lib/* /usr/lib/.
+  - sudo cp -r SFML-2.2/include/SFML /usr/include/.
+  - sudo cp -r SFML-2.2/lib/* /usr/lib/.
