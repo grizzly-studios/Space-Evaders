@@ -76,9 +76,13 @@ void Application::init() {
 	IMenuScreenShPtr menuScreen(new MenuScreen(styleManager));
 	IPausedScreenShPtr pausedScreen(new PausedScreen(styleManager));
 	ILoadingScreenShPtr loadingScreen(new LoadingScreen(styleManager));
+	IIntroScreenShPtr introScreen(new IntroScreen(styleManager, eventManager));
 	view->addScreen(menuScreen);
 	view->addScreen(pausedScreen);
 	view->addScreen(loadingScreen);
+	view->addScreen(introScreen);
+
+
 
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
@@ -95,7 +99,7 @@ void Application::init() {
 	INFO << "Ending init" << std::endl;
 	
 	//Set initial GameState
-	GameStateChangedEvent gameStateChangedEvent(MENU);
+	GameStateChangedEvent gameStateChangedEvent(INTRO);
 	eventManager->fireEvent(gameStateChangedEvent);
 }
 
