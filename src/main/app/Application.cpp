@@ -60,6 +60,8 @@ void Application::init() {
 	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
 		sf::Style::Close, settings));
 	window->setVerticalSyncEnabled(true);
+	sf::View renderView(sf::FloatRect(0, 0, GBL::WIDTH, GBL::HEIGHT));
+	window->setView(renderView);
 
 	logic = ILogicPtr(new Logic(eventManager));
 	
@@ -84,6 +86,7 @@ void Application::init() {
 
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(ENTITY_DELETED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(view));

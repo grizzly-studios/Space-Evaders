@@ -14,6 +14,7 @@
 #include "../event/IEventManager.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityDeletedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
@@ -25,6 +26,7 @@
 #include "MenuItemEnum.hpp"
 
 #include "../app/GameState.h"
+#include "../app/Globals.h"
 
 namespace gs {
 
@@ -47,7 +49,6 @@ private:
 	
 	sf::Clock *clock;
 	double accumulator;
-	double dt;
 
 	EntityList allObjects;
 	MobileEntityList mobileObjects;
@@ -57,6 +58,7 @@ private:
 	//Subroutines
 	void move();
 	void collisionDetection();
+	void boundsCheck();
 
 	void startNewGame();
 	void gameEnd();
@@ -67,7 +69,8 @@ private:
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
 	
-	void addBullets(Direction _dir, float _mag, sf::FloatRect geo);
+	void addBullets(sf::Vector2f velocity, sf::FloatRect geo);
+	void removeEntity(unsigned int entityID);
 };
 
 }

@@ -8,6 +8,7 @@
 #include "IView.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityDeletedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/GameStateChangedEvent.h"
 #include "../event/GameStartEvent.h"
@@ -18,6 +19,7 @@
 #include "../logic/MenuItemEnum.hpp"
 
 #include "../app/GameState.h"
+#include "../app/Globals.h"
 
 namespace gs {
 
@@ -42,6 +44,7 @@ private:
 	void initHud();
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
+	void onEntityDeleted(EntityDeletedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
 	void moveMenuPointer(MenuActionEvent &event);
 	void selectMenuItem();
