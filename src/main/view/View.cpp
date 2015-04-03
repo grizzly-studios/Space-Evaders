@@ -42,6 +42,7 @@ View::~View() {
 }
 
 void View::init() {
+	render(); /* Will load the LOADING screen */
 	spriteFactory->init();
 	initBackground();
 	initHud();
@@ -108,6 +109,9 @@ void View::render() {
 			break;
 		case MENU:
 			screens[MENU_SCREEN]->render(window);
+			break;
+		case INTRO:
+			screens[INTRO_SCREEN]->render(window);
 			break;
 	}
 	//Now display

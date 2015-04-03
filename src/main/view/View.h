@@ -5,14 +5,6 @@
 #include <map>
 #include <list>
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-
 #include "IView.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
@@ -58,7 +50,10 @@ private:
 	void moveMenuPointer(MenuActionEvent &event);
 	void selectMenuItem();
 
+	void loadAssets();
+
 	void inGameRender();
+	void introRender();
 
 	void gameOver();
 

@@ -85,7 +85,7 @@ void MobileEntity::setForce(const sf::Vector2f &_force) {
 }
 
 void MobileEntity::safeSetForce(const sf::Vector2f &_force) {
-	sf::Vector2f newFroce = _force;
+	//sf::Vector2f newFroce = _force;
 	//Add code to protect against forcing through objects
 	force = _force;
 }
