@@ -272,7 +272,7 @@ void Logic::generateBullets() {
 		// Position of the tile containing the bullet
 		const sf::Vector2f bulletTilePos = getTilePosition((*it), 2);
 		allBullets.push_back(BulletsShPtr(new Bullets(sf::Vector2f(0, 0.0001))));
-		allBullets.back()->setGeo(bulletTilePos.x, bulletTilePos.y, TILE_WIDTH, TILE_WIDTH);
+		allBullets.back()->setGeo(bulletTilePos.x + 12, bulletTilePos.y + 10, TILE_WIDTH - 24, TILE_WIDTH - 20);
 		mobileObjects.push_back(allBullets.back());
 		allObjects.push_back(allBullets.back());
 

@@ -267,10 +267,11 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 			break;
 	}
 
-	sf::Sprite sprite = spriteFactory->createSprite(spriteCol, spriteRow);
+	sf::Sprite sprite = spriteFactory->createSprite(spriteCol, spriteRow,
+			(sf::Vector2i)event.getDimensions());
 	sprite.setPosition(event.getPosition());
 	// Logic dimensions map to screen pixels 1:1
-	sprite.setScale(event.getDimensions() / (float) GBL::SCREEN_SPRITE_WIDTH);
+	//sprite.setScale(event.getDimensions() / (float) GBL::SCREEN_SPRITE_WIDTH);
 
 	spriteMap[event.getEntityId()] = sprite;
 }
