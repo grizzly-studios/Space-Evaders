@@ -1,0 +1,11 @@
+language: cpp
+script: make
+compiler:
+  - gcc
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y gcc
+  - wget http://www.sfml-dev.org/files/SFML-2.2-linux-gcc-64-bit.tar.gz
+  - tar -xzvf SFML-2.2-linux-gcc-64-bit.tar.gz
+  - sudo cp -r SFML-2.2/include/SFML /usr/include/.
+  - sudo cp -r SFML-2.2/lib/* /usr/lib/.
