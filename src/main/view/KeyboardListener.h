@@ -10,6 +10,8 @@
 
 #include "IKeyboardListener.h"
 
+#include <array>
+
 #include <SFML/Window/Keyboard.hpp>
 
 #include "../event/IEventListener.hpp"
@@ -17,6 +19,8 @@
 
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
+#include "../event/GameEndEvent.h"
+#include "../event/MenuActionEvent.h"
 
 #include "../app/GameState.h"
 #include "../logic/MobileEntity.h"
@@ -34,7 +38,7 @@ public:
 private:
 	IEventManagerPtr eventManager;
 	GameState gameState;
-	bool previousState[sf::Keyboard::KeyCount];
+	std::array<bool, sf::Keyboard::KeyCount> previousState;
 	
 	void onGameStateChanged(GameStateChangedEvent &event);
 	

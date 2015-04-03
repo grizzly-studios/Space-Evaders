@@ -6,6 +6,8 @@
  */
 
 #include "KeyboardListener.h"
+#include "../util/Logger.h"
+#include <sstream>
 
 namespace gs {
 
@@ -19,7 +21,6 @@ KeyboardListener::~KeyboardListener() {
 }
 
 void KeyboardListener::update() {
-	
 	switch (gameState) {
 		case IN_GAME:
 			inGameUpdate();
@@ -38,70 +39,143 @@ void KeyboardListener::update() {
 }
 
 void KeyboardListener::inGameUpdate() {
+	
+	std::array<bool, sf::Keyboard::KeyCount> currentState;
+	
+	currentState[sf::Keyboard::Right] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+	currentState[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+	currentState[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+	
+	if (currentState != previousState) {			//Keys have changed
+		
+		ChangePlayerDirectionEvent changePlayerDirectionEvent(NONE);
+		
+		if (currentState[sf::Keyboard::Right] || 
+			currentState[sf::Keyboard::Down] ||
+			currentState[sf::Keyboard::Left]) {		//At least one key is pressed
+			Direction newDir;
+			if (currentState[sf::Keyboard::Right]) {
+				if (currentState[sf::Keyboard::Down]) {
+					if (currentState[sf::Keyboard::Left]) {
+						newDir = DOWN;
+					} else {
+						newDir = DOWNRIGHT;
+					}
+				} else {
+					if (currentState[sf::Keyboard::Left]) {
+						newDir = NONE;
+					} else {
+						newDir = RIGHT;
+					}
+				}
+			} else {
+				if (currentState[sf::Keyboard::Down]) {
+					if (currentState[sf::Keyboard::Left]) {
+						newDir = DOWNLEFT;
+					} else {
+						newDir = DOWN;
+					}
+				} else {
+					if (currentState[sf::Keyboard::Left]) {
+						newDir = LEFT;
+					} else {
+						ERR << "Impossible conditioning result achieved. Good luck." << std::endl;
+						newDir = NONE;
+					}
+				}
+			}
+			changePlayerDirectionEvent = ChangePlayerDirectionEvent(newDir);
+		}
+		
+		eventManager->fireEvent(changePlayerDirectionEvent);
+		
+	}
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P) != previousState[sf::Keyboard::P])  {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+			GameStateChangedEvent gameStateChangedEvent(PAUSED);
+			eventManager->fireEvent(gameStateChangedEvent);
+		}
+		previousState[sf::Keyboard::P] = sf::Keyboard::isKeyPressed(sf::Keyboard::P);
+	}
+}
+
+void KeyboardListener::pausedUpdate() {
 	bool resetDirection = false;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) != previousState[sf::Keyboard::Right]) {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			ChangePlayerDirectionEvent changePlayerDirectionEvent(RIGHT);
-			eventManager->fireEvent(changePlayerDirectionEvent);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P) != previousState[sf::Keyboard::P])  {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
+			GameStateChangedEvent gameStateChangedEvent(IN_GAME);
+			eventManager->fireEvent(gameStateChangedEvent);
 		} else {
 			resetDirection = true;
 		}
-		previousState[sf::Keyboard::Right] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+		previousState[sf::Keyboard::P] = sf::Keyboard::isKeyPressed(sf::Keyboard::P);
 	}
 	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) != previousState[sf::Keyboard::Escape])  {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			GameEndEvent gameEndEvent;
+			eventManager->fireEvent(gameEndEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Escape] = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
+	}
+
+	if (resetDirection) {
+		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		//eventManager->fireEvent(moveMenuPointerEvent);
+	}
+}
+
+void KeyboardListener::loadingUpdate() {
+	//Do nothing! We're Loading
+}
+
+void KeyboardListener::menuUpdate() {
+	bool resetDirection = false;
+	//We're in a menu update
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) != previousState[sf::Keyboard::Down]) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			ChangePlayerDirectionEvent changePlayerDirectionEvent(DOWN);
-			eventManager->fireEvent(changePlayerDirectionEvent);
+			//MoveMenuPointerEvent moveMenuPointerEvent(DOWN);
+			//eventManager->fireEvent(moveMenuPointerEvent);
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::DOWN);
+			eventManager->fireEvent(menuActionEvent);
 		} else {
 			resetDirection = true;
 		}
 		previousState[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
 	}
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) != previousState[sf::Keyboard::Left]) {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			ChangePlayerDirectionEvent changePlayerDirectionEvent(LEFT);
-			eventManager->fireEvent(changePlayerDirectionEvent);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) != previousState[sf::Keyboard::Up]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			//MoveMenuPointerEvent moveMenuPointerEvent(UP);
+			//eventManager->fireEvent(moveMenuPointerEvent);
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::UP);
+			eventManager->fireEvent(menuActionEvent);
 		} else {
 			resetDirection = true;
 		}
-		previousState[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+		previousState[sf::Keyboard::Up] = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
 	}
-	
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) != previousState[sf::Keyboard::Return]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+			//MenuSelectEvent menuSelectEvent;
+			//eventManager->fireEvent(menuSelectEvent);
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::SELECT);
+			eventManager->fireEvent(menuActionEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Return] = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
+	}
+
 	if (resetDirection) {
-		ChangePlayerDirectionEvent changePlayerDirectionEvent(NONE);
-			eventManager->fireEvent(changePlayerDirectionEvent);
+		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
+		//eventManager->fireEvent(moveMenuPointerEvent);
 	}
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-		GameStateChangedEvent gameStateChangedEvent(PAUSED);
-		eventManager->fireEvent(gameStateChangedEvent);
-	}
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		GameStateChangedEvent gameStateChangedEvent(MENU);
-		eventManager->fireEvent(gameStateChangedEvent);
-	}
-}
-
-void KeyboardListener::pausedUpdate() {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-		GameStateChangedEvent gameStateChangedEvent(IN_GAME);
-		eventManager->fireEvent(gameStateChangedEvent);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		GameStateChangedEvent gameStateChangedEvent(MENU);
-		eventManager->fireEvent(gameStateChangedEvent);
-	}
-}
-
-void KeyboardListener::loadingUpdate() {
-	
-}
-
-void KeyboardListener::menuUpdate() {
-	
 }
 
 void KeyboardListener::onEvent(Event& event) {
@@ -111,6 +185,10 @@ void KeyboardListener::onEvent(Event& event) {
 			onGameStateChanged((GameStateChangedEvent&) event);
 			break;
 		default:
+			const short eventType = event.getType();
+			std::stringstream ss;
+			ss << "Un-Handled: " << eventType;
+		    ERR << ss.str() << std::endl;
 			break;
 	}
 }

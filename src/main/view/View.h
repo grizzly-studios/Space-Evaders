@@ -7,24 +7,32 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 
 #include "IView.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityDeletedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
+#include "../event/GameStateChangedEvent.h"
+#include "../event/GameStartEvent.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 #include "../util/RandomNumberGenerator.h"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
+#include "../logic/MenuItemEnum.hpp"
+
+#include "../app/GameState.h"
+#include "../app/Globals.h"
 
 namespace gs {
 
 // TODO: Extract this typdef to a single place (also defined in Application.h at present)
-typedef std::shared_ptr<sf::RenderWindow> RenderWindowShPtr;
 typedef std::list<sf::RectangleShape> RectShapeList;
 typedef std::map<short, sf::Sprite> SpriteMap;
 typedef std::list<sf::Sprite> SpriteList;
@@ -39,17 +47,25 @@ public:
 	virtual void update();
 	virtual void render();
 	virtual void onEvent(Event& event);
+	virtual void addScreen(IScreenShPtr);
 private:
 	void initBackground();
 	void initHud();
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
+	void onEntityDeleted(EntityDeletedEvent& event);
+	void onGameStateChanged(GameStateChangedEvent& event);
+	void moveMenuPointer(MenuActionEvent &event);
+	void selectMenuItem();
+
+	void inGameRender();
+
+	void gameOver();
 
 	IEventManagerPtr eventManager;
 	RenderWindowShPtr window;
 	IUserInputShPtr userInput;
 	ISpriteFactoryShPtr spriteFactory;
-	RandomNumberGenerator randomNumberGenerator;
 
 	int width;
 	int height;
@@ -65,6 +81,10 @@ private:
 
 	// Draw grid (for debugging)
 	void drawGrid();
+
+	GameState gameState;
+	
+	std::map<ScreensEnum, IScreenShPtr> screens;
 };
 
 }

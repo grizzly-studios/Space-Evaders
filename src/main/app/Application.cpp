@@ -34,19 +34,25 @@ Application::Application(int argc, char** argv) {
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
 		} else if (arg == "-v"){
-			CHANGE_LOG(false, true, FULL);
+			LogHandler::getInstance()->debugLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->infoLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->warningLog.setOutput(CONSOLE);
+			LogHandler::getInstance()->errorLog.setOutput(CONSOLE);
 		} else if(arg == "-vf"){
-			CHANGE_LOG(true, true, FULL);
+			LogHandler::getInstance()->debugLog.setOutput(BOTH);
+			LogHandler::getInstance()->infoLog.setOutput(BOTH);
+			LogHandler::getInstance()->warningLog.setOutput(BOTH);
+			LogHandler::getInstance()->errorLog.setOutput(BOTH);
 		}else{
-			WARN("Unknown Flag: " + arg);
+			WARN << "Unknown Flag: " << arg << std::endl;
 		}
 	}
 	//No point in INFO, WARN or DEBUG messages before this point
-	INFO("Application successfully created");
+	INFO << "Application successfully created" << std::endl;
 }
 
 void Application::init() { 
-	INFO("Begining init");
+	INFO << "Begining init" << std::endl;
 	eventManager = IEventManagerPtr(new EventManager);
 	
 	settings.antialiasingLevel = AL;
@@ -54,6 +60,8 @@ void Application::init() {
 	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
 		sf::Style::Close, settings));
 	window->setVerticalSyncEnabled(true);
+	sf::View renderView(sf::FloatRect(0, 0, GBL::WIDTH, GBL::HEIGHT));
+	window->setView(renderView);
 
 	logic = ILogicPtr(new Logic(eventManager));
 	
@@ -62,43 +70,52 @@ void Application::init() {
 	ISpriteFactoryShPtr spriteFactory(new SpriteFactory());
 	view = IViewPtr(new View(eventManager, window, userInput, spriteFactory));
 	view->init();
+	
+	IStyleManagerShPtr styleManager(new StyleManager());
+	styleManager->setFont("assets/arial.ttf");
+	IMenuScreenShPtr menuScreen(new MenuScreen(styleManager));
+	IPausedScreenShPtr pausedScreen(new PausedScreen(styleManager));
+	ILoadingScreenShPtr loadingScreen(new LoadingScreen(styleManager));
+	view->addScreen(menuScreen);
+	view->addScreen(pausedScreen);
+	view->addScreen(loadingScreen);
 
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(ENTITY_DELETED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(view));
+	//eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(keyboard));
+	eventManager->addListener(GAME_START_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
+	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(MENU_ACTION_EVENT, MAKE_EVENT_LISTENER(view));
 
-	INFO("Ending init");
+	INFO << "Ending init" << std::endl;
 	
 	//Set initial GameState
-	GameStateChangedEvent gameStateChangedEvent(IN_GAME);
+	GameStateChangedEvent gameStateChangedEvent(MENU);
 	eventManager->fireEvent(gameStateChangedEvent);
 }
 
 Application::~Application() {
-	DBG("Destroyed");
+	DBG << "Destroyed" << std::endl;
 }
 
 void Application::load() {
-	logic->generateLevel();
 }
 
 void Application::run() {
 	
 	load();
 	
-	INFO("Beginning while loop");
+	INFO << "Beginning while loop" << std::endl;
 	while(window->isOpen()) {
 		sf::Event event;
 		while (window->pollEvent(event)) {
-
 			if (event.type == sf::Event::Closed) {
 				window->close();
-			}
-			if (event.type == sf::Event::KeyPressed) {
-				if (event.key.code == sf::Keyboard::Escape) {
-					INFO("Request to close window registered - closing window");
-					window->close();
-				}
 			}
 		}
 

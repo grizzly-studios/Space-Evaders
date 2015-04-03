@@ -4,7 +4,12 @@ Space Evaders
 The brain child and virginity shattering creation of Grizzly Studios
 
 ## Lines of Code
-The develop branch has 1085 lines of code at 13/10/2013.
+| # of Lines | Date       |
+| ---------- | ---------- |
+| 1085       | 13/10/2013 |
+| 2483       | 09/10/2014 |
+| 2850       | 13/10/2014 |
+| 3008       | 02/04/2015 |
 
 On a unix system you can count the lines of code by running:
 

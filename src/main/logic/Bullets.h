@@ -15,10 +15,11 @@ namespace gs {
 class Bullets : public MobileEntity {
 public:
 	Bullets();
-	Bullets(Direction _dir, float _mag);
+	Bullets(sf::Vector2f velocity);
 	Bullets(const Bullets& orig);
 	virtual ~Bullets();
 
+	Direction isOutOfBounds();
 private:
 };
 
