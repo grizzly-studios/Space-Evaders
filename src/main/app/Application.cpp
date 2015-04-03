@@ -54,23 +54,23 @@ Application::Application(int argc, char** argv) {
 void Application::init() { 
 	INFO << "Begining init" << std::endl;
 	eventManager = IEventManagerPtr(new EventManager);
-	
-	settings.antialiasingLevel = AL;
 
+	/* Create window */
+	settings.antialiasingLevel = AL;
 	window = RenderWindowShPtr(new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Space Evaders",
 		sf::Style::Close, settings));
 	window->setVerticalSyncEnabled(true);
 	sf::View renderView(sf::FloatRect(0, 0, GBL::WIDTH, GBL::HEIGHT));
 	window->setView(renderView);
 
+	/* Create everything core to game */
 	logic = ILogicPtr(new Logic(eventManager));
-	
 	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
 	IUserInputShPtr userInput(new UserInput(eventManager,keyboard));
 	ISpriteFactoryShPtr spriteFactory(new SpriteFactory());
 	view = IViewPtr(new View(eventManager, window, userInput, spriteFactory));
-	view->init();
-	
+
+	/* Create everything for view */
 	IStyleManagerShPtr styleManager(new StyleManager());
 	styleManager->setFont("assets/arial.ttf");
 	IMenuScreenShPtr menuScreen(new MenuScreen(styleManager));
@@ -82,8 +82,10 @@ void Application::init() {
 	view->addScreen(loadingScreen);
 	view->addScreen(introScreen);
 
+	/* Now everything view needs has been created we can initialise it */
+	view->init();
 
-
+	/* Setup the event listeners */
 	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(ENTITY_DELETED_EVENT, MAKE_EVENT_LISTENER(view));
@@ -98,7 +100,7 @@ void Application::init() {
 
 	INFO << "Ending init" << std::endl;
 	
-	//Set initial GameState
+	/* Now we're done loading. Show the intro */
 	GameStateChangedEvent gameStateChangedEvent(INTRO);
 	eventManager->fireEvent(gameStateChangedEvent);
 }

@@ -42,7 +42,9 @@ View::~View() {
 }
 
 void View::init() {
-	render(); /* Will load the LOADING screen */
+	/* Initially we want to show the loading screen */
+	gameState = LOADING; 
+	render(); 
 	spriteFactory->init();
 	initBackground();
 	initHud();
