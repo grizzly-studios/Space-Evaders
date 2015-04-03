@@ -164,8 +164,8 @@ bool MobileEntity::detectCollision(const Entity &entity) {
 bool MobileEntity::isOutOfBounds(const sf::FloatRect& bounds) {
 	sf::FloatRect intersect;
 	if (geo.intersects(bounds,intersect)) {
-		if (intersect.height >= geo.height &&
-			intersect.width >= geo.width) {
+		if (ceil(intersect.height) >= geo.height &&
+			ceil(intersect.width)  >= geo.width) {
 			return false;
 		}	
 	}
