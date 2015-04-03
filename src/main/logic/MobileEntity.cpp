@@ -85,9 +85,21 @@ void MobileEntity::setForce(const sf::Vector2f &_force) {
 }
 
 void MobileEntity::safeSetForce(const sf::Vector2f &_force) {
-	//sf::Vector2f newFroce = _force;
+	sf::Vector2f newForce = _force;
 	//Add code to protect against forcing through objects
-	force = _force;
+	if (isDirDisabled(LEFT) && newForce.x < 0) {
+		newForce.x = 0;
+	}
+	if (isDirDisabled(UP) && newForce.y < 0) {
+		newForce.y = 0;
+	}
+	if (isDirDisabled(RIGHT) && newForce.x > 0) {
+		newForce.x = 0;
+	}
+	if (isDirDisabled(DOWN) && newForce.y > 0) {
+		newForce.y = 0;
+	}
+	force = newForce;
 }
 
 sf::Vector2f MobileEntity::getVector(const Direction &dir, const float &mag) const {
@@ -222,21 +234,33 @@ void MobileEntity::stop(Direction blockDir) {
 		blockDir == RIGHT || blockDir == DOWNRIGHT) &&
 		state[2].x > state[0].x	) {
 		state[0].x = state[2].x = state[1].x;
+		if (force.x > 0) {
+		    force.x = 0;
+		}
 	}
 	if ((blockDir == ALL || blockDir == UPLEFT ||
 		blockDir == LEFT || blockDir == DOWNLEFT) &&
 		state[2].x < state[0].x	) {
 		state[0].x = state[2].x = state[1].x;
+		if (force.x < 0) {
+		    force.x = 0;
+		}
 	}
 	if ((blockDir == ALL || blockDir == DOWNLEFT ||
 		blockDir == DOWN || blockDir == DOWNRIGHT) &&
 		state[2].y > state[0].y	) {
 		state[0].y = state[2].y = state[1].y;
+		if (force.y > 0) {
+		    force.y = 0;
+		}
 	}
 	if ((blockDir == ALL || blockDir == UPLEFT ||
 		blockDir == UP || blockDir == UPRIGHT) &&
 		state[2].y < state[0].y	) {
 		state[0].y = state[2].y = state[1].y;
+		if (force.y < 0) {
+		    force.y = 0;
+		}
 	}
 }
 
