@@ -85,21 +85,21 @@ void MobileEntity::setForce(const sf::Vector2f &_force) {
 }
 
 void MobileEntity::safeSetForce(const sf::Vector2f &_force) {
-	sf::Vector2f newFroce = _force;
+	sf::Vector2f newForce = _force;
 	//Add code to protect against forcing through objects
-	if (isDirDisabled(LEFT) && newFroce.x < 0) {
-		newFroce.x = 0;
+	if (isDirDisabled(LEFT) && newForce.x < 0) {
+		newForce.x = 0;
 	}
-	if (isDirDisabled(UP) && newFroce.y < 0) {
-		newFroce.y = 0;
+	if (isDirDisabled(UP) && newForce.y < 0) {
+		newForce.y = 0;
 	}
-	if (isDirDisabled(RIGHT) && newFroce.x > 0) {
-		newFroce.x = 0;
+	if (isDirDisabled(RIGHT) && newForce.x > 0) {
+		newForce.x = 0;
 	}
-	if (isDirDisabled(DOWN) && newFroce.y > 0) {
-		newFroce.y = 0;
+	if (isDirDisabled(DOWN) && newForce.y > 0) {
+		newForce.y = 0;
 	}
-	force = newFroce;
+	force = newForce;
 }
 
 sf::Vector2f MobileEntity::getVector(const Direction &dir, const float &mag) const {
