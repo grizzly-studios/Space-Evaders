@@ -7,17 +7,24 @@
 
 #include "IntroScreen.h"
 
+#include <cmath>
+
  // TODO: Refactor (duplicate constants in application layer)
 #define WIDTH 480
 #define HEIGHT 640
 
 using namespace gs;
 
-IntroScreen::IntroScreen() {
-}
+IntroScreen::IntroScreen() :
+	clock(),
+	firstRender(true)
+{}
 
 IntroScreen::IntroScreen(IStyleManagerShPtr _styleManager, IEventManagerPtr _eventManager) :
-	styleManager(_styleManager), eventManager(_eventManager)
+	styleManager(_styleManager),
+	eventManager(_eventManager),
+	clock(),
+	firstRender(true)
 {
 	if(!logoSound.loadFromFile("assets/logoPLACEHOLDER.ogg")){
 		ERR << "Unable to open assets/logoPLACEHOLDER.ogg" << std::endl;
@@ -45,14 +52,23 @@ void IntroScreen::render(RenderWindowShPtr window) {
 	// OK first work out where we are in terms of rendering the intro
 	sf::Sprite logo;
 	int fade;
-	if(introCycle > 255 && introCycle <= 319){
+
+	if (firstRender) {
+		firstRender = false;
+		clock.restart();
+	}
+
+	sf::Time elapsed = clock.getElapsedTime();
+	int jiffy = round(elapsed.asMilliseconds() / 10);
+
+	if(jiffy > 255 && jiffy <= 319){
 		fade = 255;
 		if(logSound.getStatus() == sf::SoundSource::Status::Stopped){
 			logSound.setBuffer(logoSound);
 			logSound.play();
 		}
-	} else if(introCycle > 319){
-		fade = 255 - (introCycle - 319);
+	} else if(jiffy > 319){
+		fade = 255 - (jiffy - 319);
 		if(fade <= 0){
 			/* change state to menu */
 			GameStateChangedEvent gameStateChangedEvent(MENU);
@@ -60,7 +76,7 @@ void IntroScreen::render(RenderWindowShPtr window) {
 			return;
 		}
 	} else {
-		fade = introCycle;
+		fade = jiffy;
 	}
 
 	logo.setColor(sf::Color(fade,fade,fade,fade));
@@ -70,6 +86,4 @@ void IntroScreen::render(RenderWindowShPtr window) {
 	logo.setPosition(WIDTH/2,HEIGHT/2);
 	logo.scale(sf::Vector2f(1.5f, 1.5f));
 	window->draw(logo);
-
-	introCycle += 2;
 }

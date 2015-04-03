@@ -13,6 +13,9 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
+
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Sound.hpp>
 
@@ -43,8 +46,8 @@ private:
 	IStyleManagerShPtr styleManager;
 	IEventManagerPtr eventManager;
 
-	sf::Texture* p_logoTex;
-	int introCycle;
+	sf::Clock clock;
+	bool firstRender;
 	sf::Texture logoTex;
 	sf::Image logoImg;
 	sf::SoundBuffer logoSound;
