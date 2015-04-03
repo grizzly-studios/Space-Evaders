@@ -14,6 +14,7 @@
 #include "../event/IEventManager.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityDeletedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
@@ -25,6 +26,7 @@
 #include "MenuItemEnum.hpp"
 
 #include "../app/GameState.h"
+#include "../app/Globals.h"
 
 namespace gs {
 
@@ -56,6 +58,7 @@ private:
 	//Subroutines
 	void move();
 	void collisionDetection();
+	void boundsCheck();
 
 	void startNewGame();
 	void gameEnd();
@@ -67,6 +70,7 @@ private:
 	void onGameStateChange(GameStateChangedEvent &event);
 	
 	void addBullets(sf::Vector2f velocity, sf::FloatRect geo);
+	void removeEntity(unsigned int entityID);
 };
 
 }

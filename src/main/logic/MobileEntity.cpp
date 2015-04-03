@@ -6,6 +6,7 @@
  */
 
 #include "MobileEntity.h"
+#include "../util/Logger.h"
 
 #include <cmath>
 
@@ -24,11 +25,11 @@ force(0,0) {
 }
 
 MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
+	disabledDirections = orig.getDisabledDirections();
 	max_speed = orig.getMaxSpeed();
 	mass = orig.getMass();
 	friction = orig.getFriction();
 	setGeo(orig.getGeo());
-	
 }
 
 MobileEntity::~MobileEntity() {
@@ -83,6 +84,12 @@ void MobileEntity::setForce(const sf::Vector2f &_force) {
 	force = _force;
 }
 
+void MobileEntity::safeSetForce(const sf::Vector2f &_force) {
+	sf::Vector2f newFroce = _force;
+	//Add code to protect against forcing through objects
+	force = _force;
+}
+
 sf::Vector2f MobileEntity::getVector(const Direction &dir, const float &mag) const {
 	sf::Vector2f vector;
 	
@@ -122,6 +129,8 @@ sf::Vector2f MobileEntity::getVector(const Direction &dir, const float &mag) con
 			x_mag = 0;
 			y_mag = 0;
 			break;
+		default:
+			break;
 	}
 	
 	vector.x = x_mag;
@@ -152,6 +161,33 @@ bool MobileEntity::detectCollision(const Entity &entity) {
 	return geo.intersects(entity.getGeo());
 }
 
+bool MobileEntity::isOutOfBounds(const sf::FloatRect& bounds) {
+	sf::FloatRect intersect;
+	if (geo.intersects(bounds,intersect)) {
+		if (intersect.height >= geo.height &&
+			intersect.width >= geo.width) {
+			return false;
+		}	
+	}
+	return true;
+}
+
+bool MobileEntity::isOutOfBounds(const sf::FloatRect& bounds, sf::Vector2f& offset) {
+	sf::FloatRect intersect;
+	if (geo.intersects(bounds,intersect)) {
+		if (intersect.height >= geo.height &&
+			intersect.width >= geo.width) {
+			return false;
+		} else {
+			offset.x = (geo.left - intersect.left) + 
+				((geo.left + geo.width) - (intersect.left + intersect.width));
+			offset.y = (geo.top - intersect.top) + 
+				((geo.top + geo.height) - (intersect.top + intersect.height));
+		}
+	}
+	return true;
+}
+
 void MobileEntity::setPosition(const sf::Vector2f& pos) {
 	Entity::setPosition(pos);
 	state[0] = state[1] = state[2] = pos;
@@ -174,6 +210,105 @@ void MobileEntity::setGeo(float x, float y, float w, float h) {
 	Entity::setGeo(x,y,w,h);
 	state[0] = state[1] = state[2] = sf::Vector2f(x,y);
 	setVelocity(velocity);
+}
+
+void MobileEntity::disableDir(Direction _dir) {
+	disabledDirections.push_back(_dir);
+	stop(_dir);
+}
+
+void MobileEntity::stop(Direction blockDir) {
+	if ((blockDir == ALL || blockDir == UPRIGHT ||
+		blockDir == RIGHT || blockDir == DOWNRIGHT) &&
+		state[2].x > state[0].x	) {
+		state[0].x = state[2].x = state[1].x;
+	}
+	if ((blockDir == ALL || blockDir == UPLEFT ||
+		blockDir == LEFT || blockDir == DOWNLEFT) &&
+		state[2].x < state[0].x	) {
+		state[0].x = state[2].x = state[1].x;
+	}
+	if ((blockDir == ALL || blockDir == DOWNLEFT ||
+		blockDir == DOWN || blockDir == DOWNRIGHT) &&
+		state[2].y > state[0].y	) {
+		state[0].y = state[2].y = state[1].y;
+	}
+	if ((blockDir == ALL || blockDir == UPLEFT ||
+		blockDir == UP || blockDir == UPRIGHT) &&
+		state[2].y < state[0].y	) {
+		state[0].y = state[2].y = state[1].y;
+	}
+}
+
+void MobileEntity::enableDir(Direction _dir) {
+	disabledDirections.remove(_dir);
+}
+
+void MobileEntity::enableAllDir() {
+	disabledDirections.clear();
+}
+
+std::list<Direction> MobileEntity::getDisabledDirections() const {
+	return disabledDirections;
+}
+
+bool MobileEntity::isDirDisabled(Direction _dir) {
+	for (std::list<Direction>::iterator it = disabledDirections.begin();
+		it != disabledDirections.end(); it++) {
+		if (*it == _dir) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/* Takes an int input and converts to Direction Enum. *
+ * Uses Bit comparison 							 	  *
+ * Top (8), Left (4), Right (2), Bot (1).             *
+ * Which means:                                       *
+ * 		0 = No Direction 							  *
+ * 		1 = Bot   		 							  *
+ * 		2 = Right     								  *
+ * 		3 = Bot-Right 	 							  *
+ * 		4 = Left 		 							  *
+ * 		5 = Bot-Left 	 							  *
+ * 		8 = Top 		 							  *
+ *     10 = Top-Right                                 *
+ *     12 = Top-Left                                  *
+ * Others = INVALID                                   */
+Direction MobileEntity::shortToDirection(short dir){
+	switch(dir){
+		case 0:
+			return NONE;
+
+		case 1:
+			return DOWN;
+
+		case 2:
+			return RIGHT;
+
+		case 3:
+			return DOWNRIGHT;
+
+		case 4:
+			return LEFT;
+
+		case 5:
+			return DOWNLEFT;
+
+		case 8:
+			return UP;
+
+		case 10:
+			return UPRIGHT;
+
+		case 12:
+			return UPLEFT;
+
+		default:
+			ERR << "Invalid Short value: " << dir << std::endl;
+			return NONE;
+	}
 }
 
 bool MobileEntity::hasMoved() {

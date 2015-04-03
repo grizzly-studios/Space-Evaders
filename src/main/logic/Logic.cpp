@@ -26,6 +26,7 @@ void Logic::update() {
 
 	move();
 	collisionDetection();
+	boundsCheck();
 }
 
 void Logic::onEvent(Event& event) {
@@ -83,6 +84,39 @@ void Logic::collisionDetection() {
 	}
 }
 
+void Logic::boundsCheck(){
+	//Scan for player collisions here we just bump them around
+	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+		sf::Vector2f offset;
+		if ((*it)->MobileEntity::isOutOfBounds(sf::FloatRect(
+			GBL::SCREEN_SPRITE_WIDTH,
+			GBL::SCREEN_SPRITE_WIDTH,
+			GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH * 2),
+			GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH * 2)),offset)) {
+			if (offset.x > 0) {
+				(*it)->disableDir(RIGHT);
+			} else if (offset.x < 0) {
+				(*it)->disableDir(LEFT);
+			} else if (offset.y > 0) {
+				(*it)->disableDir(DOWN);
+			}
+		} else {
+			(*it)->enableAllDir();
+		}
+	}
+
+	//Scan for bullets gone off screen (to remove)
+	for (BulletsList::iterator it = allBullets.begin(); it != allBullets.end(); it++) {
+		Direction oOB = (*it)->isOutOfBounds();
+		if(oOB == DOWN){
+			DBG << "Erasing Bullet ID: " << (*it)->getID() << std::endl;
+			allBullets.erase(it);
+			EntityDeletedEvent entityDeletedEvent((*it)->getID());
+			eventManager->fireEvent(entityDeletedEvent);
+		}
+	}
+}
+
 void Logic::integrate() {
 	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
 		(*it)->integrate();
@@ -102,7 +136,7 @@ void Logic::interpolate(const double &remainder) {
 
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		(*it)->setForce((*it)->getVector(event.getDirection(), 50.f/1000000.f));
+		(*it)->safeSetForce((*it)->getVector(event.getDirection(), 50.f/1000000.f));
 	}
 }
 
@@ -113,9 +147,26 @@ void Logic::addBullets(sf::Vector2f velocity, sf::FloatRect geo) {
 	allObjects.push_back(allBullets.back());
 }
 
+void Logic::removeEntity(unsigned int entityID) {
+	class cleaner {
+		unsigned int ID;
+	public:
+		cleaner(unsigned int _ID) : ID(_ID) {}
+		bool operator() (const EntityShPtr& value) {
+			return value->getID() == ID;
+		}
+	};
+	allObjects.remove_if(cleaner(entityID));
+	mobileObjects.remove_if(cleaner(entityID));
+	allPlayers.remove_if(cleaner(entityID));
+	allBullets.remove_if(cleaner(entityID));
+	EntityDeletedEvent entityDeletedEvent(entityID);
+	eventManager->fireEvent(entityDeletedEvent);
+}
+
 void Logic::generateLevel() {
 	allPlayers.push_back(PlayerShPtr(new Player()));
-	allPlayers.back()->setGeo(100,100,30,30);
+	allPlayers.back()->setGeo(100,100,GBL::SCREEN_SPRITE_WIDTH,GBL::SCREEN_SPRITE_WIDTH);
 	mobileObjects.push_back(allPlayers.back());
 	allObjects.push_back(allPlayers.back());
 	EntityCreatedEvent entityCreatedEvent(
@@ -126,10 +177,7 @@ void Logic::generateLevel() {
 }
 
 void Logic::onGameStateChange(GameStateChangedEvent& event) {
-	const short newState = event.getState();
-	std::stringstream ss;
-	ss << "Changing game state to " << newState;
-	DBG << ss.str() << std::endl;
+	DBG << "Changing game state to " << event.getState() << std::endl;
 }
 
 void Logic::startNewGame(){

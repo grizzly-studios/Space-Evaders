@@ -8,12 +8,6 @@
 
 #include "../util/Logger.h"
 
-// TODO: Refactor (duplicate constants in application layer)
-#define WIDTH 480
-#define HEIGHT 640
-
-#define SCREEN_SPRITE_WIDTH 32
-
 using namespace gs;
 
 View::View(IEventManagerPtr _eventManager,
@@ -139,8 +133,8 @@ void View::initBackground() {
 	const int SEED = 48;
 
 	std::mt19937 randomNumGen(SEED);
-	std::uniform_int_distribution<int> distX(0, WIDTH);
-	std::uniform_int_distribution<int> distY(0, HEIGHT);
+	std::uniform_int_distribution<int> distX(0, GBL::WIDTH);
+	std::uniform_int_distribution<int> distY(0, GBL::HEIGHT);
 	std::function<int()> genX(std::bind(distX, randomNumGen));
 	std::function<int()> genY(std::bind(distY, randomNumGen));
 	
@@ -158,42 +152,42 @@ void View::initHud() {
 
 	// Left
 	hudSprites.push_back(spriteFactory->createSprite(0, 1));
-	hudSprites.back().setPosition(0.0f, SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(0.0f, GBL::SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(1.0f,
-			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+			(GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH);
 
 	// Bottom-left
 	hudSprites.push_back(spriteFactory->createSprite(0, 2));
-	hudSprites.back().setPosition(0.0f, HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(0.0f, GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH);
 
 	// Bottom
 	hudSprites.push_back(spriteFactory->createSprite(1, 2));
-	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH,
-			HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(GBL::SCREEN_SPRITE_WIDTH,
+			GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(
-			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+			(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH, 1.0f);
 
 	// Bottom-right
 	hudSprites.push_back(spriteFactory->createSprite(2, 2));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
-			HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH,
+			GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH);
 
 	// Right
 	hudSprites.push_back(spriteFactory->createSprite(2, 1));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
-			SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH,
+			GBL::SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(1.0f,
-			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+			(GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH);
 
 	// Top-right
 	hudSprites.push_back(spriteFactory->createSprite(2, 0));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, 0.0f);
+	hudSprites.back().setPosition(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH, 0.0f);
 
 	// Top
 	hudSprites.push_back(spriteFactory->createSprite(1, 0));
-	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH, 0.0f);
+	hudSprites.back().setPosition(GBL::SCREEN_SPRITE_WIDTH, 0.0f);
 	hudSprites.back().setScale(
-			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+			(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH, 1.0f);
 }
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
@@ -208,9 +202,24 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 	sf::Sprite sprite = spriteFactory->createSprite(1, 1);
 	sprite.setPosition(event.getPosition());
 	// Logic dimensions map to screen pixels 1:1
-	sprite.setScale(event.getDimensions() / (float) SCREEN_SPRITE_WIDTH);
+	sprite.setScale(event.getDimensions() / (float) GBL::SCREEN_SPRITE_WIDTH);
 
 	spriteMap[event.getEntityId()] = sprite;
+}
+
+void View::onEntityDeleted(EntityDeletedEvent& event) {
+	const short entityId = event.getEntityId();
+	
+
+	// Check if we already have a sprite associated with this id
+	if (spriteMap.find(entityId) == spriteMap.end()) {
+		WARN << "Sprite  with ID "<< entityId << " has already been destroyed" << std::endl;
+		return;
+	}
+
+	INFO << "Entity deleted with id: " << entityId << std::endl;
+
+	spriteMap.erase(event.getEntityId());
 }
 
 void View::onEntityMoved(EntityMovedEvent& event) {

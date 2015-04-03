@@ -9,12 +9,14 @@
 #define	MOBILEENTITY_H
 
 #include "Entity.h"
+#include <list>
+#include "../app/Globals.h"
 
 #include <functional>
 
 namespace gs {
 	
-enum Direction {NONE, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT};
+enum Direction {NONE, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT, ALL, DIRCOUNT};
 
 typedef std::function<sf::Vector2f(
 		double,					//h
@@ -62,6 +64,7 @@ public:
 	
 	sf::Vector2f getForce() const;
 	void setForce(const sf::Vector2f &_force);
+	void safeSetForce(const sf::Vector2f &_force);
 	
 	sf::Vector2f getFriction() const;
 	void setFriction(const sf::Vector2f &_friction);
@@ -70,8 +73,10 @@ public:
 	void setPosition(float x, float y);
 	void setGeo(const sf::FloatRect &_geo);
 	void setGeo(float x, float y, float w, float h);
+	virtual Direction isOutOfBounds() = 0; /* Returns if out of bounds and the direction it is out of bounds */
 	bool hasMoved();
 	virtual sf::Vector2f getVector(const Direction &dir, const float &mag) const;
+	virtual void stop(Direction blockDir = ALL);
 	
 	/**
 	 * Integrate function
@@ -83,7 +88,14 @@ public:
 	virtual void integrate();
 	virtual void interpolate(const double &alpha);
 	virtual bool detectCollision(const Entity &entity);
-	
+	virtual bool isOutOfBounds(const sf::FloatRect &bound);
+	virtual bool isOutOfBounds(const sf::FloatRect &bounds, sf::Vector2f& offset);
+	virtual void disableDir(Direction _dir);
+	virtual void enableDir(Direction _dir);
+	virtual void enableAllDir();
+	virtual std::list<Direction> getDisabledDirections() const;
+	virtual bool isDirDisabled(Direction _dir);
+
 	static void seth(const double &_h) {h = _h;}
 	static double geth() {return h;}
 	void setAccelerationFunc(AccelerationFunc fn);
@@ -91,14 +103,17 @@ protected:
 	float max_speed;			// unit: pixel/microseconds
 	sf::Vector2f velocity;		// unit: pixel/microseconds
 	float mass;					// unit: ermmmm
-	sf::Vector2f friction;	// unit: ermmmm
+	sf::Vector2f friction;		// unit: ermmmm
 	sf::Vector2f force;			// unit: ermmmm
 	sf::Vector2f state[3];
+	std::list<Direction> disabledDirections;
 	
 	static double h;
 	
 	AccelerationFunc acceleration;
 	std::function<sf::Vector2f(double, sf::Vector2f*)> accelerationDummy;
+
+	Direction shortToDirection(short dir);
 };
 
 typedef std::shared_ptr<MobileEntity> MobileEntityShPtr;
