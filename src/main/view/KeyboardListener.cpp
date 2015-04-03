@@ -47,7 +47,9 @@ void KeyboardListener::inGameUpdate() {
 	currentState[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
 	currentState[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
 	
-	if (currentState != previousState) {			//Keys have changed
+	if (currentState[sf::Keyboard::Right] != previousState[sf::Keyboard::Right] ||
+		currentState[sf::Keyboard::Down] != previousState[sf::Keyboard::Down] || 
+		currentState[sf::Keyboard::Left] != previousState[sf::Keyboard::Left]) {			//Direction Keys have changed
 		
 		ChangePlayerDirectionEvent changePlayerDirectionEvent(NONE);
 		
@@ -85,11 +87,16 @@ void KeyboardListener::inGameUpdate() {
 					}
 				}
 			}
+	
 			changePlayerDirectionEvent = ChangePlayerDirectionEvent(newDir);
 		}
 		
 		eventManager->fireEvent(changePlayerDirectionEvent);
 		
+		previousState[sf::Keyboard::Right] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+		previousState[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+		previousState[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P) != previousState[sf::Keyboard::P])  {
