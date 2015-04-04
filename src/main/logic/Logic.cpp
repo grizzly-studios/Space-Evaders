@@ -63,6 +63,7 @@ void Logic::update() {
 		move();
 		collisionDetection();
 		boundsCheck();
+		cleanUp();
 		spawn();
 	}
 }
@@ -100,7 +101,6 @@ void Logic::move() {
 }
 
 void Logic::collisionDetection() {
-	std::list<unsigned int> playerRemove;
 	EntityList toCheckAgainst = allObjects;
 	//Scan for player collisions
 	EntityList::iterator iter;
@@ -111,16 +111,10 @@ void Logic::collisionDetection() {
 				PlayerDestroyedEvent playerDestroyedEvent((*it)->getID());
 				eventManager->fireEvent(playerDestroyedEvent);
 				DBG << "Player ID " << (*it)->getID() << " has been hit and is DEAD." << std::endl;
-				playerRemove.push_back((*it)->getID());
+				toBeRemoved.push_back(*it);
 				break;
 			}
 		}
-	}
-
-	//Now iterate through list of IDs and remove those bullets
-	for (std::list<unsigned int>::iterator it = playerRemove.begin(); it != playerRemove.end(); it++) {
-		DBG << "Erasing player ID: " << *it << std::endl;
-		removeEntity(*it);
 	}
 
 	//Scan for bullets collisions
@@ -135,7 +129,6 @@ void Logic::collisionDetection() {
 }
 
 void Logic::boundsCheck(){
-	std::list<unsigned int> bulletRemove;
 	//Scan for player collisions here we just bump them around
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
 		sf::Vector2f offset;
@@ -161,15 +154,17 @@ void Logic::boundsCheck(){
 		Direction oOB = (*it)->isOutOfBounds();
 		if(oOB == DOWN){
 			DBG << "Bullet ID " << (*it)->getID() << " is out of bounds. Adding to remove list." << std::endl;
-			bulletRemove.push_back((*it)->getID());
+			toBeRemoved.push_back(*it);
 		}
 	}
+}
 
-	//Now iterate through list of IDs and remove those bullets
-	for (std::list<unsigned int>::iterator it = bulletRemove.begin(); it != bulletRemove.end(); it++) {
-		DBG << "Erasing Bullet ID: " << *it << std::endl;
-		removeEntity(*it);
+void Logic::cleanUp() {
+	for (EntityList::iterator it = toBeRemoved.begin(); it != toBeRemoved.end(); it++) {
+		DBG << "Erasing entity ID: " << (*it)->getID() << std::endl;
+		removeEntity((*it)->getID());
 	}
+	toBeRemoved.clear();
 }
 
 void Logic::spawn() {

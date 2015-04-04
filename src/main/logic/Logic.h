@@ -60,6 +60,7 @@ private:
 	MobileEntityList mobileObjects;
 	PlayerList allPlayers;
 	BulletsList allBullets;
+	EntityList toBeRemoved;
 
 	int level;
 	int wave;
@@ -70,6 +71,7 @@ private:
 	void move();
 	void collisionDetection();
 	void boundsCheck();
+	void cleanUp();
 	void spawn();
 
 	void startNewGame();
