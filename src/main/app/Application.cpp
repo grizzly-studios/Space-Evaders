@@ -1,5 +1,5 @@
 /* 
- * File:   Application.cpp
+] * File:   Application.cpp
  * Author: williampoynter
  * 
  * Created on September 25, 2013, 1:11 AM
@@ -52,7 +52,7 @@ Application::Application(int argc, char** argv) {
 }
 
 void Application::init() { 
-	INFO << "Begining init" << std::endl;
+	INFO << "Beginning init" << std::endl;
 	eventManager = IEventManagerPtr(new EventManager);
 
 	/* Create window */

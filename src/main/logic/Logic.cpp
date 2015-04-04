@@ -41,7 +41,9 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
 	gameTime = 0;
 	accumulator = 0;
 	MobileEntity::seth(12500);
-
+	advanceUntil = 0;
+	startAdvance = false;
+	advancing = false;
 }
 
 Logic::~Logic() {
@@ -63,6 +65,7 @@ void Logic::update() {
 		move();
 		collisionDetection();
 		boundsCheck();
+		advancePlayers();
 		cleanUp();
 		spawn();
 	}
@@ -155,6 +158,36 @@ void Logic::boundsCheck(){
 		if(oOB == DOWN){
 			DBG << "Bullet ID " << (*it)->getID() << " is out of bounds. Adding to remove list." << std::endl;
 			toBeRemoved.push_back(*it);
+			if (advanceUntil < gameTime) {
+				advanceUntil = gameTime;
+				startAdvance = true;
+			}
+			advanceUntil += 30;
+		}
+	}
+}
+
+void Logic::advancePlayers() {
+	if (startAdvance) {
+		startAdvance = false;
+		advancing = true;
+		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+			sf::Vector2f current = (*it)->getForce();
+			sf::Vector2f advancer(0,0);
+			if (advanceUntil > gameTime && current.y >= 0) {
+				advancer = (*it)->getVector(UP, 50.f/1000000.f);
+			}
+			(*it)->safeSetForce(current + advancer);
+		}
+	}
+	if (advanceUntil < gameTime && advancing) {
+		advancing = false;
+		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+			sf::Vector2f current = (*it)->getForce();
+			if (current.y < 0) {
+				current.y = 0;
+				(*it)->safeSetForce(current);
+			}
 		}
 	}
 }
@@ -193,7 +226,12 @@ void Logic::interpolate(const double &remainder) {
 
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		(*it)->safeSetForce((*it)->getVector(event.getDirection(), 50.f/1000000.f));
+		sf::Vector2f engines = (*it)->getVector(event.getDirection(), 50.f/1000000.f);
+		sf::Vector2f advancer(0,0);
+		if (advanceUntil > gameTime) {
+			advancer = (*it)->getVector(UP, 50.f/1000000.f);
+		}
+		(*it)->safeSetForce(engines + advancer);
 	}
 }
 

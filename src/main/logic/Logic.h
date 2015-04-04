@@ -66,11 +66,15 @@ private:
 	int wave;
 	double nextBulletSpawn;
 	int bulletInterval;
+	double advanceUntil;
+	bool startAdvance;
+	bool advancing;
 	
 	//Subroutines
 	void move();
 	void collisionDetection();
 	void boundsCheck();
+	void advancePlayers();
 	void cleanUp();
 	void spawn();
 
