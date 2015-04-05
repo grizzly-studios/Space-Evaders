@@ -63,7 +63,16 @@ void View::render() {
 			screens[LOADING_SCREEN]->render(window);
 			break;
 		case MENU:
-			screens[MENU_SCREEN]->render(window);
+			switch(MENU_CAST->getSelected()) {
+				case MENU_SETTINGS:
+					break;
+				case MENU_CREDITS:
+					screens[CREDITS_SCREEN]->render(window);
+					break;
+				default:
+					screens[MENU_SCREEN]->render(window);
+					break;
+			}
 			break;
 		case INTRO:
 			screens[INTRO_SCREEN]->render(window);
@@ -271,13 +280,14 @@ void View::selectMenuItem(){
 			break;
 		}
 		case MENU_SETTINGS:{
-			//Do nothing for now
 			INFO << "Settings selected" << std::endl;
+			MENU_CAST->setSelected(MENU_SETTINGS);
 			break;
 		}		
 		case MENU_CREDITS:{
 			//Do nothing for now
 			INFO << "Credits selected" << std::endl;
+			MENU_CAST->setSelected(MENU_CREDITS);
 			break;
 		}
 		case MENU_QUIT:{

@@ -32,9 +32,12 @@ public:
 	void setMenuPos(int);
 	void moveMenuPos(int);
 	int getMenuPos();
+	void setSelected(MenuItem);
+	MenuItem getSelected();
 private:
 	IStyleManagerShPtr styleManager;
 	int menuPos;
+	MenuItem selected;
 };
 
 }

@@ -23,8 +23,6 @@
 #include "Player.h"
 #include "Bullets.h"
 
-#include "MenuItemEnum.hpp"
-
 #include "../app/GameState.h"
 #include "../app/Globals.h"
 

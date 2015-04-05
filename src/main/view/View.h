@@ -16,7 +16,6 @@
 #include "../event/IEventManager.hpp"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
-#include "../logic/MenuItemEnum.hpp"
 
 #include "../app/GameState.h"
 #include "../app/Globals.h"
