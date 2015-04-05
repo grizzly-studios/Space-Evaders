@@ -43,6 +43,14 @@ int MenuScreen::getMenuPos() {
 	return menuPos;
 }
 
+void MenuScreen::setSelected(MenuItem _selected) {
+	selected = _selected;
+}
+
+MenuItem MenuScreen::getSelected() {
+	return selected;
+}
+
 ScreensEnum MenuScreen::getType() const {
 	return MENU_SCREEN;
 }

@@ -26,8 +26,6 @@
 
 #include "../util/RandomNumberGenerator.h"
 
-#include "MenuItemEnum.hpp"
-
 #include "../app/GameState.h"
 #include "../app/Globals.h"
 

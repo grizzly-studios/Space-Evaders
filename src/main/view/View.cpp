@@ -101,7 +101,16 @@ void View::render() {
 			screens[LOADING_SCREEN]->render(window);
 			break;
 		case MENU:
-			screens[MENU_SCREEN]->render(window);
+			switch(MENU_CAST->getSelected()) {
+				case MENU_SETTINGS:
+					break;
+				case MENU_CREDITS:
+					screens[CREDITS_SCREEN]->render(window);
+					break;
+				default:
+					screens[MENU_SCREEN]->render(window);
+					break;
+			}
 			break;
 		case INTRO:
 			screens[INTRO_SCREEN]->render(window);
@@ -160,6 +169,8 @@ void View::onEvent(Event& event) {
 			MenuActionEvent menuActionEvent = (MenuActionEvent&) event;
 			if (menuActionEvent.getAction() == MenuActionEvent::Action::SELECT) {
 				selectMenuItem();
+			} else if (menuActionEvent.getAction() == MenuActionEvent::Action::BACK) {
+				moveMenuBack();
 			} else {
 				moveMenuPointer(menuActionEvent);
 			}
@@ -351,6 +362,12 @@ void View::moveMenuPointer(MenuActionEvent& event){
 	}
 }
 
+void View::moveMenuBack() {
+	if (MENU_CAST->getSelected() != MAIN_MENU) {
+		MENU_CAST->setSelected(MAIN_MENU);
+	}
+}
+
 void View::selectMenuItem(){
 	//we have been told to activate whatever so go for it!
 	switch(MENU_CAST->getMenuPos()){
@@ -362,13 +379,14 @@ void View::selectMenuItem(){
 			break;
 		}
 		case MENU_SETTINGS:{
-			//Do nothing for now
 			INFO << "Settings selected" << std::endl;
+			MENU_CAST->setSelected(MENU_SETTINGS);
 			break;
 		}		
 		case MENU_CREDITS:{
 			//Do nothing for now
 			INFO << "Credits selected" << std::endl;
+			MENU_CAST->setSelected(MENU_CREDITS);
 			break;
 		}
 		case MENU_QUIT:{

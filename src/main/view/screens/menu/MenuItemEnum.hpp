@@ -7,11 +7,7 @@ namespace gs {
  * Enum for the different Menu Items
  */
 
-#define	MENU_START     0
-#define	MENU_SETTINGS  1
-#define	MENU_CREDITS   2
-#define	MENU_QUIT      3
-
+enum MenuItem {MENU_START, MENU_SETTINGS, MENU_CREDITS, MENU_QUIT, MAIN_MENU};
 
 }
 

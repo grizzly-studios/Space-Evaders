@@ -17,7 +17,6 @@
 #include "../util/RandomNumberGenerator.h"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
-#include "../logic/MenuItemEnum.hpp"
 
 #include "../app/GameState.h"
 #include "../app/Globals.h"
@@ -48,6 +47,7 @@ private:
 	void onEntityDeleted(EntityDeletedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
 	void moveMenuPointer(MenuActionEvent &event);
+	void moveMenuBack();
 	void selectMenuItem();
 
 	void loadAssets();

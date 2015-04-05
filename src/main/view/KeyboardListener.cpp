@@ -178,6 +178,16 @@ void KeyboardListener::menuUpdate() {
 		previousState[sf::Keyboard::Return] = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) != previousState[sf::Keyboard::Escape]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::BACK);
+			eventManager->fireEvent(menuActionEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Escape] = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
+	}
+
 	if (resetDirection) {
 		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
 		//eventManager->fireEvent(moveMenuPointerEvent);
