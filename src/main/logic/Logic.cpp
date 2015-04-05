@@ -1,7 +1,8 @@
 #include "Logic.h"
 
+#include <algorithm>
 #include <sstream>
-#include <list>
+#include <vector>
 #include <SFML/System/Vector2.hpp>
 
 #include "../util/Logger.h"
@@ -288,25 +289,23 @@ void Logic::generateLevel() {
 void Logic::generateBullets() {
 	const int NUM_ENEMIES_NOT_FIRING = 2;
 
-	std::list<int> firingEnemyIndices;
+	std::vector<int> firingEnemyIndices;
 	for (int i=0; i<GBL::NUMBER_ENEMIES; i++) {
 		firingEnemyIndices.push_back(i);
 	}
 
+	std::random_shuffle(firingEnemyIndices.begin(), firingEnemyIndices.end());
 	for (int i=0; i<NUM_ENEMIES_NOT_FIRING; i++) {
-		int indexToRemove = randomNumberGenerator.randomNumberInRange(0, firingEnemyIndices.size() -1);
-		firingEnemyIndices.remove(indexToRemove);
+		firingEnemyIndices.pop_back();
 	}
 
 	float minSpeedForLevel = GBL::MIN_LEVEL_START_SPEED + (GBL::LEVEL_START_SPEED_INCREMENT * (level -1));
 	float waveSpeedIncrement = (GBL::MAX_BULLET_SPEED - minSpeedForLevel) / (GBL::MIN_NUMBER_WAVES - 1);
 	float speedForWave = minSpeedForLevel + (waveSpeedIncrement * (wave -1));
 
-	for (std::list<int>::const_iterator it=firingEnemyIndices.begin();
-		it!=firingEnemyIndices.end(); ++it) {
-
+	for (int enemyIndex : firingEnemyIndices) {
 		// Position of the tile containing the bullet
-		const sf::Vector2f bulletTilePos = getTilePosition((*it), 2);
+		const sf::Vector2f bulletTilePos = getTilePosition(enemyIndex, 2);
 		allBullets.push_back(BulletsShPtr(new Bullets(sf::Vector2f(0, 0.0001))));
 		allBullets.back()->setGeo(bulletTilePos.x + 12, bulletTilePos.y + 10, GBL::TILE_WIDTH - 24, GBL::TILE_WIDTH - 20);
 		mobileObjects.push_back(allBullets.back());
