@@ -47,6 +47,7 @@ private:
 	void onEntityDeleted(EntityDeletedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
 	void moveMenuPointer(MenuActionEvent &event);
+	void moveMenuBack();
 	void selectMenuItem();
 
 	void loadAssets();

@@ -169,6 +169,8 @@ void View::onEvent(Event& event) {
 			MenuActionEvent menuActionEvent = (MenuActionEvent&) event;
 			if (menuActionEvent.getAction() == MenuActionEvent::Action::SELECT) {
 				selectMenuItem();
+			} else if (menuActionEvent.getAction() == MenuActionEvent::Action::BACK) {
+				moveMenuBack();
 			} else {
 				moveMenuPointer(menuActionEvent);
 			}
@@ -357,6 +359,12 @@ void View::moveMenuPointer(MenuActionEvent& event){
 		default:
 			ERR << "Unable to move menu pointer in direction: " << event.getAction() << std::endl;
 			break;
+	}
+}
+
+void View::moveMenuBack() {
+	if (MENU_CAST->getSelected() != MAIN_MENU) {
+		MENU_CAST->setSelected(MAIN_MENU);
 	}
 }
 

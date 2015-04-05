@@ -14,7 +14,7 @@ namespace gs {
 
 class MenuActionEvent : public Event {
 public:
-	enum Action {UP, DOWN, SELECT};
+	enum Action {UP, DOWN, SELECT, BACK};
 	
 	MenuActionEvent(Action _action) : action(_action) {};
 
