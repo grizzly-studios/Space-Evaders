@@ -9,6 +9,8 @@
 #define	GAMEOVERSCREEN_H
 
 #include "IGameOverScreen.h"
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "../../../util/Logger.h"
 #include "../../StyleManager.h"
@@ -28,6 +30,7 @@ public:
 	
 	void update();
 	void render(RenderWindowShPtr);
+	void setScore(int newScore);
 	
 	virtual ScreensEnum getType() const;
 	
