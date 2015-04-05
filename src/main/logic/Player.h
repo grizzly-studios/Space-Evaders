@@ -12,15 +12,28 @@
 
 namespace gs {
 
+enum PlayerState {
+	ALIVE, //0
+	HIT,   //1
+	DEAD   //2
+};
+
 class Player : public MobileEntity {
 public:
 	Player();
 	Player(const Player& orig);
 	virtual ~Player();
 
-	Direction isOutOfBounds();
-private:
+	virtual PlayerState getState() const;
 
+	Direction isOutOfBounds();
+
+	void hit();
+	void tick();
+private:
+	PlayerState curState;
+	int curtick;
+	int hitTick;
 };
 
 typedef std::shared_ptr<Player> PlayerShPtr;

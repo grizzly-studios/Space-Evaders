@@ -68,6 +68,7 @@ void Logic::update() {
 		advancePlayers();
 		cleanUp();
 		spawn();
+		checkEnd();
 	}
 }
 
@@ -86,8 +87,6 @@ void Logic::onEvent(Event& event) {
 		case GAME_END_EVENT:
 			gameEnd();
 			break;
-		case PLAYER_DESTROYED_EVENT:
-			checkEnd();
 		default:
 		    const short eventType = event.getType();
 			std::stringstream ss;
@@ -110,12 +109,22 @@ void Logic::collisionDetection() {
 	//Scan for player collisions
 	EntityList::iterator iter;
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+		/* NEEDS TO BE REFACTORED LATER */
+		(*it)->tick();
+		/* END NEEDS TO BE REFACTORED LATER */
+
+		if((*it)->getState() != ALIVE){
+			DBG << "Player ID " << (*it)->getID() << " is in state " << (*it)->getState() << std::endl;
+			continue;
+		}
+
 		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), *it));
 		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
 			if((*it)->detectCollision(**iter)) {	//Collision
 				DBG << "Player ID " << (*it)->getID() << " has been hit and is DEAD." << std::endl;
-				toBeRemoved.push_back(*it);
+				//toBeRemoved.push_back(*it); Do we need this now?
 				numLives--;
+				(*it)->hit();
 				PlayerDestroyedEvent playerDestroyedEvent((*it)->getID());
 				eventManager->fireEvent(playerDestroyedEvent);
 				break;
@@ -369,7 +378,16 @@ void Logic::gameEnd(){
 
 void Logic::checkEnd(){
 	if(numLives <= 0){
-		GameStateChangedEvent gameStateChangedEvent2(GAMEOVER);
-		eventManager->fireEvent(gameStateChangedEvent2);
+		bool end = TRUE;
+		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+			if((*it)->getState() != DEAD){
+				end = FALSE;
+			}
+		}
+
+		if(end){
+			GameStateChangedEvent gameStateChangedEvent2(GAMEOVER);
+			eventManager->fireEvent(gameStateChangedEvent2);
+		}
 	}
 }

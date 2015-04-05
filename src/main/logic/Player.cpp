@@ -16,6 +16,8 @@ Player::Player() : MobileEntity() {
 	mass = 100000;
 	friction.x = 25.f/1000000.f;
 	friction.y = 25.f/1000000.f;
+	curState = ALIVE;
+	curtick = 0;
 }
 
 Player::Player(const Player& orig) : MobileEntity(orig) {
@@ -51,3 +53,22 @@ Direction Player::isOutOfBounds(){
 	return (MobileEntity::shortToDirection(boundsBreach));
 }
 
+PlayerState Player::getState() const {
+	return curState;
+}
+
+void Player::hit(){
+	curState = HIT;
+	hitTick = curtick;
+}
+
+/* NEEDS TO BE REFACTORED LATER */
+void Player::tick(){
+	curtick++;
+	if(curState == HIT){
+		if(curtick >= (hitTick + 25)){
+			curState = DEAD;
+		}
+	}
+}
+/* END NEEDS TO BE REFACTORED LATER */
