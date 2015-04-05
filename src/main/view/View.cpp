@@ -1,23 +1,32 @@
 #include "View.h"
 
-#include <random>
-#include <functional>
 #include <iostream>
 #include <string>
 #include <sstream>
 
 #include "../util/Logger.h"
 
+#define LEVEL_TEXT "LEVEL"
+#define WAVE_TEXT  "WAVE"
+#define SCORE_TEXT "SCORE"
+#define MULTI_TEXT "MULTI"
+#define TEXT_SIZE 16 				// pixels
+
 using namespace gs;
 
 View::View(IEventManagerPtr _eventManager,
 	RenderWindowShPtr _window,
 	IUserInputShPtr _userInput,
-	ISpriteFactoryShPtr _sprite_factory) : eventManager(_eventManager),
-	window(_window),
-	userInput(_userInput),
-	spriteFactory(_sprite_factory) 
-{}
+	ISpriteFactoryShPtr _sprite_factory)
+	: eventManager(_eventManager),
+	  window(_window),
+	  userInput(_userInput),
+	  spriteFactory(_sprite_factory),
+	  width(0), height(0) {
+
+	width = window->getSize().x;
+	height = window->getSize().y;
+}
 
 View::~View() {
 	DBG << "Destroyed" << std::endl;
@@ -30,6 +39,35 @@ void View::init() {
 	spriteFactory->init();
 	initBackground();
 	initHud();
+
+	if (!hudFont.loadFromFile("assets/joystix_monospace.ttf")) {
+		ERR << "Failed to load HUD font"  << std::endl;
+	}
+
+	const int upperTextY = GBL::SCREEN_SPRITE_WIDTH + 5;
+	const int lowerTextY = height - 58;
+	const int rightTextX = width - GBL::SCREEN_SPRITE_WIDTH*5;
+
+	levelText.setFont(hudFont);
+	levelText.setString(LEVEL_TEXT);
+	levelText.setCharacterSize(TEXT_SIZE);
+	levelText.setPosition(GBL::SCREEN_SPRITE_WIDTH, upperTextY);
+
+	waveText.setFont(hudFont);
+	waveText.setString(WAVE_TEXT);
+	waveText.setCharacterSize(TEXT_SIZE);
+	waveText.setPosition(rightTextX, upperTextY);
+
+	scoreText.setFont(hudFont);
+	scoreText.setString(SCORE_TEXT);
+	scoreText.setCharacterSize(TEXT_SIZE);
+	scoreText.setPosition(GBL::SCREEN_SPRITE_WIDTH, lowerTextY);
+
+	multiText.setFont(hudFont);
+	multiText.setString(MULTI_TEXT);
+	multiText.setCharacterSize(TEXT_SIZE);
+	multiText.setPosition(rightTextX, lowerTextY);
+
 }
 
 void View::update() {
@@ -93,6 +131,15 @@ void View::inGameRender(){
 			++it) {
 		window->draw(*it);
 	}
+
+	window->draw(levelText);
+	window->draw(waveText);
+	window->draw(scoreText);
+	window->draw(multiText);
+
+	drawGrid();
+
+	window->display();
 }
 
 void View::onEvent(Event& event) {
@@ -127,11 +174,13 @@ void View::onEvent(Event& event) {
 			}
 			break;
 		}
+		case ENTITY_DELETED_EVENT: {
+			EntityDeletedEvent& entityDeletedEvent = (EntityDeletedEvent&) event;
+			onEntityDeleted(entityDeletedEvent);
+			break;
+		}
 		default: {
-			const short eventType = event.getType();
-			std::stringstream ss;
-			ss << "Un-Handled: " << eventType;
-		    ERR << ss.str() << std::endl;
+		    ERR << "Un-Handled: " << event << std::endl;
 			break;
 		}
 	}
@@ -210,10 +259,28 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 		WARN << "Sprite already present for this id, should it have been destroyed?" << std::endl;
 	}
 
-	sf::Sprite sprite = spriteFactory->createSprite(1, 1);
+	int spriteCol = -1;
+	int spriteRow = -1;
+	switch (event.getEntityType()) {
+		case PLAYER_ENTITY:
+			spriteCol = 3;
+			spriteRow = 0;
+			break;
+		case ENEMY_ENTITY:
+			spriteCol = 3;
+			spriteRow = 1;
+			break;
+		case BULLET_ENTITY:
+			spriteCol = 3;
+			spriteRow = 2;
+			break;
+	}
+
+	sf::Sprite sprite = spriteFactory->createSprite(spriteCol, spriteRow,
+			(sf::Vector2i)event.getDimensions());
 	sprite.setPosition(event.getPosition());
 	// Logic dimensions map to screen pixels 1:1
-	sprite.setScale(event.getDimensions() / (float) GBL::SCREEN_SPRITE_WIDTH);
+	//sprite.setScale(event.getDimensions() / (float) GBL::SCREEN_SPRITE_WIDTH);
 
 	spriteMap[event.getEntityId()] = sprite;
 }
@@ -244,6 +311,30 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}
+}
+
+void View::drawGrid() {
+	int horizLines = (height / GBL::SCREEN_SPRITE_WIDTH) -1;
+	int vertLines = (width / GBL::SCREEN_SPRITE_WIDTH) -1;
+	int numVertices = horizLines * vertLines;
+
+	sf::Vertex* vertices = new sf::Vertex[numVertices];
+
+	int count = 0;
+
+	for (int i=0; i<horizLines; i++) {
+		vertices[count++] = sf::Vertex(sf::Vector2f(0, GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH));
+		vertices[count++] = sf::Vertex(sf::Vector2f(width, GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH));
+	}
+
+	for (int i=0; i<vertLines; i++) {
+		vertices[count++] = sf::Vertex(sf::Vector2f(GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH, 0));
+		vertices[count++] = sf::Vertex(sf::Vector2f(GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH, height));
+	}
+
+	window->draw(vertices, numVertices, sf::Lines);
+
+	delete[] vertices;
 }
 
 void View::onGameStateChanged(GameStateChangedEvent& event) {

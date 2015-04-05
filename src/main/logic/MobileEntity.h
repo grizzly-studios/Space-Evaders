@@ -111,7 +111,6 @@ protected:
 	static double h;
 	
 	AccelerationFunc acceleration;
-	std::function<sf::Vector2f(double, sf::Vector2f*)> accelerationDummy;
 
 	Direction shortToDirection(short dir);
 };
