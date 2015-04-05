@@ -357,6 +357,7 @@ void Logic::gameEnd(){
 	eventManager->fireEvent(gameStateChangedEvent);
 
 	allPlayers.clear();
+	allBullets.clear();
 	mobileObjects.clear();
 	allObjects.clear();
 }
