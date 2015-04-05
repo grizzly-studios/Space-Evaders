@@ -11,6 +11,7 @@ const char* EventEnumText[] = {
 	"GAME_END_EVENT",
 	"MENU_ACTION_EVENT",
 	"ENTITY_DELETED_EVENT",
+	"PLAYER_DESTROYED_EVENT",
 0};
 
 }

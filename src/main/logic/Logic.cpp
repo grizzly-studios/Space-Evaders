@@ -1,19 +1,54 @@
 #include "Logic.h"
 
-#include "../util/Logger.h"
 #include <sstream>
+#include <list>
+#include <SFML/System/Vector2.hpp>
+
+#include "../util/Logger.h"
+
+#define TILE_WIDTH 32					// tile width & height
+#define COLS 13							// tilemap dimensions
+#define ROWS 20
+#define NUMBER_LEVELS 3
+#define MIN_NUMBER_WAVES 4				// player can move back, and can hence play more than this no. of waves
+#define NUMBER_ENEMIES COLS
+#define MIN_LEVEL_START_SPEED 150.0		// units/sec (pixels in this simplistic mapping)
+#define MAX_BULLET_SPEED 450.0			// max speed is the same for each level
+#define LEVEL_START_SPEED_INCREMENT ((MAX_BULLET_SPEED - MIN_LEVEL_START_SPEED) / (NUMBER_LEVELS - 1))
 
 using namespace gs;
 
-Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager) {
+namespace {
+
+sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
+	sf::Vector2f vec;
+
+	if (colIndex >= 0 && colIndex < COLS && rowIndex >= 0 && rowIndex < ROWS) {
+		vec.x = colIndex * TILE_WIDTH + TILE_WIDTH;
+		vec.y = rowIndex * TILE_WIDTH + TILE_WIDTH;
+	} else {
+		ERR << "Tile indices out of range" << std::endl;
+	}
+
+	return vec;
+}
+
+}
+
+Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
+	randomNumberGenerator(time(NULL)), level(1), wave(1) {
 	clock = new sf::Clock();
+	gameTime = 0;
 	accumulator = 0;
 	MobileEntity::seth(12500);
-
+	advanceUntil = 0;
+	startAdvance = false;
+	advancing = false;
 }
 
 Logic::~Logic() {
 	DBG << "Destroyed" << std::endl;
+	delete clock;
 }
 
 void Logic::update() {
@@ -22,11 +57,18 @@ void Logic::update() {
 	if (interval > 250000) {
 		interval = 250000;
 	}
-	accumulator += interval;
 
-	move();
-	collisionDetection();
-	boundsCheck();
+	if (gameState == IN_GAME) {
+		accumulator += interval;
+		gameTime += elapsed.asMilliseconds();
+
+		move();
+		collisionDetection();
+		boundsCheck();
+		advancePlayers();
+		cleanUp();
+		spawn();
+	}
 }
 
 void Logic::onEvent(Event& event) {
@@ -69,10 +111,15 @@ void Logic::collisionDetection() {
 		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), *it));
 		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
 			if((*it)->detectCollision(**iter)) {	//Collision
-				//Fire player collision event
+				PlayerDestroyedEvent playerDestroyedEvent((*it)->getID());
+				eventManager->fireEvent(playerDestroyedEvent);
+				DBG << "Player ID " << (*it)->getID() << " has been hit and is DEAD." << std::endl;
+				toBeRemoved.push_back(*it);
+				break;
 			}
 		}
 	}
+
 	//Scan for bullets collisions
 	for (BulletsList::iterator it = allBullets.begin(); it != allBullets.end(); it++) {
 		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), *it));
@@ -109,11 +156,54 @@ void Logic::boundsCheck(){
 	for (BulletsList::iterator it = allBullets.begin(); it != allBullets.end(); it++) {
 		Direction oOB = (*it)->isOutOfBounds();
 		if(oOB == DOWN){
-			DBG << "Erasing Bullet ID: " << (*it)->getID() << std::endl;
-			allBullets.erase(it);
-			EntityDeletedEvent entityDeletedEvent((*it)->getID());
-			eventManager->fireEvent(entityDeletedEvent);
+			DBG << "Bullet ID " << (*it)->getID() << " is out of bounds. Adding to remove list." << std::endl;
+			toBeRemoved.push_back(*it);
+			if (advanceUntil < gameTime) {
+				advanceUntil = gameTime;
+				startAdvance = true;
+			}
+			advanceUntil += 30;
 		}
+	}
+}
+
+void Logic::advancePlayers() {
+	if (startAdvance) {
+		startAdvance = false;
+		advancing = true;
+		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+			sf::Vector2f current = (*it)->getForce();
+			sf::Vector2f advancer(0,0);
+			if (advanceUntil > gameTime && current.y >= 0) {
+				advancer = (*it)->getVector(UP, 50.f/1000000.f);
+			}
+			(*it)->safeSetForce(current + advancer);
+		}
+	}
+	if (advanceUntil < gameTime && advancing) {
+		advancing = false;
+		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+			sf::Vector2f current = (*it)->getForce();
+			if (current.y < 0) {
+				current.y = 0;
+				(*it)->safeSetForce(current);
+			}
+		}
+	}
+}
+
+void Logic::cleanUp() {
+	for (EntityList::iterator it = toBeRemoved.begin(); it != toBeRemoved.end(); it++) {
+		DBG << "Erasing entity ID: " << (*it)->getID() << std::endl;
+		removeEntity((*it)->getID());
+	}
+	toBeRemoved.clear();
+}
+
+void Logic::spawn() {
+	if (gameTime > nextBulletSpawn) {
+		nextBulletSpawn += bulletInterval;
+		generateBullets();
 	}
 }
 
@@ -136,7 +226,12 @@ void Logic::interpolate(const double &remainder) {
 
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		(*it)->safeSetForce((*it)->getVector(event.getDirection(), 50.f/1000000.f));
+		sf::Vector2f engines = (*it)->getVector(event.getDirection(), 50.f/1000000.f);
+		sf::Vector2f advancer(0,0);
+		if (advanceUntil > gameTime) {
+			advancer = (*it)->getVector(UP, 50.f/1000000.f);
+		}
+		(*it)->safeSetForce(engines + advancer);
 	}
 }
 
@@ -165,18 +260,81 @@ void Logic::removeEntity(unsigned int entityID) {
 }
 
 void Logic::generateLevel() {
+	// Create player
 	allPlayers.push_back(PlayerShPtr(new Player()));
-	allPlayers.back()->setGeo(100,100,GBL::SCREEN_SPRITE_WIDTH,GBL::SCREEN_SPRITE_WIDTH);
+	const sf::Vector2f playerPos = getTilePosition(6, 17);
+	allPlayers.back()->setGeo(playerPos.x, playerPos.y,
+			GBL::SCREEN_SPRITE_WIDTH, GBL::SCREEN_SPRITE_WIDTH);
 	mobileObjects.push_back(allPlayers.back());
 	allObjects.push_back(allPlayers.back());
+
 	EntityCreatedEvent entityCreatedEvent(
 		allPlayers.back()->getID(),
+		PLAYER_ENTITY,
 		allPlayers.back()->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
-	DBG << "Generated level" << std::endl;
+
+	// Create enemies
+	for (int i=0; i<NUMBER_ENEMIES; i++) {
+		const sf::Vector2f enemyPos = getTilePosition(i, 1);
+		allObjects.push_back(EnemyShPtr(new Enemy()));
+		allObjects.back()->setGeo(enemyPos.x, enemyPos.y, TILE_WIDTH, TILE_WIDTH);
+
+		EntityCreatedEvent entityCreatedEvent2(
+			allObjects.back()->getID(),
+			ENEMY_ENTITY,
+			allObjects.back()->getGeo());
+		eventManager->fireEvent(entityCreatedEvent2);
+	}
+
+	INFO << "Generated level" << std::endl;
+
+	generateBullets();
+	bulletInterval = 3000;
+	nextBulletSpawn = gameTime + bulletInterval;
+}
+
+void Logic::generateBullets() {
+	const int NUM_ENEMIES_NOT_FIRING = 2;
+
+	std::list<int> firingEnemyIndices;
+	for (int i=0; i<NUMBER_ENEMIES; i++) {
+		firingEnemyIndices.push_back(i);
+	}
+
+	for (int i=0; i<NUM_ENEMIES_NOT_FIRING; i++) {
+		int indexToRemove = randomNumberGenerator.randomNumberInRange(0, firingEnemyIndices.size() -1);
+		firingEnemyIndices.remove(indexToRemove);
+	}
+
+	level = 3;	// TODO: Remove
+	wave = 4;	// TODO: Remove
+	float minSpeedForLevel = MIN_LEVEL_START_SPEED + (LEVEL_START_SPEED_INCREMENT * (level -1));
+
+	float waveSpeedIncrement = (MAX_BULLET_SPEED - minSpeedForLevel) / (MIN_NUMBER_WAVES - 1);
+
+	float speedForWave = minSpeedForLevel + (waveSpeedIncrement * (wave -1));
+
+	for (std::list<int>::const_iterator it=firingEnemyIndices.begin();
+		it!=firingEnemyIndices.end(); ++it) {
+
+		// Position of the tile containing the bullet
+		const sf::Vector2f bulletTilePos = getTilePosition((*it), 2);
+		allBullets.push_back(BulletsShPtr(new Bullets(sf::Vector2f(0, 0.0001))));
+		allBullets.back()->setGeo(bulletTilePos.x + 12, bulletTilePos.y + 10, TILE_WIDTH - 24, TILE_WIDTH - 20);
+		mobileObjects.push_back(allBullets.back());
+		allObjects.push_back(allBullets.back());
+
+		EntityCreatedEvent entityCreatedEvent(
+			allObjects.back()->getID(),
+			BULLET_ENTITY,
+			allObjects.back()->getGeo());
+		eventManager->fireEvent(entityCreatedEvent);
+	}
 }
 
 void Logic::onGameStateChange(GameStateChangedEvent& event) {
+	gameState = event.getState();
 	DBG << "Changing game state to " << event.getState() << std::endl;
 }
 
@@ -199,6 +357,7 @@ void Logic::gameEnd(){
 	eventManager->fireEvent(gameStateChangedEvent);
 
 	allPlayers.clear();
+	allBullets.clear();
 	mobileObjects.clear();
 	allObjects.clear();
 }

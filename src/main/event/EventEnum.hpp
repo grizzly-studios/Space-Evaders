@@ -14,7 +14,8 @@ enum EventEnum {
 	GAME_START_EVENT,				//4
 	GAME_END_EVENT, 				//5
 	MENU_ACTION_EVENT,				//6
-	ENTITY_DELETED_EVENT			//7
+	ENTITY_DELETED_EVENT,			//7
+	PLAYER_DESTROYED_EVENT			//8
 };
 
 extern const char* EventEnumText[];

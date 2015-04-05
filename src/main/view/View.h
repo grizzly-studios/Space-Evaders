@@ -14,6 +14,7 @@
 #include "../event/GameStartEvent.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
+#include "../util/RandomNumberGenerator.h"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
 #include "../logic/MenuItemEnum.hpp"
@@ -60,10 +61,22 @@ private:
 	RenderWindowShPtr window;
 	IUserInputShPtr userInput;
 	ISpriteFactoryShPtr spriteFactory;
-	sf::Texture texture;
+
+	int width;
+	int height;
+
 	RectShapeList stars;
 	SpriteMap spriteMap;
 	SpriteList hudSprites;
+	sf::Font hudFont;
+	sf::Text levelText;
+	sf::Text waveText;
+	sf::Text scoreText;
+	sf::Text multiText;
+
+	// Draw grid (for debugging)
+	void drawGrid();
+
 	GameState gameState;
 	
 	std::map<ScreensEnum, IScreenShPtr> screens;
