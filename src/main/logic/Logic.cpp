@@ -86,6 +86,9 @@ void Logic::onEvent(Event& event) {
 		case GAME_END_EVENT:
 			gameEnd();
 			break;
+		case PLAYER_DESTROYED_EVENT:
+			numLives--;
+			checkEnd();
 		default:
 		    const short eventType = event.getType();
 			std::stringstream ss;
@@ -345,6 +348,8 @@ void Logic::startNewGame(){
 	eventManager->fireEvent(gameStateChangedEvent);
 	//Now we need to initalise everything
 	generateLevel();
+	//Setup the players
+	numLives = 1;
 	//Now we're done show the game!
 	GameStateChangedEvent gameStateChangedEvent2(IN_GAME);
 	eventManager->fireEvent(gameStateChangedEvent2);
@@ -360,4 +365,11 @@ void Logic::gameEnd(){
 	allBullets.clear();
 	mobileObjects.clear();
 	allObjects.clear();
+}
+
+void Logic::checkEnd(){
+	if(numLives <= 0){
+		//Game over bitches
+		
+	}
 }

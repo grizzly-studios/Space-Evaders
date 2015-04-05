@@ -64,6 +64,7 @@ private:
 
 	int level;
 	int wave;
+	int numLives;
 	double nextBulletSpawn;
 	int bulletInterval;
 	double advanceUntil;
@@ -80,6 +81,7 @@ private:
 
 	void startNewGame();
 	void gameEnd();
+	void checkEnd();
 
 	void integrate();
 	void interpolate(const double &remainder);

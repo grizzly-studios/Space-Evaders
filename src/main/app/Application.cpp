@@ -97,6 +97,7 @@ void Application::init() {
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(MENU_ACTION_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(PLAYER_DESTROYED_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(PLAYER_DESTROYED_EVENT, MAKE_EVENT_LISTENER(logic));
 
 	INFO << "Ending init" << std::endl;
 	
