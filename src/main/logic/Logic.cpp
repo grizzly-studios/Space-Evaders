@@ -87,7 +87,6 @@ void Logic::onEvent(Event& event) {
 			gameEnd();
 			break;
 		case PLAYER_DESTROYED_EVENT:
-			numLives--;
 			checkEnd();
 		default:
 		    const short eventType = event.getType();
@@ -114,10 +113,11 @@ void Logic::collisionDetection() {
 		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), *it));
 		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
 			if((*it)->detectCollision(**iter)) {	//Collision
-				PlayerDestroyedEvent playerDestroyedEvent((*it)->getID());
-				eventManager->fireEvent(playerDestroyedEvent);
 				DBG << "Player ID " << (*it)->getID() << " has been hit and is DEAD." << std::endl;
 				toBeRemoved.push_back(*it);
+				numLives--;
+				PlayerDestroyedEvent playerDestroyedEvent((*it)->getID());
+				eventManager->fireEvent(playerDestroyedEvent);
 				break;
 			}
 		}
@@ -369,7 +369,7 @@ void Logic::gameEnd(){
 
 void Logic::checkEnd(){
 	if(numLives <= 0){
-		//Game over bitches
-		
+		GameStateChangedEvent gameStateChangedEvent2(GAMEOVER);
+		eventManager->fireEvent(gameStateChangedEvent2);
 	}
 }

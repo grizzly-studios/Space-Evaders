@@ -15,7 +15,8 @@ enum GameState {
 	PAUSED,  //1
 	LOADING, //2
 	MENU,    //3
-	INTRO    //4
+	INTRO,   //4
+	GAMEOVER //5
 };
 
 }

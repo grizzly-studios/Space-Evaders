@@ -106,6 +106,9 @@ void View::render() {
 		case INTRO:
 			screens[INTRO_SCREEN]->render(window);
 			break;
+		case GAMEOVER:
+			screens[GAMEOVER_SCREEN]->render(window);
+			break;
 	}
 	//Now display
 	window->display();

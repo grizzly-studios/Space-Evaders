@@ -35,6 +35,9 @@ void KeyboardListener::update() {
 		case MENU:
 			menuUpdate();
 			break;
+		case GAMEOVER:
+			gameOverUpdate();
+			break;
 	}
 	
 }
@@ -132,6 +135,13 @@ void KeyboardListener::pausedUpdate() {
 	if (resetDirection) {
 		//MoveMenuPointerEvent moveMenuPointerEvent(NONE);
 		//eventManager->fireEvent(moveMenuPointerEvent);
+	}
+}
+
+void KeyboardListener::gameOverUpdate() {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
+		GameEndEvent gameEndEvent;
+		eventManager->fireEvent(gameEndEvent);
 	}
 }
 
