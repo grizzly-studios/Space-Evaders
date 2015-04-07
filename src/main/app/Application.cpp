@@ -78,11 +78,13 @@ void Application::init() {
 	ILoadingScreenShPtr loadingScreen(new LoadingScreen(styleManager));
 	IIntroScreenShPtr introScreen(new IntroScreen(styleManager, eventManager));
 	IGameOverScreenShPtr gameOverScreen(new GameOverScreen(styleManager, eventManager));
+	ICreditsScreenShPtr creditsScreen(new CreditsScreen(styleManager));
 	view->addScreen(menuScreen);
 	view->addScreen(pausedScreen);
 	view->addScreen(loadingScreen);
 	view->addScreen(introScreen);
 	view->addScreen(gameOverScreen);
+	view->addScreen(creditsScreen);
 
 	/* Now everything view needs has been created we can initialise it */
 	view->init();
