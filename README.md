@@ -1,4 +1,4 @@
-Space Evaders
+Space Evaders  [![Build Status](https://travis-ci.org/grizzly-studios/Space-Evaders.svg?branch=develop)](https://travis-ci.org/grizzly-studios/Space-Evaders)
 =============
 
 The brain child and virginity shattering creation of Grizzly Studios
