@@ -1,42 +1,73 @@
 #include "View.h"
 
-#include <random>
-#include <functional>
 #include <iostream>
 #include <string>
 #include <sstream>
 
 #include "../util/Logger.h"
 
-// TODO: Refactor (duplicate constants in application layer)
-#define WIDTH 480
-#define HEIGHT 640
-
-#define SCREEN_SPRITE_WIDTH 32
+#define LEVEL_TEXT "LEVEL"
+#define WAVE_TEXT  "WAVE"
+#define SCORE_TEXT "SCORE"
+#define MULTI_TEXT "MULTI"
+#define TEXT_SIZE 16 				// pixels
 
 using namespace gs;
 
 View::View(IEventManagerPtr _eventManager,
 	RenderWindowShPtr _window,
 	IUserInputShPtr _userInput,
-	ISpriteFactoryShPtr _sprite_factory) : eventManager(_eventManager),
-	window(_window),
-	userInput(_userInput),
-	spriteFactory(_sprite_factory) 
-{}
+	ISpriteFactoryShPtr _sprite_factory)
+	: eventManager(_eventManager),
+	  window(_window),
+	  userInput(_userInput),
+	  spriteFactory(_sprite_factory),
+	  width(0), height(0) {
+
+	width = window->getSize().x;
+	height = window->getSize().y;
+}
 
 View::~View() {
 	DBG << "Destroyed" << std::endl;
 }
 
 void View::init() {
+	/* Initially we want to show the loading screen */
+	gameState = LOADING; 
+	render(); 
 	spriteFactory->init();
 	initBackground();
 	initHud();
-	if(!font.loadFromFile("assets/arial.ttf"))
-    {
-      ERR << "Could not load font file" << std::endl;
-    }
+
+	if (!hudFont.loadFromFile("assets/joystix_monospace.ttf")) {
+		ERR << "Failed to load HUD font"  << std::endl;
+	}
+
+	const int upperTextY = GBL::SCREEN_SPRITE_WIDTH + 5;
+	const int lowerTextY = height - 58;
+	const int rightTextX = width - GBL::SCREEN_SPRITE_WIDTH*5;
+
+	levelText.setFont(hudFont);
+	levelText.setString(LEVEL_TEXT);
+	levelText.setCharacterSize(TEXT_SIZE);
+	levelText.setPosition(GBL::SCREEN_SPRITE_WIDTH, upperTextY);
+
+	waveText.setFont(hudFont);
+	waveText.setString(WAVE_TEXT);
+	waveText.setCharacterSize(TEXT_SIZE);
+	waveText.setPosition(rightTextX, upperTextY);
+
+	scoreText.setFont(hudFont);
+	scoreText.setString(SCORE_TEXT);
+	scoreText.setCharacterSize(TEXT_SIZE);
+	scoreText.setPosition(GBL::SCREEN_SPRITE_WIDTH, lowerTextY);
+
+	multiText.setFont(hudFont);
+	multiText.setString(MULTI_TEXT);
+	multiText.setCharacterSize(TEXT_SIZE);
+	multiText.setPosition(rightTextX, lowerTextY);
+
 }
 
 void View::update() {
@@ -70,7 +101,19 @@ void View::render() {
 			screens[LOADING_SCREEN]->render(window);
 			break;
 		case MENU:
-			screens[MENU_SCREEN]->render(window);
+			switch(MENU_CAST->getSelected()) {
+				case MENU_SETTINGS:
+					break;
+				case MENU_CREDITS:
+					screens[CREDITS_SCREEN]->render(window);
+					break;
+				default:
+					screens[MENU_SCREEN]->render(window);
+					break;
+			}
+			break;
+		case INTRO:
+			screens[INTRO_SCREEN]->render(window);
 			break;
 	}
 	//Now display
@@ -88,6 +131,15 @@ void View::inGameRender(){
 			++it) {
 		window->draw(*it);
 	}
+
+	window->draw(levelText);
+	window->draw(waveText);
+	window->draw(scoreText);
+	window->draw(multiText);
+
+	drawGrid();
+
+	window->display();
 }
 
 void View::onEvent(Event& event) {
@@ -117,16 +169,20 @@ void View::onEvent(Event& event) {
 			MenuActionEvent menuActionEvent = (MenuActionEvent&) event;
 			if (menuActionEvent.getAction() == MenuActionEvent::Action::SELECT) {
 				selectMenuItem();
+			} else if (menuActionEvent.getAction() == MenuActionEvent::Action::BACK) {
+				moveMenuBack();
 			} else {
 				moveMenuPointer(menuActionEvent);
 			}
 			break;
 		}
+		case ENTITY_DELETED_EVENT: {
+			EntityDeletedEvent& entityDeletedEvent = (EntityDeletedEvent&) event;
+			onEntityDeleted(entityDeletedEvent);
+			break;
+		}
 		default: {
-			const short eventType = event.getType();
-			std::stringstream ss;
-			ss << "Un-Handled: " << eventType;
-		    ERR << ss.str() << std::endl;
+		    ERR << "Un-Handled: " << event << std::endl;
 			break;
 		}
 	}
@@ -139,8 +195,8 @@ void View::initBackground() {
 	const int SEED = 48;
 
 	std::mt19937 randomNumGen(SEED);
-	std::uniform_int_distribution<int> distX(0, WIDTH);
-	std::uniform_int_distribution<int> distY(0, HEIGHT);
+	std::uniform_int_distribution<int> distX(0, GBL::WIDTH);
+	std::uniform_int_distribution<int> distY(0, GBL::HEIGHT);
 	std::function<int()> genX(std::bind(distX, randomNumGen));
 	std::function<int()> genY(std::bind(distY, randomNumGen));
 	
@@ -158,42 +214,42 @@ void View::initHud() {
 
 	// Left
 	hudSprites.push_back(spriteFactory->createSprite(0, 1));
-	hudSprites.back().setPosition(0.0f, SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(0.0f, GBL::SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(1.0f,
-			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+			(GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH);
 
 	// Bottom-left
 	hudSprites.push_back(spriteFactory->createSprite(0, 2));
-	hudSprites.back().setPosition(0.0f, HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(0.0f, GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH);
 
 	// Bottom
 	hudSprites.push_back(spriteFactory->createSprite(1, 2));
-	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH,
-			HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(GBL::SCREEN_SPRITE_WIDTH,
+			GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(
-			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+			(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH, 1.0f);
 
 	// Bottom-right
 	hudSprites.push_back(spriteFactory->createSprite(2, 2));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
-			HEIGHT - SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH,
+			GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH);
 
 	// Right
 	hudSprites.push_back(spriteFactory->createSprite(2, 1));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH,
-			SCREEN_SPRITE_WIDTH);
+	hudSprites.back().setPosition(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH,
+			GBL::SCREEN_SPRITE_WIDTH);
 	hudSprites.back().setScale(1.0f,
-			(HEIGHT - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH);
+			(GBL::HEIGHT - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH);
 
 	// Top-right
 	hudSprites.push_back(spriteFactory->createSprite(2, 0));
-	hudSprites.back().setPosition(WIDTH - SCREEN_SPRITE_WIDTH, 0.0f);
+	hudSprites.back().setPosition(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH, 0.0f);
 
 	// Top
 	hudSprites.push_back(spriteFactory->createSprite(1, 0));
-	hudSprites.back().setPosition(SCREEN_SPRITE_WIDTH, 0.0f);
+	hudSprites.back().setPosition(GBL::SCREEN_SPRITE_WIDTH, 0.0f);
 	hudSprites.back().setScale(
-			(WIDTH - SCREEN_SPRITE_WIDTH * 2) / SCREEN_SPRITE_WIDTH, 1.0f);
+			(GBL::WIDTH - GBL::SCREEN_SPRITE_WIDTH * 2) / GBL::SCREEN_SPRITE_WIDTH, 1.0f);
 }
 
 void View::onEntityCreated(EntityCreatedEvent& event) {
@@ -205,12 +261,45 @@ void View::onEntityCreated(EntityCreatedEvent& event) {
 		WARN << "Sprite already present for this id, should it have been destroyed?" << std::endl;
 	}
 
-	sf::Sprite sprite = spriteFactory->createSprite(1, 1);
+	int spriteCol = -1;
+	int spriteRow = -1;
+	switch (event.getEntityType()) {
+		case PLAYER_ENTITY:
+			spriteCol = 3;
+			spriteRow = 0;
+			break;
+		case ENEMY_ENTITY:
+			spriteCol = 3;
+			spriteRow = 1;
+			break;
+		case BULLET_ENTITY:
+			spriteCol = 3;
+			spriteRow = 2;
+			break;
+	}
+
+	sf::Sprite sprite = spriteFactory->createSprite(spriteCol, spriteRow,
+			(sf::Vector2i)event.getDimensions());
 	sprite.setPosition(event.getPosition());
 	// Logic dimensions map to screen pixels 1:1
-	sprite.setScale(event.getDimensions() / (float) SCREEN_SPRITE_WIDTH);
+	//sprite.setScale(event.getDimensions() / (float) GBL::SCREEN_SPRITE_WIDTH);
 
 	spriteMap[event.getEntityId()] = sprite;
+}
+
+void View::onEntityDeleted(EntityDeletedEvent& event) {
+	const short entityId = event.getEntityId();
+	
+
+	// Check if we already have a sprite associated with this id
+	if (spriteMap.find(entityId) == spriteMap.end()) {
+		WARN << "Sprite  with ID "<< entityId << " has already been destroyed" << std::endl;
+		return;
+	}
+
+	INFO << "Entity deleted with id: " << entityId << std::endl;
+
+	spriteMap.erase(event.getEntityId());
 }
 
 void View::onEntityMoved(EntityMovedEvent& event) {
@@ -224,6 +313,30 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}
+}
+
+void View::drawGrid() {
+	int horizLines = (height / GBL::SCREEN_SPRITE_WIDTH) -1;
+	int vertLines = (width / GBL::SCREEN_SPRITE_WIDTH) -1;
+	int numVertices = horizLines * vertLines;
+
+	sf::Vertex* vertices = new sf::Vertex[numVertices];
+
+	int count = 0;
+
+	for (int i=0; i<horizLines; i++) {
+		vertices[count++] = sf::Vertex(sf::Vector2f(0, GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH));
+		vertices[count++] = sf::Vertex(sf::Vector2f(width, GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH));
+	}
+
+	for (int i=0; i<vertLines; i++) {
+		vertices[count++] = sf::Vertex(sf::Vector2f(GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH, 0));
+		vertices[count++] = sf::Vertex(sf::Vector2f(GBL::SCREEN_SPRITE_WIDTH + i*GBL::SCREEN_SPRITE_WIDTH, height));
+	}
+
+	window->draw(vertices, numVertices, sf::Lines);
+
+	delete[] vertices;
 }
 
 void View::onGameStateChanged(GameStateChangedEvent& event) {
@@ -249,6 +362,12 @@ void View::moveMenuPointer(MenuActionEvent& event){
 	}
 }
 
+void View::moveMenuBack() {
+	if (MENU_CAST->getSelected() != MAIN_MENU) {
+		MENU_CAST->setSelected(MAIN_MENU);
+	}
+}
+
 void View::selectMenuItem(){
 	//we have been told to activate whatever so go for it!
 	switch(MENU_CAST->getMenuPos()){
@@ -260,13 +379,14 @@ void View::selectMenuItem(){
 			break;
 		}
 		case MENU_SETTINGS:{
-			//Do nothing for now
 			INFO << "Settings selected" << std::endl;
+			MENU_CAST->setSelected(MENU_SETTINGS);
 			break;
 		}		
 		case MENU_CREDITS:{
 			//Do nothing for now
 			INFO << "Credits selected" << std::endl;
+			MENU_CAST->setSelected(MENU_CREDITS);
 			break;
 		}
 		case MENU_QUIT:{

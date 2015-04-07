@@ -12,19 +12,22 @@
 #include "ILogic.hpp"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
-
 #include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityDeletedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/ChangePlayerDirectionEvent.h"
 #include "../event/GameStateChangedEvent.h"
+#include "../event/PlayerDestroyedEvent.hpp"
 
 #include "MobileEntity.h"
 #include "Player.h"
 #include "Bullets.h"
+#include "Enemy.h"
 
-#include "MenuItemEnum.hpp"
+#include "../util/RandomNumberGenerator.h"
 
 #include "../app/GameState.h"
+#include "../app/Globals.h"
 
 namespace gs {
 
@@ -44,18 +47,34 @@ public:
 	
 private:
 	IEventManagerPtr eventManager;
+	GameState gameState;
 	
 	sf::Clock *clock;
+	double gameTime;
+	RandomNumberGenerator randomNumberGenerator;
 	double accumulator;
 
 	EntityList allObjects;
 	MobileEntityList mobileObjects;
 	PlayerList allPlayers;
 	BulletsList allBullets;
+	EntityList toBeRemoved;
+
+	int level;
+	int wave;
+	double nextBulletSpawn;
+	int bulletInterval;
+	double advanceUntil;
+	bool startAdvance;
+	bool advancing;
 	
 	//Subroutines
 	void move();
 	void collisionDetection();
+	void boundsCheck();
+	void advancePlayers();
+	void cleanUp();
+	void spawn();
 
 	void startNewGame();
 	void gameEnd();
@@ -67,6 +86,8 @@ private:
 	void onGameStateChange(GameStateChangedEvent &event);
 	
 	void addBullets(sf::Vector2f velocity, sf::FloatRect geo);
+	void generateBullets();
+	void removeEntity(unsigned int entityID);
 };
 
 }

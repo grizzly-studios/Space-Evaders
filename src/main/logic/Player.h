@@ -17,6 +17,8 @@ public:
 	Player();
 	Player(const Player& orig);
 	virtual ~Player();
+
+	Direction isOutOfBounds();
 private:
 
 };

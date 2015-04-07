@@ -5,27 +5,21 @@
 #include <map>
 #include <list>
 
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-
 #include "IView.hpp"
 
 #include "../event/EntityCreatedEvent.hpp"
+#include "../event/EntityDeletedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/GameStateChangedEvent.h"
 #include "../event/GameStartEvent.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
+#include "../util/RandomNumberGenerator.h"
 #include "UserInput.h"
 #include "ISpriteFactory.hpp"
-#include "../logic/MenuItemEnum.hpp"
 
 #include "../app/GameState.h"
+#include "../app/Globals.h"
 
 namespace gs {
 
@@ -50,11 +44,16 @@ private:
 	void initHud();
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
+	void onEntityDeleted(EntityDeletedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
 	void moveMenuPointer(MenuActionEvent &event);
+	void moveMenuBack();
 	void selectMenuItem();
 
+	void loadAssets();
+
 	void inGameRender();
+	void introRender();
 
 	void gameOver();
 
@@ -62,11 +61,22 @@ private:
 	RenderWindowShPtr window;
 	IUserInputShPtr userInput;
 	ISpriteFactoryShPtr spriteFactory;
-	sf::Texture texture;
+
+	int width;
+	int height;
+
 	RectShapeList stars;
 	SpriteMap spriteMap;
 	SpriteList hudSprites;
-	sf::Font font;
+	sf::Font hudFont;
+	sf::Text levelText;
+	sf::Text waveText;
+	sf::Text scoreText;
+	sf::Text multiText;
+
+	// Draw grid (for debugging)
+	void drawGrid();
+
 	GameState gameState;
 	
 	std::map<ScreensEnum, IScreenShPtr> screens;

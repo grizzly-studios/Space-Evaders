@@ -2,7 +2,8 @@
 # COMPILE - SFML inlcude dir flag (& C++11 flag for Windows & Linux)
 # LINK - SFML library dir flag & libraries to link against
 # TESTLINK - GoogleTest libraries dir flag & libraries to link against
-include Makefile.config
+
+-include Makefile.config
 
 EXEC = SpaceEvaders
 LIBNAME = libspace-evaders.a

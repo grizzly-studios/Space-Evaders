@@ -9,6 +9,7 @@
 #define	IMENUSCREEN_H
 
 #include "../../IScreen.h"
+#include "MenuItemEnum.hpp"
 
 #define MENU_CAST std::static_pointer_cast<IMenuScreen>(screens[MENU_SCREEN])
 
@@ -22,6 +23,8 @@ public:
 	virtual void setMenuPos(int) = 0;
 	virtual void moveMenuPos(int) = 0;
 	virtual int getMenuPos() = 0;
+	virtual void setSelected(MenuItem) = 0;
+	virtual MenuItem getSelected() = 0;
 	
 	virtual ScreensEnum getType() const = 0;
 };

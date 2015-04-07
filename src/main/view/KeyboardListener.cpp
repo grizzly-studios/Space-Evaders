@@ -29,6 +29,7 @@ void KeyboardListener::update() {
 			pausedUpdate();
 			break;
 		case LOADING:
+		case INTRO:
 			loadingUpdate();
 			break;
 		case MENU:
@@ -43,10 +44,12 @@ void KeyboardListener::inGameUpdate() {
 	std::array<bool, sf::Keyboard::KeyCount> currentState;
 	
 	currentState[sf::Keyboard::Right] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
-	currentState[sf::Keyboard::Down] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
-	currentState[sf::Keyboard::Left] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+	currentState[sf::Keyboard::Down ] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+	currentState[sf::Keyboard::Left ] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
 	
-	if (currentState != previousState) {			//Keys have changed
+	if (currentState[sf::Keyboard::Right] != previousState[sf::Keyboard::Right] ||
+		currentState[sf::Keyboard::Down ] != previousState[sf::Keyboard::Down ] || 
+		currentState[sf::Keyboard::Left ] != previousState[sf::Keyboard::Left ]) {			//Direction Keys have changed
 		
 		ChangePlayerDirectionEvent changePlayerDirectionEvent(NONE);
 		
@@ -89,6 +92,9 @@ void KeyboardListener::inGameUpdate() {
 		
 		eventManager->fireEvent(changePlayerDirectionEvent);
 		
+		previousState[sf::Keyboard::Right] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+		previousState[sf::Keyboard::Down ] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+		previousState[sf::Keyboard::Left ] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P) != previousState[sf::Keyboard::P])  {
@@ -170,6 +176,16 @@ void KeyboardListener::menuUpdate() {
 			resetDirection = true;
 		}
 		previousState[sf::Keyboard::Return] = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) != previousState[sf::Keyboard::Escape]) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			MenuActionEvent menuActionEvent(MenuActionEvent::Action::BACK);
+			eventManager->fireEvent(menuActionEvent);
+		} else {
+			resetDirection = true;
+		}
+		previousState[sf::Keyboard::Escape] = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 	}
 
 	if (resetDirection) {
