@@ -119,11 +119,6 @@ public:
      * @param type Log type
      */
 	void setType(LogType type);
-
-
-
-
-	
 	
 protected:
 	/** Buffer size */
@@ -206,10 +201,6 @@ public:
      * @param type New type
      */
 	void setType(LogType type);
-
-private:
-
-	
 };
 /** Log Handler Singleton */
 class LogHandler {
@@ -233,7 +224,6 @@ public:
 	short getOriginalColor();
 #endif
 
-
 private:
 	/** Constructor */
 	LogHandler();
@@ -246,7 +236,6 @@ private:
 	/* Only in the windows code */
 	short OriginalColors;
 #endif
-
 };
 
 }
