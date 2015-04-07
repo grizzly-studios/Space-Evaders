@@ -17,6 +17,8 @@ Application::Application(int argc, char** argv) {
 	AL = 4;
 	WIDTH = 480; HEIGHT = 704;
 
+	size_t pos;
+
 	for (int i = 1; i < argc; i++) {
 		std::string arg(argv[i]);
 		if (arg == "-f") {
@@ -29,15 +31,33 @@ Application::Application(int argc, char** argv) {
 			i++;
 		} else if (arg == "-r") {
 			std::string resolutionString(argv[i+1]);
-			std::size_t pos = resolutionString.find_first_of("x");
+			pos = resolutionString.find_first_of("x");
 			WIDTH = atoi(resolutionString.substr(0,pos).c_str());
 			HEIGHT = atoi(resolutionString.substr(pos+1).c_str());
 			i++;
-		} else if (arg == "-v"){
-			LogHandler::getInstance()->debugLog.setOutput(CONSOLE);
-			LogHandler::getInstance()->infoLog.setOutput(CONSOLE);
-			LogHandler::getInstance()->warningLog.setOutput(CONSOLE);
-			LogHandler::getInstance()->errorLog.setOutput(CONSOLE);
+		} else if (arg.substr(0, pos = arg.find("=")) == "-v"){
+			if (pos == std::string::npos) {
+				LogHandler::getInstance()->debugLog.setOutput(CONSOLE);
+				LogHandler::getInstance()->infoLog.setOutput(CONSOLE);
+				LogHandler::getInstance()->warningLog.setOutput(CONSOLE);
+				LogHandler::getInstance()->errorLog.setOutput(CONSOLE);
+			} else {
+				std::string extraArgs = arg.substr(pos + 1);
+				for (char& c : extraArgs) {
+					if (c == 'd') {
+						LogHandler::getInstance()->debugLog.setOutput(CONSOLE);
+					}
+					if (c == 'i') {
+						LogHandler::getInstance()->infoLog.setOutput(CONSOLE);
+					}
+					if (c == 'w') {
+						LogHandler::getInstance()->warningLog.setOutput(CONSOLE);
+					}
+					if (c == 'e') {
+						LogHandler::getInstance()->errorLog.setOutput(CONSOLE);
+					}
+				}
+			}
 		} else if(arg == "-vf"){
 			LogHandler::getInstance()->debugLog.setOutput(BOTH);
 			LogHandler::getInstance()->infoLog.setOutput(BOTH);
