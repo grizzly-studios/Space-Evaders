@@ -36,6 +36,7 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
 	advanceUntil = 0;
 	startAdvance = false;
 	advancing = false;
+	numLives = 0;
 }
 
 Logic::~Logic() {
@@ -100,24 +101,24 @@ void Logic::collisionDetection() {
 	EntityList toCheckAgainst = allObjects;
 	//Scan for player collisions
 	EntityList::iterator iter;
-	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
+	for (PlayerShPtr player : allPlayers) {
 		/* NEEDS TO BE REFACTORED LATER */
-		(*it)->tick();
+		player->tick();
 		/* END NEEDS TO BE REFACTORED LATER */
 
-		if((*it)->getState() != ALIVE){
-			DBG << "Player ID " << (*it)->getID() << " is in state " << (*it)->getState() << std::endl;
+		if(player->getState() != PlayerState::ALIVE){
+			DBG << "Player ID " << player->getID() << " is not alive!" << std::endl;
 			continue;
 		}
 
-		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), *it));
+		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), player));
 		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
-			if((*it)->detectCollision(**iter)) {	//Collision
-				DBG << "Player ID " << (*it)->getID() << " has been hit and is DEAD." << std::endl;
+			if(player->detectCollision(**iter)) {	//Collision
+				DBG << "Player ID " << player->getID() << " has been hit and is DEAD." << std::endl;
 				//toBeRemoved.push_back(*it); Do we need this now?
 				numLives--;
-				(*it)->hit();
-				PlayerDestroyedEvent playerDestroyedEvent((*it)->getID());
+				player->hit();
+				PlayerDestroyedEvent playerDestroyedEvent(player->getID());
 				eventManager->fireEvent(playerDestroyedEvent);
 				break;
 			}
@@ -364,16 +365,16 @@ void Logic::gameEnd(){
 
 void Logic::checkEnd(){
 	if(numLives <= 0){
-		bool end = TRUE;
+		bool end = true;
 		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-			if((*it)->getState() != DEAD){
-				end = FALSE;
+			if((*it)->getState() != PlayerState::DEAD){
+				end = false;
 			}
 		}
 
 		if(end){
-			GameStateChangedEvent gameStateChangedEvent2(GAMEOVER);
-			eventManager->fireEvent(gameStateChangedEvent2);
+			GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
+			eventManager->fireEvent(gameStateChangedEvent);
 		}
 	}
 }

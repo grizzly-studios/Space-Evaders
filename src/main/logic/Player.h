@@ -12,10 +12,10 @@
 
 namespace gs {
 
-enum PlayerState {
-	ALIVE, //0
-	HIT,   //1
-	DEAD   //2
+enum class PlayerState {
+	ALIVE,
+	HIT,
+	DEAD
 };
 
 class Player : public MobileEntity {

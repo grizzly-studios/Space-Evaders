@@ -16,7 +16,7 @@ Player::Player() : MobileEntity() {
 	mass = 100000;
 	friction.x = 25.f/1000000.f;
 	friction.y = 25.f/1000000.f;
-	curState = ALIVE;
+	curState = PlayerState::ALIVE;
 	curtick = 0;
 }
 
@@ -58,16 +58,16 @@ PlayerState Player::getState() const {
 }
 
 void Player::hit(){
-	curState = HIT;
+	curState = PlayerState::HIT;
 	hitTick = curtick;
 }
 
 /* NEEDS TO BE REFACTORED LATER */
 void Player::tick(){
 	curtick++;
-	if(curState == HIT){
+	if(curState == PlayerState::HIT){
 		if(curtick >= (hitTick + 25)){
-			curState = DEAD;
+			curState = PlayerState::DEAD;
 		}
 	}
 }

@@ -10,9 +10,6 @@
 
 using namespace gs;
 
-GameOverScreen::GameOverScreen()
-{}
-
 GameOverScreen::GameOverScreen(IStyleManagerShPtr _styleManager, IEventManagerPtr _eventManager) :
 	styleManager(_styleManager),
 	eventManager(_eventManager)
