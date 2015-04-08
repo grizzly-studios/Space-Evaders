@@ -60,6 +60,8 @@ private:
 	int score;
 	int lives;
 	PlayerEffects effects;
+
+	friend class IEffect<Player>;
 };
 
 typedef std::shared_ptr<Player> PlayerShPtr;

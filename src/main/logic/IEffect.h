@@ -19,9 +19,9 @@ public:
 };
 
 template<typename T>
-using IEffectShPtr = std::shared_ptr<IEffect<T>>;
+using IEffectShPtr = std::shared_ptr<IEffect<T> >;
 template<typename T>
-using IEffectList = std::list<IEffectShPtr<T>>;
+using IEffectList = std::list<IEffectShPtr<T> >;
 
 template<class TT>
 class cleaner {
