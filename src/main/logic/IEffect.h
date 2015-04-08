@@ -15,7 +15,7 @@ class IEffect {
 public:
 	virtual ~IEffect();
 	virtual bool hasExpired(double* gameTime)=0;
-	virtual void operator() (T* obj)=0;
+	virtual void operator() (T* obj, double* gameTime)=0;
 };
 
 template<typename T>

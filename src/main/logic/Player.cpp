@@ -70,9 +70,11 @@ void Player::hit(){
 }
 
 void Player::integrate(){
+	//Runs the effects
 	for (PlayerEffect effect : effects) {
-		(*effect)(this);
+		(*effect)(this, gameTime);
 	}
+	//Removes all expired effects
 	clean(effects, gameTime);
 
 	MobileEntity::integrate();
