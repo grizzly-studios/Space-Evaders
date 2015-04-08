@@ -9,7 +9,7 @@
 
 using namespace gs;
 
-Player::Player() : MobileEntity() {
+Player::Player(double *gameTime) : MobileEntity(), tick(gameTime) {
 	//Setting default behaviour for player
 	name = "Player 1";
 	max_speed = 200.f/1000000.f;	// unit: pixel/microseconds
@@ -17,13 +17,12 @@ Player::Player() : MobileEntity() {
 	friction.x = 25.f/1000000.f;
 	friction.y = 25.f/1000000.f;
 	curState = PlayerState::ALIVE;
-	curtick = 0;
 }
 
-Player::Player(const Player& orig) : MobileEntity(orig) {
+Player::Player(const Player& orig, double *gameTime) : MobileEntity(orig), tick(gameTime) {
 }
 
-Player::~Player() {
+Player::~Player()  {
 }
 
 Direction Player::isOutOfBounds(){
@@ -59,16 +58,13 @@ PlayerState Player::getState() const {
 
 void Player::hit(){
 	curState = PlayerState::HIT;
-	hitTick = curtick;
+	hitTick = *tick;
 }
 
-/* NEEDS TO BE REFACTORED LATER */
-void Player::tick(){
-	curtick++;
+void Player::refresh(){
 	if(curState == PlayerState::HIT){
-		if(curtick >= (hitTick + 25)){
+		if(*tick >= (hitTick + 1000)){
 			curState = PlayerState::DEAD;
 		}
 	}
 }
-/* END NEEDS TO BE REFACTORED LATER */

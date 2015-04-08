@@ -55,6 +55,9 @@ void Logic::update() {
 		accumulator += interval;
 		gameTime += elapsed.asMilliseconds();
 
+		for (PlayerShPtr player : allPlayers) {
+			player->refresh();
+		}
 		move();
 		collisionDetection();
 		boundsCheck();
@@ -62,6 +65,7 @@ void Logic::update() {
 		cleanUp();
 		spawn();
 		checkEnd();
+
 	}
 }
 
@@ -102,10 +106,6 @@ void Logic::collisionDetection() {
 	//Scan for player collisions
 	EntityList::iterator iter;
 	for (PlayerShPtr player : allPlayers) {
-		/* NEEDS TO BE REFACTORED LATER */
-		player->tick();
-		/* END NEEDS TO BE REFACTORED LATER */
-
 		if(player->getState() != PlayerState::ALIVE){
 			DBG << "Player ID " << player->getID() << " is not alive!" << std::endl;
 			continue;
@@ -265,7 +265,7 @@ void Logic::removeEntity(unsigned int entityID) {
 
 void Logic::generateLevel() {
 	// Create player
-	allPlayers.push_back(PlayerShPtr(new Player()));
+	allPlayers.push_back(PlayerShPtr(new Player(&gameTime)));
 	const sf::Vector2f playerPos = getTilePosition(6, 17);
 	allPlayers.back()->setGeo(playerPos.x, playerPos.y,
 			GBL::SCREEN_SPRITE_WIDTH, GBL::SCREEN_SPRITE_WIDTH);

@@ -20,8 +20,8 @@ enum class PlayerState {
 
 class Player : public MobileEntity {
 public:
-	Player();
-	Player(const Player& orig);
+	Player(double *gameTime);
+	Player(const Player& orig, double *gameTime);
 	virtual ~Player();
 
 	virtual PlayerState getState() const;
@@ -29,11 +29,11 @@ public:
 	Direction isOutOfBounds();
 
 	void hit();
-	void tick();
+	void refresh();
 private:
 	PlayerState curState;
-	int curtick;
-	int hitTick;
+	double hitTick;
+	double *tick;
 };
 
 typedef std::shared_ptr<Player> PlayerShPtr;
