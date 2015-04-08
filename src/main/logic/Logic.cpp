@@ -55,9 +55,6 @@ void Logic::update() {
 		accumulator += interval;
 		gameTime += elapsed.asMilliseconds();
 
-		for (PlayerShPtr player : allPlayers) {
-			player->refresh();
-		}
 		move();
 		collisionDetection();
 		boundsCheck();
@@ -267,7 +264,7 @@ void Logic::removeEntity(unsigned int entityID) {
 
 void Logic::generateLevel() {
 	// Create player
-	allPlayers.push_back(PlayerShPtr(new Player(eventManager, &gameTime)));
+	allPlayers.push_back(PlayerShPtr(new Player(&gameTime)));
 	const sf::Vector2f playerPos = getTilePosition(6, 17);
 	allPlayers.back()->setGeo(playerPos.x, playerPos.y,
 			GBL::SCREEN_SPRITE_WIDTH, GBL::SCREEN_SPRITE_WIDTH);

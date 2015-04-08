@@ -9,21 +9,25 @@
 
 using namespace gs;
 
-Player::Player(IEventManagerPtr _eventManager, double *gameTime) : MobileEntity(), 
-                                eventManager(_eventManager), tick(gameTime) {
+Player::Player(double *_gameTime) :
+		MobileEntity(),
+		state(PlayerState::ALIVE),
+		gameTime(_gameTime) {
 	//Setting default behaviour for player
 	name = "Player 1";
 	max_speed = 200.f/1000000.f;	// unit: pixel/microseconds
 	mass = 100000;
 	friction.x = 25.f/1000000.f;
 	friction.y = 25.f/1000000.f;
-	curState = PlayerState::ALIVE;
 	lives = 3;
 	score = 0;
-	hitTick = 0;
 }
 
-Player::Player(const Player& orig, double *gameTime) : MobileEntity(orig), tick(gameTime) {
+Player::Player(const Player& orig) : MobileEntity(orig) {
+	score = orig.score;
+	lives = orig.lives;
+	state = orig.state;
+	gameTime = orig.gameTime;
 }
 
 Player::~Player()  {
@@ -57,25 +61,21 @@ Direction Player::isOutOfBounds(){
 } 
 
 PlayerState Player::getState() const {
-	return curState;
+	return state;
 }
 
 void Player::hit(){
 	lifeDown();
-	curState = PlayerState::HIT;
-	hitTick = *tick;
+	//Set up immunity later
 }
 
-void Player::refresh(){
-	if(isHit()){
-		if(*tick >= (hitTick + 1000)){
-			if(lives > 0 ){
-				respawn();
-			} else {
-				curState = PlayerState::DEAD;
-			}
-		}
+void Player::integrate(){
+	for (PlayerEffect effect : effects) {
+		(*effect)(this);
 	}
+	clean(effects, gameTime);
+
+	MobileEntity::integrate();
 }
 
 void Player::lifeUp(){
@@ -111,24 +111,18 @@ void Player::scoreDown(int value){
  	}
 }
 
-int Player::getScore(){
-	return score;
-}
-
 void Player::respawn(){
-	curState = PlayerState::ALIVE;
-	EntityCreatedEvent entityCreatedEvent(getID(), PLAYER_ENTITY, getGeo());
-	eventManager->fireEvent(entityCreatedEvent);
+	state = PlayerState::ALIVE;
 }
 
 bool Player::isAlive(){
-	return curState == PlayerState::ALIVE;
+	return state == PlayerState::ALIVE;
 }
 
 bool Player::isHit(){
-	return curState == PlayerState::HIT;
+	return state == PlayerState::HIT;
 }
 
 bool Player::isDead(){
-	return curState == PlayerState::DEAD; 
+	return state == PlayerState::DEAD;
 }
