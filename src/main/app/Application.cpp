@@ -99,12 +99,18 @@ void Application::init() {
 	IIntroScreenShPtr introScreen(new IntroScreen(styleManager, eventManager));
 	IGameOverScreenShPtr gameOverScreen(new GameOverScreen(styleManager, eventManager));
 	ICreditsScreenShPtr creditsScreen(new CreditsScreen(styleManager));
+
+	/* Menu Screens */
 	view->addScreen(menuScreen);
+	view->addScreen(creditsScreen);
+
+	/* In Game Screens */
 	view->addScreen(pausedScreen);
+	view->addScreen(gameOverScreen);
+	
+	/* Other Screens */
 	view->addScreen(loadingScreen);
 	view->addScreen(introScreen);
-	view->addScreen(gameOverScreen);
-	view->addScreen(creditsScreen);
 
 	/* Now everything view needs has been created we can initialise it */
 	view->init();
@@ -120,7 +126,6 @@ void Application::init() {
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(MENU_ACTION_EVENT, MAKE_EVENT_LISTENER(view));
-	eventManager->addListener(PLAYER_DESTROYED_EVENT, MAKE_EVENT_LISTENER(view));
 
 	INFO << "Ending init" << std::endl;
 	

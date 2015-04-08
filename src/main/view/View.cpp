@@ -147,7 +147,7 @@ void View::inGameRender(){
 
 void View::onEvent(Event& event) {
 	const short eventType = event.getType();
-//	INFO << "Received event: " << event << std::endl;
+	INFO << "Received event: " << event << std::endl;
 
 	switch (eventType) {
 		case GAME_STATE_CHANGED_EVENT: {
@@ -182,11 +182,6 @@ void View::onEvent(Event& event) {
 		case ENTITY_DELETED_EVENT: {
 			EntityDeletedEvent& entityDeletedEvent = (EntityDeletedEvent&) event;
 			onEntityDeleted(entityDeletedEvent);
-			break;
-		}
-		case PLAYER_DESTROYED_EVENT: {
-			PlayerDestroyedEvent& (playerDestroyed) =  (PlayerDestroyedEvent&) event;
-			onPlayerDestroyed(playerDestroyed);
 			break;
 		}
 
@@ -311,26 +306,9 @@ void View::onEntityDeleted(EntityDeletedEvent& event) {
 	spriteMap.erase(event.getEntityId());
 }
 
-/* NEEDS TO BE REFACTORED LATER */
-void View::onPlayerDestroyed(PlayerDestroyedEvent& event) {
-	const short entityId = event.getEntityId();
-	
-
-	// Check if we already have a sprite associated with this id
-	if (spriteMap.find(entityId) == spriteMap.end()) {
-		WARN << "Sprite  with ID "<< entityId << " has already been destroyed" << std::endl;
-		return;
-	}
-
-	INFO << "Entity deleted with id: " << entityId << std::endl;
-
-	spriteMap.erase(event.getEntityId());
-}
-/* END NEEDS TO BE REFACTORED LATER */
-
 void View::onEntityMoved(EntityMovedEvent& event) {
 	const short entityId = event.getEntityId();
-	//INFO << "Entity moved with id: " << entityId << std::endl;
+	INFO << "Entity moved with id: " << entityId << std::endl;
 
 	// Check we have a sprite associated with this id
 	SpriteMap::iterator it = spriteMap.find(entityId);

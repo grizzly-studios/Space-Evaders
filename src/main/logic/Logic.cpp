@@ -115,11 +115,10 @@ void Logic::collisionDetection() {
 		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
 			if(player->detectCollision(**iter)) {	//Collision
 				DBG << "Player ID " << player->getID() << " has been hit and is DEAD." << std::endl;
-				//toBeRemoved.push_back(*it); Do we need this now?
 				numLives--;
 				player->hit();
-				PlayerDestroyedEvent playerDestroyedEvent(player->getID());
-				eventManager->fireEvent(playerDestroyedEvent);
+				EntityDeletedEvent entityDeletedEvent(player->getID());
+				eventManager->fireEvent(entityDeletedEvent);
 				break;
 			}
 		}

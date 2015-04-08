@@ -11,7 +11,6 @@
 #include "../event/EntityDeletedEvent.hpp"
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/GameStateChangedEvent.h"
-#include "../event/PlayerDestroyedEvent.hpp"
 #include "../event/GameStartEvent.h"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
@@ -46,7 +45,6 @@ private:
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
 	void onEntityDeleted(EntityDeletedEvent& event);
-	void onPlayerDestroyed(PlayerDestroyedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
 	void moveMenuPointer(MenuActionEvent &event);
 	void moveMenuBack();
