@@ -175,22 +175,24 @@ void Logic::advancePlayers() {
 	if (startAdvance) {
 		startAdvance = false;
 		advancing = true;
-		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-			sf::Vector2f current = (*it)->getForce();
-			sf::Vector2f advancer(0,0);
-			if (advanceUntil > gameTime && current.y >= 0) {
-				advancer = (*it)->getVector(UP, 50.f/1000000.f);
+		for (PlayerShPtr player : allPlayers) {
+			if(player->isAlive()){
+				sf::Vector2f current = player->getForce();
+				sf::Vector2f advancer(0,0);
+				if (advanceUntil > gameTime && current.y >= 0) {
+					advancer = player->getVector(UP, 50.f/1000000.f);
+				}
+				player->safeSetForce(current + advancer);
 			}
-			(*it)->safeSetForce(current + advancer);
 		}
 	}
 	if (advanceUntil < gameTime && advancing) {
 		advancing = false;
-		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-			sf::Vector2f current = (*it)->getForce();
+		for (PlayerShPtr player : allPlayers) {
+			sf::Vector2f current = player->getForce();
 			if (current.y < 0) {
 				current.y = 0;
-				(*it)->safeSetForce(current);
+				player->safeSetForce(current);
 			}
 		}
 	}
@@ -265,7 +267,7 @@ void Logic::removeEntity(unsigned int entityID) {
 
 void Logic::generateLevel() {
 	// Create player
-	allPlayers.push_back(PlayerShPtr(new Player(&gameTime)));
+	allPlayers.push_back(PlayerShPtr(new Player(eventManager, &gameTime)));
 	const sf::Vector2f playerPos = getTilePosition(6, 17);
 	allPlayers.back()->setGeo(playerPos.x, playerPos.y,
 			GBL::SCREEN_SPRITE_WIDTH, GBL::SCREEN_SPRITE_WIDTH);
