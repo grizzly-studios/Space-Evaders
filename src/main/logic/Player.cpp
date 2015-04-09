@@ -6,12 +6,12 @@
  */
 
 #include "Player.h"
+#include "../util/Logger.h"
 
 using namespace gs;
 
 Player::Player(double *_gameTime) :
 		MobileEntity(),
-		state(PlayerState::ALIVE),
 		gameTime(_gameTime) {
 	//Setting default behaviour for player
 	name = "Player 1";
@@ -21,13 +21,15 @@ Player::Player(double *_gameTime) :
 	friction.y = 25.f/1000000.f;
 	lives = 3;
 	score = 0;
+	effects.push_back(newFrictionMultiplierShPtr(this, _gameTime, 4000, 0.5));
 }
 
 Player::Player(const Player& orig) : MobileEntity(orig) {
 	score = orig.score;
 	lives = orig.lives;
-	state = orig.state;
 	gameTime = orig.gameTime;
+	invincible = orig.invincible;
+	hidden = orig.hidden;
 }
 
 Player::~Player()  {
@@ -60,22 +62,20 @@ Direction Player::isOutOfBounds(){
 	return (MobileEntity::shortToDirection(boundsBreach));
 } 
 
-PlayerState Player::getState() const {
-	return state;
-}
-
 void Player::hit(){
-	lifeDown();
-	//Set up immunity later
+	if (!invincible) {
+		lifeDown();
+		effects.push_back(newInvincibleShPtr(this, gameTime, 3000));
+	}
 }
 
 void Player::integrate(){
 	//Runs the effects
-	for (PlayerEffect effect : effects) {
-		(*effect)(this, gameTime);
+	for (IEffectShPtr effect : effects) {
+		(*effect)();
 	}
 	//Removes all expired effects
-	clean(effects, gameTime);
+	clean(effects);
 
 	MobileEntity::integrate();
 }
@@ -113,18 +113,18 @@ void Player::scoreDown(int value){
  	}
 }
 
-void Player::respawn(){
-	state = PlayerState::ALIVE;
+void Player::setInvincible(bool _invincible) {
+	invincible = _invincible;
 }
 
-bool Player::isAlive(){
-	return state == PlayerState::ALIVE;
+bool Player::isInvincible() {
+	return invincible;
 }
 
-bool Player::isHit(){
-	return state == PlayerState::HIT;
+void Player::setHidden(bool _hidden) {
+	hidden = _hidden;
 }
 
-bool Player::isDead(){
-	return state == PlayerState::DEAD;
+bool Player::isHidden() {
+	return hidden;
 }

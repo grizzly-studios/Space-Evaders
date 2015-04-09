@@ -36,7 +36,6 @@ Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
 	advanceUntil = 0;
 	startAdvance = false;
 	advancing = false;
-	numLives = 0;
 }
 
 Logic::~Logic() {
@@ -103,19 +102,12 @@ void Logic::collisionDetection() {
 	//Scan for player collisions
 	EntityList::iterator iter;
 	for (PlayerShPtr player : allPlayers) {
-		if(player->getState() != PlayerState::ALIVE){
-			DBG << "Player ID " << player->getID() << " is not alive!" << std::endl;
-			continue;
-		}
 
 		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), player));
 		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
 			if(player->detectCollision(**iter)) {	//Collision
-				DBG << "Player ID " << player->getID() << " has been hit and is DEAD." << std::endl;
-				numLives--;
+				DBG << "Player ID " << player->getID() << " has been hit." << std::endl;
 				player->hit();
-				EntityDeletedEvent entityDeletedEvent(player->getID());
-				eventManager->fireEvent(entityDeletedEvent);
 				break;
 			}
 		}
@@ -173,14 +165,12 @@ void Logic::advancePlayers() {
 		startAdvance = false;
 		advancing = true;
 		for (PlayerShPtr player : allPlayers) {
-			if(player->isAlive()){
-				sf::Vector2f current = player->getForce();
-				sf::Vector2f advancer(0,0);
-				if (advanceUntil > gameTime && current.y >= 0) {
-					advancer = player->getVector(UP, 50.f/1000000.f);
-				}
-				player->safeSetForce(current + advancer);
+			sf::Vector2f current = player->getForce();
+			sf::Vector2f advancer(0,0);
+			if (advanceUntil > gameTime && current.y >= 0) {
+				advancer = player->getVector(UP, 50.f/1000000.f);
 			}
+			player->safeSetForce(current + advancer);
 		}
 	}
 	if (advanceUntil < gameTime && advancing) {
@@ -342,8 +332,6 @@ void Logic::startNewGame(){
 	eventManager->fireEvent(gameStateChangedEvent);
 	//Now we need to initalise everything
 	generateLevel();
-	//Setup the players
-	numLives = 1;
 	//Now we're done show the game!
 	GameStateChangedEvent gameStateChangedEvent2(IN_GAME);
 	eventManager->fireEvent(gameStateChangedEvent2);
@@ -362,17 +350,14 @@ void Logic::gameEnd(){
 }
 
 void Logic::checkEnd(){
-	if(numLives <= 0){
-		bool end = true;
-		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-			if((*it)->getState() != PlayerState::DEAD){
-				end = false;
-			}
-		}
 
-		if(end){
-			GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
-			eventManager->fireEvent(gameStateChangedEvent);
-		}
+	int livesLeft = 0;
+	for (PlayerShPtr player : allPlayers) {
+		livesLeft += player->livesLeft();
+	}
+
+	if(livesLeft <= 0){
+		GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
+		eventManager->fireEvent(gameStateChangedEvent);
 	}
 }

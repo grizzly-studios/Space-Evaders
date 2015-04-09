@@ -61,7 +61,6 @@ private:
 
 	int level;
 	int wave;
-	int numLives;
 	double nextBulletSpawn;
 	int bulletInterval;
 	double advanceUntil;

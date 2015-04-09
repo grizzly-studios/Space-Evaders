@@ -9,32 +9,16 @@
 #define	PLAYER_H
 
 #include "MobileEntity.h"
-#include "../util/Logger.h"
-#include "../app/Globals.h"
-#include "../event/EntityCreatedEvent.hpp"
-#include "../event/IEventManager.hpp"
-#include "IEffect.h"
+#include "effects/FrictionMultiplier.h"
+#include "effects/Invincible.h"
 
 namespace gs {
-
-enum class PlayerState {
-	ALIVE,
-	HIT,
-	DEAD
-};
-
-class Player;
-
-typedef IEffectShPtr<Player> PlayerEffect;
-typedef IEffectList<Player> PlayerEffects;
 
 class Player : public MobileEntity {
 public:
 	Player(double *_gameTime);
 	Player(const Player& orig);
 	virtual ~Player();
-
-	virtual PlayerState getState() const;
 
 	Direction isOutOfBounds();
 	virtual void integrate();
@@ -49,19 +33,20 @@ public:
 	void scoreDown(int value);
 	int  getScore() const;
 
-	bool isAlive();
-	bool isHit();
-	bool isDead();
+	void setInvincible(bool _invincible);
+	bool isInvincible();
+	void setHidden(bool hidden);
+	bool isHidden();
 
 	void respawn();
 private:
-	PlayerState state;
 	double *gameTime;
 	int score;
 	int lives;
-	PlayerEffects effects;
+	IEffectList effects;
 
-	friend class IEffect<Player>;
+	bool invincible;
+	bool hidden;
 };
 
 typedef std::shared_ptr<Player> PlayerShPtr;
