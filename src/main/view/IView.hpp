@@ -15,7 +15,7 @@ namespace gs {
 class IView {
 public:
 	virtual void init() = 0;
-	virtual void update() = 0;
+	virtual void update(long int elapsed) = 0;
 	virtual void render() = 0;
 	virtual void addScreen(IScreenShPtr) = 0;
 	

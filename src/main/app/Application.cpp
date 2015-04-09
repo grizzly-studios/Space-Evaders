@@ -73,6 +73,7 @@ Application::Application(int argc, char** argv) {
 
 void Application::init() { 
 	INFO << "Beginning init" << std::endl;
+	clock = new sf::Clock();
 	eventManager = IEventManagerPtr(new EventManager);
 
 	/* Create window */
@@ -146,9 +147,9 @@ void Application::run() {
 				window->close();
 			}
 		}
-
-		view->update();
-		logic->update();
+		sf::Time elapsed = clock->restart();
+		view->update(elapsed.asMicroseconds());
+		logic->update(elapsed.asMicroseconds());
 		view->render();
 	}
 }

@@ -70,7 +70,7 @@ void View::init() {
 
 }
 
-void View::update() {
+void View::update(long int elapsed) {
 	userInput->update();
 }
 
