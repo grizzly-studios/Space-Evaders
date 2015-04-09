@@ -12,3 +12,4 @@ before_install:
   - tar -xjvf SFML-2.1-linux-gcc-64bits.tar.bz2
   - sudo cp -r SFML-2.1/include/SFML /usr/include/.
   - sudo cp -r SFML-2.1/lib/* /usr/lib/.
+  - export CXX=g++-4.7
