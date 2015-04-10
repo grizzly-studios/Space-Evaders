@@ -11,6 +11,7 @@
 namespace GBL {
 	static const int WIDTH = 480;
 	static const int HEIGHT = 640;
+	static const int SHEET_SPRITE_WIDTH = 32;
 	static const int SCREEN_SPRITE_WIDTH = 32;
 
 	static const int TILE_WIDTH = 32;						// tile width & height

@@ -14,11 +14,13 @@ namespace sf {
 
 namespace gs {
 
+typedef std::shared_ptr<sf::Sprite> SpriteShPtr;
+
 class ISpriteFactory {
 public:
 	virtual void init() = 0;
 
-	virtual sf::Sprite createSprite(int colIndex, int rowIndex,
+	virtual SpriteShPtr createSprite(int colIndex, int rowIndex,
 			sf::Vector2i size = sf::Vector2i(SPRITE_SHEET_SPRITE_WIDTH,SPRITE_SHEET_SPRITE_WIDTH)) = 0;
 };
 
