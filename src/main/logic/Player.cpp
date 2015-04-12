@@ -29,7 +29,6 @@ Player::Player(const Player& orig) : MobileEntity(orig) {
 	lives = orig.lives;
 	gameTime = orig.gameTime;
 	invincible = orig.invincible;
-	hidden = orig.hidden;
 }
 
 Player::~Player()  {
@@ -93,7 +92,6 @@ int Player::livesLeft(){
 }
 
 void Player::kill(){
-	hit();
 	lives = 0;
 }
 
@@ -109,7 +107,7 @@ void Player::scoreDown(int value){
  	if(value > 0){
  		score -= value;
  	} else {
-		WARN << "Tried to lower score using zero or negative number (" << value <<"). Use scoreDown instead!" << std::endl;
+		WARN << "Tried to lower score using zero or negative number (" << value <<"). Use scoreUp instead!" << std::endl;
  	}
 }
 
@@ -119,12 +117,4 @@ void Player::setInvincible(bool _invincible) {
 
 bool Player::isInvincible() {
 	return invincible;
-}
-
-void Player::setHidden(bool _hidden) {
-	hidden = _hidden;
-}
-
-bool Player::isHidden() {
-	return hidden;
 }

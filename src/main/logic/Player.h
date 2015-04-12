@@ -35,8 +35,6 @@ public:
 
 	void setInvincible(bool _invincible);
 	bool isInvincible();
-	void setHidden(bool hidden);
-	bool isHidden();
 
 	void respawn();
 private:
@@ -46,7 +44,6 @@ private:
 	IEffectList effects;
 
 	bool invincible;
-	bool hidden;
 };
 
 typedef std::shared_ptr<Player> PlayerShPtr;
