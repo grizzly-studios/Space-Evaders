@@ -10,6 +10,8 @@
 
 #include "IEffect.h"
 
+#include <iostream>
+
 namespace gs {
 
 template<class T>
@@ -18,37 +20,27 @@ private:
 	T* obj;
 	double* gameTime;
 	double expirey;
-	bool first;
-	bool expired;
 	float multiplier;
 public:
 	FrictionMultiplier(T* _obj, double* _gameTime, long int duration, float _multiplier) :
 		obj(_obj),
 		gameTime(_gameTime),
-		first(true),
-		expired(false),
 		multiplier(_multiplier){
 		expirey = *_gameTime + duration;
+		obj->setFriction(obj->getFriction()*multiplier);
 	}
-	virtual ~FrictionMultiplier() {}
+	virtual ~FrictionMultiplier() {
+		obj->setFriction(obj->getFriction()/multiplier);
+	}
 
 	bool hasExpired() {
-		return expired;
+		return expirey < *gameTime;
 	}
-	void operator() () {
-		if (first) {
-			obj->setFriction(obj->getFriction()*multiplier);
-			first = false;
-		}
-		expired = expirey < *gameTime;
-		if (expired) {
-			obj->setFriction(obj->getFriction()/multiplier);
-		}
-	}
+	void operator() () {}
 };
 
 template<class T>
-inline IEffectShPtr newFrictionMultiplierShPtr(T* obj, double* gameTime, long int duration, float multiplier) {
+IEffectShPtr newFrictionMultiplierShPtr(T* obj, double* gameTime, long int duration, float multiplier) {
 	return IEffectShPtr(new FrictionMultiplier<T>(obj, gameTime, duration, multiplier));
 }
 

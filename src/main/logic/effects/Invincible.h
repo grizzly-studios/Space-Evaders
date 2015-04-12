@@ -18,31 +18,21 @@ private:
 	T* obj;
 	double* gameTime;
 	double expirey;
-	bool first;
-	bool expired;
 public:
 	Invincible(T* _obj, double* _gameTime, long int duration) :
 		obj(_obj),
-		gameTime(_gameTime),
-		first(true),
-		expired(false){
+		gameTime(_gameTime){
 		expirey = *_gameTime + duration;
+		obj->setInvincible(true);
 	}
-	virtual ~Invincible() {}
+	virtual ~Invincible() {
+		obj->setInvincible(false);
+	}
 
 	bool hasExpired() {
-		return expired;
+		return expirey < *gameTime;
 	}
-	void operator() () {
-		if (first) {
-			obj->setInvincible(true);
-			first = false;
-		}
-		expired = expirey < *gameTime;
-		if (expired) {
-			obj->setInvincible(false);
-		}
-	}
+	void operator() () {}
 };
 
 template<class T>
