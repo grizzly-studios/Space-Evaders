@@ -44,16 +44,15 @@ Logic::~Logic() {
 	delete clock;
 }
 
-void Logic::update() {
-	sf::Time elapsed = clock->restart();
-	double interval = elapsed.asMicroseconds();
+void Logic::update(long int elapsed) {
+	double interval = elapsed;
 	if (interval > 250000) {
 		interval = 250000;
 	}
 
 	if (gameState == IN_GAME) {
 		accumulator += interval;
-		gameTime += elapsed.asMilliseconds();
+		gameTime += round(float(elapsed)/1000.f);
 
 		move();
 		collisionDetection();

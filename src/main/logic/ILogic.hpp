@@ -7,7 +7,7 @@ namespace gs {
 
 class ILogic {
 public:
-	virtual void update() = 0;
+	virtual void update(long int elapsed) = 0;
 	virtual void generateLevel() = 0;
 };
 

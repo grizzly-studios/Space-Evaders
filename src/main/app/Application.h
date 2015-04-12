@@ -48,6 +48,7 @@ private:
 	unsigned int WIDTH, HEIGHT;
 	sf::ContextSettings settings;
 	RenderWindowShPtr window;
+	sf::Clock *clock;
 };
 
 }

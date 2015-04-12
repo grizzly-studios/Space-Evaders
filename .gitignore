@@ -12,6 +12,7 @@ Makefile.config
 *.exe
 *.o
 *.so
+*.a
 
 # OS generated files #
 ######################
