@@ -39,7 +39,7 @@ class Logic : public ILogic, public IEventListener  {
 public:
 	Logic(IEventManagerPtr _eventManager);
 	~Logic();
-	virtual void update();
+	virtual void update(long int elapsed);
 	virtual void onEvent(Event& event);
 	
 	virtual void generateLevel();

@@ -35,7 +35,7 @@ public:
 	virtual ~View();
 
 	virtual void init();
-	virtual void update();
+	virtual void update(long int elapsed);
 	virtual void render();
 	virtual void onEvent(Event& event);
 	virtual void addScreen(IScreenShPtr);
