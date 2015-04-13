@@ -68,7 +68,6 @@ private:
 	bool advancing;
 	
 	//Subroutines
-	void move();
 	void collisionDetection();
 	void boundsCheck();
 	void advancePlayers();

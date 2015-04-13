@@ -14,12 +14,13 @@
 
 using namespace gs;
 
-double MobileEntity::h = 0;
+long int MobileEntity::h = 0;
 
 MobileEntity::MobileEntity() : 
 Entity(),
 velocity(0,0),
-force(0,0) {
+force(0,0),
+accumulator(0) {
 	using namespace std::placeholders;
 	acceleration = std::bind(DefaultAccelerator, _1, _2, _3, _4, _5, _6, _7);
 }
@@ -33,6 +34,15 @@ MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
 }
 
 MobileEntity::~MobileEntity() {
+}
+
+void MobileEntity::tick(const long int &deltaTime) {
+	accumulator += deltaTime;
+	while(accumulator >= h) {
+		integrate();
+		accumulator -= h;
+	}
+	interpolate(accumulator / h);
 }
 
 float MobileEntity::getMaxSpeed() const {

@@ -53,6 +53,8 @@ public:
 	MobileEntity(const MobileEntity& orig);
 	virtual ~MobileEntity();
 
+	virtual void tick(const long int &deltaTime);
+
 	float getMaxSpeed() const;
 	void setMaxSpeed(float _max_speed);
 	
@@ -108,7 +110,8 @@ protected:
 	sf::Vector2f state[3];
 	std::list<Direction> disabledDirections;
 	
-	static double h;
+	long int accumulator;
+	static long int h;
 	
 	AccelerationFunc acceleration;
 

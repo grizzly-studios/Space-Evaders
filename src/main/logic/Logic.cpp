@@ -44,7 +44,7 @@ Logic::~Logic() {
 }
 
 void Logic::update(long int elapsed) {
-	double interval = elapsed;
+	long int interval = elapsed;
 	if (interval > 250000) {
 		interval = 250000;
 	}
@@ -53,7 +53,14 @@ void Logic::update(long int elapsed) {
 		accumulator += interval;
 		gameTime += round(float(elapsed)/1000.f);
 
-		move();
+		for (MobileEntityShPtr mobileEntity : mobileObjects) {
+			mobileEntity->tick(interval);
+			if (mobileEntity->hasMoved()) {
+				EntityMovedEvent entityMovedEvent(mobileEntity->getID(),mobileEntity->getPosition());
+				eventManager->fireEvent(entityMovedEvent);
+			}
+		}
+
 		collisionDetection();
 		boundsCheck();
 		advancePlayers();
@@ -86,14 +93,6 @@ void Logic::onEvent(Event& event) {
 		    ERR << ss.str() << std::endl;
 			break;
 	}
-}
-
-void Logic::move() {
-	while(accumulator >= MobileEntity::geth()) {
-		integrate();
-		accumulator -= MobileEntity::geth();
-	}
-	interpolate(accumulator);
 }
 
 void Logic::collisionDetection() {
