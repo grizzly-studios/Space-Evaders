@@ -6,15 +6,11 @@
  */
 
 #include "MobileEntity.h"
-#include "../util/Logger.h"
-
-#include <cmath>
-
-#include "../util/Logger.h"
 
 using namespace gs;
 
 long int MobileEntity::h = 0;
+std::list<MobileEntityShPtr> MobileEntity::all;
 
 MobileEntity::MobileEntity() : 
 Entity(),
@@ -34,6 +30,21 @@ MobileEntity::MobileEntity(const MobileEntity& orig) : Entity(orig) {
 }
 
 MobileEntity::~MobileEntity() {
+}
+
+MobileEntityShPtr MobileEntity::create() {
+	all.push_back(MobileEntityShPtr(new MobileEntity()));
+	Entity::all.push_back(all.back());
+	return all.back();
+}
+
+void MobileEntity::destroy(unsigned int _ID) {
+	all.remove_if(cleaner(_ID));
+	Entity::all.remove_if(cleaner(_ID));
+}
+
+void MobileEntity::destroy() {
+	destroy(getID());
 }
 
 void MobileEntity::tick(const long int &deltaTime) {
@@ -175,6 +186,8 @@ void MobileEntity::integrate() {
 }
 
 void MobileEntity::interpolate(const double& alpha) {
+	prevPosition.x = geo.left;
+	prevPosition.y = geo.top;
 	geo.left = state[2].x * alpha + state[1].x * (1. - alpha);
 	geo.top = state[2].y * alpha + state[1].y * (1. - alpha);
 }
@@ -208,6 +221,10 @@ bool MobileEntity::isOutOfBounds(const sf::FloatRect& bounds, sf::Vector2f& offs
 		}
 	}
 	return true;
+}
+
+sf::Vector2f MobileEntity::getPrevPosition() {
+	return prevPosition;
 }
 
 void MobileEntity::setPosition(const sf::Vector2f& pos) {

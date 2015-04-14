@@ -10,6 +10,8 @@
 using namespace gs;
 
 unsigned int Entity::counter = 0;
+std::list<EntityShPtr> Entity::all;
+std::list<EntityShPtr> Entity::toRemove;
 
 Entity::Entity() {
 	geo.left = 0;
@@ -28,6 +30,26 @@ Entity::Entity(const Entity& orig) {
 }
 
 Entity::~Entity() {
+}
+
+EntityShPtr Entity::create() {
+	all.push_back(EntityShPtr(new Entity()));
+	return all.back();
+}
+
+void Entity::destroy(unsigned int _ID) {
+	all.remove_if(cleaner(_ID));
+}
+
+void Entity::destroy() {
+	destroy(getID());
+}
+
+void Entity::clean() {
+	while(!toRemove.empty()) {
+		toRemove.front()->destroy();
+		toRemove.pop_front();
+	}
 }
 
 void Entity::setPosition(const sf::Vector2f &pos) {

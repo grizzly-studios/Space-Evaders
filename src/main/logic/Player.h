@@ -11,8 +11,14 @@
 #include "MobileEntity.h"
 #include "effects/FrictionMultiplier.h"
 #include "effects/Invincible.h"
+#include "effects/Force.h"
 
 namespace gs {
+
+class Player;
+
+typedef std::shared_ptr<Player> PlayerShPtr;
+typedef std::list<PlayerShPtr> PlayerList;
 
 class Player : public MobileEntity {
 public:
@@ -20,14 +26,16 @@ public:
 	Player(const Player& orig);
 	virtual ~Player();
 
-	Direction isOutOfBounds();
-	virtual void integrate();
+	virtual void tick(const long int &deltaTime);
 
 	void hit();
 	void lifeUp();
 	void lifeDown();
 	int livesLeft();
 	void kill();
+
+	virtual void integrate();
+	virtual void advancer(MobileEntityShPtr bullets);
 
 	void scoreUp(int value);
 	void scoreDown(int value);
@@ -37,11 +45,20 @@ public:
 	bool isInvincible();
 
 	void respawn();
+
+	static PlayerShPtr create(double *_gameTime);
+	static void destroy(unsigned int _ID);
+	virtual void destroy();
+	static std::list<PlayerShPtr> all;
+
+	friend class Force<Player>;
+
 private:
 	double *gameTime;
 	int score;
 	int lives;
 	IEffectList effects;
+	sf::Vector2f effectForce;
 
 	bool invincible;
 };

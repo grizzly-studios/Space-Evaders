@@ -30,11 +30,6 @@
 
 namespace gs {
 
-typedef std::list<EntityShPtr> EntityList;
-typedef std::list<MobileEntityShPtr> MobileEntityList;
-typedef std::list<PlayerShPtr> PlayerList;
-typedef std::list<BulletsShPtr> BulletsList;
-
 class Logic : public ILogic, public IEventListener  {
 public:
 	Logic(IEventManagerPtr _eventManager);
@@ -53,10 +48,6 @@ private:
 	RandomNumberGenerator randomNumberGenerator;
 	double accumulator;
 
-	EntityList allObjects;
-	MobileEntityList mobileObjects;
-	PlayerList allPlayers;
-	BulletsList allBullets;
 	EntityList toBeRemoved;
 
 	int level;
@@ -68,8 +59,6 @@ private:
 	bool advancing;
 	
 	//Subroutines
-	void collisionDetection();
-	void boundsCheck();
 	void advancePlayers();
 	void cleanUp();
 	void spawn();
@@ -77,16 +66,12 @@ private:
 	void startNewGame();
 	void gameEnd();
 	void checkEnd();
-
-	void integrate();
-	void interpolate(const double &remainder);
 	
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
 	
 	void addBullets(sf::Vector2f velocity, sf::FloatRect geo);
 	void generateBullets();
-	void removeEntity(unsigned int entityID);
 };
 
 }

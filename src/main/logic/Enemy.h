@@ -12,16 +12,24 @@
 
 namespace gs {
 
+class Enemy;
+
+typedef std::shared_ptr<Enemy> EnemyShPtr;
+typedef std::list<EnemyShPtr> EnemyList;
+
 class Enemy : public Entity {
 public:
 	Enemy();
 	Enemy(const Enemy& orig);
 	virtual ~Enemy();
+
+	static EnemyShPtr create();
+	static void destroy(unsigned int _ID);
+	virtual void destroy();
+	static std::list<EnemyShPtr> all;
 private:
 
 };
-
-typedef std::shared_ptr<Enemy> EnemyShPtr;
 
 }
 
