@@ -30,13 +30,11 @@ sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
 	randomNumberGenerator(time(NULL)), level(1), wave(1) {
 	clock = new sf::Clock();
-	gameTime = 0;
 	accumulator = 0;
 	MobileEntity::seth(12500);
 	advanceUntil = 0;
 	startAdvance = false;
 	advancing = false;
-	numLives = 0;
 }
 
 Logic::~Logic() {
@@ -45,19 +43,33 @@ Logic::~Logic() {
 }
 
 void Logic::update(long int elapsed) {
-	double interval = elapsed;
+	long int interval = elapsed;
 	if (interval > 250000) {
 		interval = 250000;
 	}
 
 	if (gameState == IN_GAME) {
 		accumulator += interval;
-		gameTime += round(float(elapsed)/1000.f);
 
-		move();
-		collisionDetection();
-		boundsCheck();
-		advancePlayers();
+		for (MobileEntityShPtr mobileEntity : MobileEntity::all) {
+			mobileEntity->tick(interval);
+			if (mobileEntity->hasMoved()) {
+				EntityMovedEvent entityMovedEvent(mobileEntity->getID(),mobileEntity->getPosition());
+				eventManager->fireEvent(entityMovedEvent);
+			}
+		}
+
+		for (PlayerShPtr player : Player::all) {
+			for (BulletsShPtr bullets : Bullets::all) {
+				player->advancer(bullets);
+			}
+			if (player->hasBeenHit()) {
+				//fireEvent of player hit to view
+			}
+		}
+
+		nextBulletSpawn -= interval;
+
 		cleanUp();
 		spawn();
 		checkEnd();
@@ -88,213 +100,62 @@ void Logic::onEvent(Event& event) {
 	}
 }
 
-void Logic::move() {
-	while(accumulator >= MobileEntity::geth()) {
-		integrate();
-		accumulator -= MobileEntity::geth();
-	}
-	interpolate(accumulator);
-}
-
-void Logic::collisionDetection() {
-	EntityList toCheckAgainst = allObjects;
-	//Scan for player collisions
-	EntityList::iterator iter;
-	for (PlayerShPtr player : allPlayers) {
-		/* NEEDS TO BE REFACTORED LATER */
-		player->tick();
-		/* END NEEDS TO BE REFACTORED LATER */
-
-		if(player->getState() != PlayerState::ALIVE){
-			DBG << "Player ID " << player->getID() << " is not alive!" << std::endl;
-			continue;
-		}
-
-		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), player));
-		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
-			if(player->detectCollision(**iter)) {	//Collision
-				DBG << "Player ID " << player->getID() << " has been hit and is DEAD." << std::endl;
-				numLives--;
-				player->hit();
-				EntityDeletedEvent entityDeletedEvent(player->getID());
-				eventManager->fireEvent(entityDeletedEvent);
-				break;
-			}
-		}
-	}
-
-	//Scan for bullets collisions
-	for (BulletsList::iterator it = allBullets.begin(); it != allBullets.end(); it++) {
-		toCheckAgainst.erase(std::find(toCheckAgainst.begin(), toCheckAgainst.end(), *it));
-		for (iter = toCheckAgainst.begin(); iter != toCheckAgainst.end(); iter++) {
-			if ((*it)->detectCollision(**iter)) {	//Collision
-				//Fire bullet collision event
-			}
-		}
-	}
-}
-
-void Logic::boundsCheck(){
-	//Scan for player collisions here we just bump them around
-	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		sf::Vector2f offset;
-		if ((*it)->MobileEntity::isOutOfBounds(sf::FloatRect(
-			GBL::SCREEN_SPRITE_WIDTH,
-			GBL::SCREEN_SPRITE_WIDTH,
-			GBL::WIDTH - (GBL::SCREEN_SPRITE_WIDTH * 2),
-			GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH * 2)),offset)) {
-			if (offset.x > 0) {
-				(*it)->disableDir(RIGHT);
-			} else if (offset.x < 0) {
-				(*it)->disableDir(LEFT);
-			} else if (offset.y > 0) {
-				(*it)->disableDir(DOWN);
-			}
-		} else {
-			(*it)->enableAllDir();
-		}
-	}
-
-	//Scan for bullets gone off screen (to remove)
-	for (BulletsList::iterator it = allBullets.begin(); it != allBullets.end(); it++) {
-		Direction oOB = (*it)->isOutOfBounds();
-		if(oOB == DOWN){
-			DBG << "Bullet ID " << (*it)->getID() << " is out of bounds. Adding to remove list." << std::endl;
-			toBeRemoved.push_back(*it);
-			if (advanceUntil < gameTime) {
-				advanceUntil = gameTime;
-				startAdvance = true;
-			}
-			advanceUntil += 30;
-		}
-	}
-}
-
-void Logic::advancePlayers() {
-	if (startAdvance) {
-		startAdvance = false;
-		advancing = true;
-		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-			sf::Vector2f current = (*it)->getForce();
-			sf::Vector2f advancer(0,0);
-			if (advanceUntil > gameTime && current.y >= 0) {
-				advancer = (*it)->getVector(UP, 50.f/1000000.f);
-			}
-			(*it)->safeSetForce(current + advancer);
-		}
-	}
-	if (advanceUntil < gameTime && advancing) {
-		advancing = false;
-		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-			sf::Vector2f current = (*it)->getForce();
-			if (current.y < 0) {
-				current.y = 0;
-				(*it)->safeSetForce(current);
-			}
-		}
-	}
-}
-
 void Logic::cleanUp() {
-	for (EntityList::iterator it = toBeRemoved.begin(); it != toBeRemoved.end(); it++) {
-		DBG << "Erasing entity ID: " << (*it)->getID() << std::endl;
-		removeEntity((*it)->getID());
+	for (EntityShPtr entity : Entity::toRemove) {
+		EntityDeletedEvent entityDeletedEvent(entity->getID());
+		eventManager->fireEvent(entityDeletedEvent);
 	}
-	toBeRemoved.clear();
+	Entity::clean();
 }
 
 void Logic::spawn() {
-	if (gameTime > nextBulletSpawn) {
-		nextBulletSpawn += bulletInterval;
+	if (nextBulletSpawn < 0) {
+		nextBulletSpawn = bulletInterval;
 		generateBullets();
 	}
 }
 
-void Logic::integrate() {
-	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
-		(*it)->integrate();
-	}
-}
-
-void Logic::interpolate(const double &remainder) {
-	const double alpha  = remainder / MobileEntity::geth();
-	for (MobileEntityList::iterator it = mobileObjects.begin(); it != mobileObjects.end(); it++) {
-		(*it)->interpolate(alpha);
-		if ((*it)->hasMoved()) {
-			EntityMovedEvent entityMovedEvent((*it)->getID(),(*it)->getPosition());
-			eventManager->fireEvent(entityMovedEvent);
-		}
-	}
-}
-
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
-	for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-		sf::Vector2f engines = (*it)->getVector(event.getDirection(), 50.f/1000000.f);
-		sf::Vector2f advancer(0,0);
-		if (advanceUntil > gameTime) {
-			advancer = (*it)->getVector(UP, 50.f/1000000.f);
-		}
-		(*it)->safeSetForce(engines + advancer);
+	for (PlayerShPtr player : Player::all) {
+		sf::Vector2f engines = player->getVector(event.getDirection(), 50.f/1000000.f);
+		player->safeSetForce(engines);
 	}
 }
 
 void Logic::addBullets(sf::Vector2f velocity, sf::FloatRect geo) {
-	allBullets.push_back(BulletsShPtr(new Bullets(velocity)));
-	allBullets.back()->setGeo(geo);
-	mobileObjects.push_back(allBullets.back());
-	allObjects.push_back(allBullets.back());
-}
-
-void Logic::removeEntity(unsigned int entityID) {
-	class cleaner {
-		unsigned int ID;
-	public:
-		cleaner(unsigned int _ID) : ID(_ID) {}
-		bool operator() (const EntityShPtr& value) {
-			return value->getID() == ID;
-		}
-	};
-	allObjects.remove_if(cleaner(entityID));
-	mobileObjects.remove_if(cleaner(entityID));
-	allPlayers.remove_if(cleaner(entityID));
-	allBullets.remove_if(cleaner(entityID));
-	EntityDeletedEvent entityDeletedEvent(entityID);
-	eventManager->fireEvent(entityDeletedEvent);
+	Bullets::create(velocity)->setGeo(geo);
 }
 
 void Logic::generateLevel() {
 	// Create player
-	allPlayers.push_back(PlayerShPtr(new Player()));
+	PlayerShPtr player = Player::create();
 	const sf::Vector2f playerPos = getTilePosition(6, 17);
-	allPlayers.back()->setGeo(playerPos.x, playerPos.y,
+	player->setGeo(playerPos.x, playerPos.y,
 			GBL::SCREEN_SPRITE_WIDTH, GBL::SCREEN_SPRITE_WIDTH);
-	mobileObjects.push_back(allPlayers.back());
-	allObjects.push_back(allPlayers.back());
 
 	EntityCreatedEvent entityCreatedEvent(
-		allPlayers.back()->getID(),
+		player->getID(),
 		PLAYER_ENTITY,
-		allPlayers.back()->getGeo());
+		player->getGeo());
 	eventManager->fireEvent(entityCreatedEvent);
 
 	// Create enemies
 	for (int i=0; i<GBL::NUMBER_ENEMIES; i++) {
 		const sf::Vector2f enemyPos = getTilePosition(i, 1);
-		allObjects.push_back(EnemyShPtr(new Enemy()));
-		allObjects.back()->setGeo(enemyPos.x, enemyPos.y, GBL::TILE_WIDTH, GBL::TILE_WIDTH);
-
+		EnemyShPtr enemy = Enemy::create();
+		enemy->setGeo(enemyPos.x, enemyPos.y, GBL::TILE_WIDTH, GBL::TILE_WIDTH);
 		EntityCreatedEvent entityCreatedEvent2(
-			allObjects.back()->getID(),
+			enemy->getID(),
 			ENEMY_ENTITY,
-			allObjects.back()->getGeo());
+			enemy->getGeo());
 		eventManager->fireEvent(entityCreatedEvent2);
 	}
 
 	INFO << "Generated level" << std::endl;
 
 	generateBullets();
-	bulletInterval = 3000;
-	nextBulletSpawn = gameTime + bulletInterval;
+	bulletInterval = 3000000;
+	nextBulletSpawn =  bulletInterval;
 }
 
 void Logic::generateBullets() {
@@ -317,15 +178,12 @@ void Logic::generateBullets() {
 	for (int enemyIndex : firingEnemyIndices) {
 		// Position of the tile containing the bullet
 		const sf::Vector2f bulletTilePos = getTilePosition(enemyIndex, 2);
-		allBullets.push_back(BulletsShPtr(new Bullets(sf::Vector2f(0, 0.0001))));
-		allBullets.back()->setGeo(bulletTilePos.x + 12, bulletTilePos.y + 10, GBL::TILE_WIDTH - 24, GBL::TILE_WIDTH - 20);
-		mobileObjects.push_back(allBullets.back());
-		allObjects.push_back(allBullets.back());
-
+		BulletsShPtr bullets = Bullets::create(sf::Vector2f(0, 0.0001));
+		bullets->setGeo(bulletTilePos.x + 12, bulletTilePos.y + 10, GBL::TILE_WIDTH - 24, GBL::TILE_WIDTH - 20);
 		EntityCreatedEvent entityCreatedEvent(
-			allObjects.back()->getID(),
+			bullets->getID(),
 			BULLET_ENTITY,
-			allObjects.back()->getGeo());
+			bullets->getGeo());
 		eventManager->fireEvent(entityCreatedEvent);
 	}
 }
@@ -342,8 +200,6 @@ void Logic::startNewGame(){
 	eventManager->fireEvent(gameStateChangedEvent);
 	//Now we need to initalise everything
 	generateLevel();
-	//Setup the players
-	numLives = 1;
 	//Now we're done show the game!
 	GameStateChangedEvent gameStateChangedEvent2(IN_GAME);
 	eventManager->fireEvent(gameStateChangedEvent2);
@@ -355,24 +211,21 @@ void Logic::gameEnd(){
 	GameStateChangedEvent gameStateChangedEvent(MENU);
 	eventManager->fireEvent(gameStateChangedEvent);
 
-	allPlayers.clear();
-	allBullets.clear();
-	mobileObjects.clear();
-	allObjects.clear();
+	Player::all.clear();
+	Bullets::all.clear();
+	MobileEntity::all.clear();
+	Entity::all.clear();
 }
 
 void Logic::checkEnd(){
-	if(numLives <= 0){
-		bool end = true;
-		for (PlayerList::iterator it = allPlayers.begin(); it != allPlayers.end(); it++) {
-			if((*it)->getState() != PlayerState::DEAD){
-				end = false;
-			}
-		}
 
-		if(end){
-			GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
-			eventManager->fireEvent(gameStateChangedEvent);
-		}
+	int livesLeft = 0;
+	for (PlayerShPtr player : Player::all) {
+		livesLeft += player->livesLeft();
+	}
+
+	if(livesLeft <= 0){
+		GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
+		eventManager->fireEvent(gameStateChangedEvent);
 	}
 }

@@ -10,15 +10,22 @@
 
 #include <string>
 #include <memory>
+#include <list>
 
 #include <SFML/Graphics/Rect.hpp>
 
+#include "../util/Logger.h"
+
 namespace gs {
+
+class Entity;
+typedef std::shared_ptr<Entity> EntityShPtr;
+typedef std::list<EntityShPtr> EntityList;
 
 /**
  * Base class for logical objects within the game.
  */
-class Entity {
+class Entity : public std::enable_shared_from_this<Entity> {
 public:
 	/**
 	 * Default constructor
@@ -66,6 +73,13 @@ public:
 	std::string getName() const;
 	unsigned int getID() const;
 
+	static EntityShPtr create();
+	static void destroy(unsigned int _ID);
+	virtual void destroy();
+	static void clean();
+	static std::list<EntityShPtr> all;
+	static std::list<EntityShPtr> toRemove;
+
 protected:
 	/**
 	 * Position and dimensions of the entity on the screen.
@@ -87,7 +101,16 @@ private:
 	unsigned int ID;
 };
 
-typedef std::shared_ptr<Entity> EntityShPtr;
+class cleaner {
+	unsigned int ID;
+public:
+	cleaner(unsigned int _ID) {
+		ID = _ID;
+	}
+	bool operator()(EntityShPtr entity) {
+		return entity->getID() == ID;
+	}
+};
 	
 }
 

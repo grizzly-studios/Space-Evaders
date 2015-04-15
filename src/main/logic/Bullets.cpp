@@ -9,6 +9,8 @@
 
 using namespace gs;
 
+std::list<BulletsShPtr> Bullets::all;
+
 Bullets::Bullets() : MobileEntity() {
 	//Setting default behaviour for bullets
 	name = "Bullets";
@@ -31,6 +33,42 @@ Bullets::Bullets(const Bullets& orig) : MobileEntity(orig) {
 }
 
 Bullets::~Bullets() {
+	DBG << "Bullets de-constructed" << std::endl;
+}
+
+BulletsShPtr Bullets::create() {
+	all.push_back(BulletsShPtr(new Bullets()));
+	MobileEntity::all.push_back(all.back());
+	Entity::all.push_back(all.back());
+	return all.back();
+}
+
+BulletsShPtr Bullets::create(sf::Vector2f velocity) {
+	all.push_back(BulletsShPtr(new Bullets(velocity)));
+	MobileEntity::all.push_back(all.back());
+	Entity::all.push_back(all.back());
+	return all.back();
+}
+
+void Bullets::tick(const long int &deltaTime) {
+
+	MobileEntity::tick(deltaTime);
+
+	Direction oOB = isOutOfBounds();
+	if(oOB == DOWN){
+		DBG << "Bullet ID " << getID() << " is out of bounds. Adding to remove list." << std::endl;
+		toRemove.push_back(shared_from_this());
+	}
+}
+
+void Bullets::destroy(unsigned int _ID) {
+	all.remove_if(cleaner(_ID));
+	MobileEntity::all.remove_if(cleaner(_ID));
+	Entity::all.remove_if(cleaner(_ID));
+}
+
+void Bullets::destroy() {
+	destroy(getID());
 }
 
 Direction Bullets::isOutOfBounds(){
