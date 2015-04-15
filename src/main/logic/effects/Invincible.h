@@ -16,13 +16,11 @@ template<class T>
 class Invincible: public IEffect {
 private:
 	T* obj;
-	double* gameTime;
-	double expirey;
+	long int remaining;
 public:
-	Invincible(T* _obj, double* _gameTime, long int duration) :
-		obj(_obj),
-		gameTime(_gameTime){
-		expirey = *_gameTime + duration;
+	Invincible(T* _obj, long int duration) :
+		obj(_obj){
+		remaining =  duration;
 		obj->setInvincible(true);
 	}
 	virtual ~Invincible() {
@@ -30,14 +28,16 @@ public:
 	}
 
 	bool hasExpired() {
-		return expirey < *gameTime;
+		return remaining < 0;
 	}
-	void operator() () {}
+	void operator() (const long int &deltaTime) {
+		remaining -= deltaTime;
+	}
 };
 
 template<class T>
-inline IEffectShPtr newInvincibleShPtr(T* obj, double* gameTime, long int duration) {
-	return IEffectShPtr(new Invincible<T>(obj, gameTime, duration));
+inline IEffectShPtr newInvincibleShPtr(T* obj, long int duration) {
+	return IEffectShPtr(new Invincible<T>(obj, duration));
 }
 
 } /* namespace gs */

@@ -18,15 +18,13 @@ template<class T>
 class Force: public IEffect {
 private:
 	T* obj;
-	double* gameTime;
-	double expirey;
+	long int remaining;
 	sf::Vector2f force;
 public:
-	Force(T* _obj, double* _gameTime, long int duration, sf::Vector2f _force) :
+	Force(T* _obj, long int duration, sf::Vector2f _force) :
 		obj(_obj),
-		gameTime(_gameTime),
 		force(_force){
-		expirey = *_gameTime + duration;
+		remaining = duration;
 		obj->effectForce = obj->effectForce + force;
 	}
 	virtual ~Force() {
@@ -34,14 +32,16 @@ public:
 	}
 
 	bool hasExpired() {
-		return expirey < *gameTime;
+		return remaining < 0;
 	}
-	void operator() () {}
+	void operator() (const long int &deltaTime) {
+		remaining -= deltaTime;
+	}
 };
 
 template<class T>
-IEffectShPtr newForceShPtr(T* obj, double* gameTime, long int duration, sf::Vector2f force) {
-	return IEffectShPtr(new Force<T>(obj, gameTime, duration, force));
+IEffectShPtr newForceShPtr(T* obj, long int duration, sf::Vector2f force) {
+	return IEffectShPtr(new Force<T>(obj, duration, force));
 }
 
 } /* namespace gs */

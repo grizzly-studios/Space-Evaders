@@ -18,15 +18,13 @@ template<class T>
 class FrictionMultiplier: public IEffect {
 private:
 	T* obj;
-	double* gameTime;
-	double expirey;
+	long int remaining;
 	float multiplier;
 public:
-	FrictionMultiplier(T* _obj, double* _gameTime, long int duration, float _multiplier) :
+	FrictionMultiplier(T* _obj, long int duration, float _multiplier) :
 		obj(_obj),
-		gameTime(_gameTime),
 		multiplier(_multiplier){
-		expirey = *_gameTime + duration;
+		remaining = duration;
 		obj->setFriction(obj->getFriction()*multiplier);
 	}
 	virtual ~FrictionMultiplier() {
@@ -34,14 +32,16 @@ public:
 	}
 
 	bool hasExpired() {
-		return expirey < *gameTime;
+		return remaining < 0;
 	}
-	void operator() () {}
+	void operator() (const long int &deltaTime) {
+		remaining -= deltaTime;
+	}
 };
 
 template<class T>
-IEffectShPtr newFrictionMultiplierShPtr(T* obj, double* gameTime, long int duration, float multiplier) {
-	return IEffectShPtr(new FrictionMultiplier<T>(obj, gameTime, duration, multiplier));
+IEffectShPtr newFrictionMultiplierShPtr(T* obj, long int duration, float multiplier) {
+	return IEffectShPtr(new FrictionMultiplier<T>(obj, duration, multiplier));
 }
 
 } /* namespace gs */

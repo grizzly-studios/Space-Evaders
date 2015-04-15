@@ -44,7 +44,6 @@ private:
 	GameState gameState;
 	
 	sf::Clock *clock;
-	double gameTime;
 	RandomNumberGenerator randomNumberGenerator;
 	double accumulator;
 

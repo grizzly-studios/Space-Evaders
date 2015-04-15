@@ -14,7 +14,7 @@ class IEffect {
 public:
 	virtual ~IEffect() {}
 	virtual bool hasExpired()=0;
-	virtual void operator() ()=0;
+	virtual void operator() (const long int &deltaTime)=0;
 };
 
 typedef std::shared_ptr<IEffect> IEffectShPtr;

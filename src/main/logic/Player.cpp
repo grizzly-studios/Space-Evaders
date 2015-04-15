@@ -11,9 +11,8 @@ using namespace gs;
 
 std::list<PlayerShPtr> Player::all;
 
-Player::Player(double *_gameTime) :
-		MobileEntity(),
-		gameTime(_gameTime) {
+Player::Player() :
+		MobileEntity() {
 	//Setting default behaviour for player
 	name = "Player 1";
 	max_speed = 200.f/1000000.f;	// unit: pixel/microseconds
@@ -22,15 +21,15 @@ Player::Player(double *_gameTime) :
 	friction.y = 25.f/1000000.f;
 	lives = 3;
 	score = 0;
-	effects.push_back(newFrictionMultiplierShPtr(this, _gameTime, 4000, 0.5));
+	effects.push_back(newFrictionMultiplierShPtr(this, 4000000, 0.5));
 	effectForce = sf::Vector2f(0,0);
 	beenHit = false;
+	invincible = false;
 }
 
 Player::Player(const Player& orig) : MobileEntity(orig) {
 	score = orig.score;
 	lives = orig.lives;
-	gameTime = orig.gameTime;
 	invincible = orig.invincible;
 }
 
@@ -38,8 +37,8 @@ Player::~Player()  {
 	DBG << "Player destroyed:" << getID() << std::endl;
 }
 
-PlayerShPtr Player::create(double *_gameTime) {
-	all.push_back(PlayerShPtr(new Player(_gameTime)));
+PlayerShPtr Player::create() {
+	all.push_back(PlayerShPtr(new Player()));
 	MobileEntity::all.push_back(all.back());
 	Entity::all.push_back(all.back());
 	return all.back();
@@ -59,7 +58,7 @@ void Player::tick(const long int &deltaTime) {
 
 	//Runs the effects
 	for (IEffectShPtr effect : effects) {
-		(*effect)();
+		(*effect)(deltaTime);
 	}
 	//Removes all expired effects
 	::clean(effects);
@@ -69,7 +68,7 @@ void Player::tick(const long int &deltaTime) {
 	for (EntityShPtr entity : Entity::all) {
 		if (entity->getName() == "Bullets") {
 			if (detectCollision(*entity)) {
-				DBG << "Player ID " << getID() << " has been hit." << std::endl;
+				DBG << "Player ID " << getID() << " has been hit. Lives had: " << lives << std::endl;
 				hit();
 				toRemove.push_back(entity);
 				break;
@@ -99,7 +98,7 @@ void Player::hit(){
 	if (!invincible) {
 		lifeDown();
 		beenHit = true;
-		effects.push_back(newInvincibleShPtr(this, gameTime, 3000));
+		effects.push_back(newInvincibleShPtr(this, 3000000));
 	}
 }
 
@@ -119,7 +118,7 @@ void Player::integrate() {
 
 void Player::advancer(MobileEntityShPtr bullets) {
 	if (prevPosition.y >= bullets->getPrevPosition().y && geo.top < bullets->getPosition().y) {
-		effects.push_back(newForceShPtr(this, gameTime, 300, sf::Vector2f(0,-0.000005f)));
+		effects.push_back(newForceShPtr(this, 300000, sf::Vector2f(0,-0.000005f)));
 	}
 }
 

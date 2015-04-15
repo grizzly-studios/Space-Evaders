@@ -22,7 +22,7 @@ typedef std::list<PlayerShPtr> PlayerList;
 
 class Player : public MobileEntity {
 public:
-	Player(double *_gameTime);
+	Player();
 	Player(const Player& orig);
 	virtual ~Player();
 
@@ -47,7 +47,7 @@ public:
 
 	void respawn();
 
-	static PlayerShPtr create(double *_gameTime);
+	static PlayerShPtr create();
 	static void destroy(unsigned int _ID);
 	virtual void destroy();
 	static std::list<PlayerShPtr> all;
@@ -55,7 +55,6 @@ public:
 	friend class Force<Player>;
 
 private:
-	double *gameTime;
 	int score;
 	int lives;
 	IEffectList effects;

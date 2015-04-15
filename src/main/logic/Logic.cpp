@@ -30,7 +30,6 @@ sf::Vector2f getTilePosition(int colIndex, int rowIndex) {
 Logic::Logic(IEventManagerPtr _eventManager) : eventManager(_eventManager),
 	randomNumberGenerator(time(NULL)), level(1), wave(1) {
 	clock = new sf::Clock();
-	gameTime = 0;
 	accumulator = 0;
 	MobileEntity::seth(12500);
 	advanceUntil = 0;
@@ -51,7 +50,6 @@ void Logic::update(long int elapsed) {
 
 	if (gameState == IN_GAME) {
 		accumulator += interval;
-		gameTime += round(float(elapsed)/1000.f);
 
 		for (MobileEntityShPtr mobileEntity : MobileEntity::all) {
 			mobileEntity->tick(interval);
@@ -69,6 +67,8 @@ void Logic::update(long int elapsed) {
 				//fireEvent of player hit to view
 			}
 		}
+
+		nextBulletSpawn -= interval;
 
 		cleanUp();
 		spawn();
@@ -109,8 +109,8 @@ void Logic::cleanUp() {
 }
 
 void Logic::spawn() {
-	if (gameTime > nextBulletSpawn) {
-		nextBulletSpawn += bulletInterval;
+	if (nextBulletSpawn < 0) {
+		nextBulletSpawn = bulletInterval;
 		generateBullets();
 	}
 }
@@ -118,11 +118,7 @@ void Logic::spawn() {
 void Logic::onChangePlayerDirection(ChangePlayerDirectionEvent& event) {
 	for (PlayerShPtr player : Player::all) {
 		sf::Vector2f engines = player->getVector(event.getDirection(), 50.f/1000000.f);
-		sf::Vector2f advancer(0,0);
-		if (advanceUntil > gameTime) {
-			advancer = player->getVector(UP, 50.f/1000000.f);
-		}
-		player->safeSetForce(engines + advancer);
+		player->safeSetForce(engines);
 	}
 }
 
@@ -132,7 +128,7 @@ void Logic::addBullets(sf::Vector2f velocity, sf::FloatRect geo) {
 
 void Logic::generateLevel() {
 	// Create player
-	PlayerShPtr player = Player::create(&gameTime);
+	PlayerShPtr player = Player::create();
 	const sf::Vector2f playerPos = getTilePosition(6, 17);
 	player->setGeo(playerPos.x, playerPos.y,
 			GBL::SCREEN_SPRITE_WIDTH, GBL::SCREEN_SPRITE_WIDTH);
@@ -158,8 +154,8 @@ void Logic::generateLevel() {
 	INFO << "Generated level" << std::endl;
 
 	generateBullets();
-	bulletInterval = 3000;
-	nextBulletSpawn = gameTime + bulletInterval;
+	bulletInterval = 3000000;
+	nextBulletSpawn =  bulletInterval;
 }
 
 void Logic::generateBullets() {
