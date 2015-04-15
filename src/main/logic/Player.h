@@ -33,6 +33,7 @@ public:
 	void lifeDown();
 	int livesLeft();
 	void kill();
+	bool hasBeenHit(bool reset = true);
 
 	virtual void integrate();
 	virtual void advancer(MobileEntityShPtr bullets);
@@ -59,6 +60,7 @@ private:
 	int lives;
 	IEffectList effects;
 	sf::Vector2f effectForce;
+	bool beenHit;
 
 	bool invincible;
 };

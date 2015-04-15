@@ -24,6 +24,7 @@ Player::Player(double *_gameTime) :
 	score = 0;
 	effects.push_back(newFrictionMultiplierShPtr(this, _gameTime, 4000, 0.5));
 	effectForce = sf::Vector2f(0,0);
+	beenHit = false;
 }
 
 Player::Player(const Player& orig) : MobileEntity(orig) {
@@ -66,10 +67,11 @@ void Player::tick(const long int &deltaTime) {
 	MobileEntity::tick(deltaTime);
 
 	for (EntityShPtr entity : Entity::all) {
-		if (entity.get() != this) {
+		if (entity->getName() == "Bullets") {
 			if (detectCollision(*entity)) {
 				DBG << "Player ID " << getID() << " has been hit." << std::endl;
 				hit();
+				toRemove.push_back(entity);
 				break;
 			}
 		}
@@ -96,6 +98,7 @@ void Player::tick(const long int &deltaTime) {
 void Player::hit(){
 	if (!invincible) {
 		lifeDown();
+		beenHit = true;
 		effects.push_back(newInvincibleShPtr(this, gameTime, 3000));
 	}
 }
@@ -134,6 +137,14 @@ int Player::livesLeft(){
 
 void Player::kill(){
 	lives = 0;
+}
+
+bool Player::hasBeenHit(bool reset) {
+	bool output = beenHit;
+	if (reset) {
+		beenHit = false;
+	}
+	return output;
 }
 
 void Player::scoreUp(int value){

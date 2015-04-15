@@ -65,6 +65,9 @@ void Logic::update(long int elapsed) {
 			for (BulletsShPtr bullets : Bullets::all) {
 				player->advancer(bullets);
 			}
+			if (player->hasBeenHit()) {
+				//fireEvent of player hit to view
+			}
 		}
 
 		cleanUp();
