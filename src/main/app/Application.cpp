@@ -131,7 +131,7 @@ void Application::init() {
 	INFO << "Ending init" << std::endl;
 	
 	/* Now we're done loading. Show the intro */
-	GameStateChangedEvent gameStateChangedEvent(INTRO);
+	GameStateChangedEvent gameStateChangedEvent(MENU);
 	eventManager->fireEvent(gameStateChangedEvent);
 }
 

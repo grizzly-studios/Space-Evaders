@@ -26,6 +26,7 @@
 #include "../../../event/GameStateChangedEvent.h"
 #include "../../../event/IEventManager.hpp"
 #include "ICreditsScreen.h"
+#include "../../../app/Globals.h"
 
 
 namespace gs {
@@ -43,6 +44,8 @@ public:
 	
 private:
 	IStyleManagerShPtr styleManager;
+	sf::Texture logoTex;
+	sf::Image logoImg;
 };
 
 }
