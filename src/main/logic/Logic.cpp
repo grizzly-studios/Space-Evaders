@@ -64,6 +64,9 @@ void Logic::update(long int elapsed) {
 				player->advancer(bullets);
 			}
 			if (player->hasBeenHit()) {
+				if(player->livesLeft() <= 0){
+					Entity::toRemove.push_back(player);
+				}
 				//fireEvent of player hit to view
 			}
 		}
@@ -72,7 +75,7 @@ void Logic::update(long int elapsed) {
 
 		cleanUp();
 		spawn();
-		checkEnd();
+		checkEnd(interval);
 	}
 }
 
@@ -156,6 +159,7 @@ void Logic::generateLevel() {
 	generateBullets();
 	bulletInterval = 3000000;
 	nextBulletSpawn =  bulletInterval;
+	endCount = 0;
 }
 
 void Logic::generateBullets() {
@@ -217,7 +221,7 @@ void Logic::gameEnd(){
 	Entity::all.clear();
 }
 
-void Logic::checkEnd(){
+void Logic::checkEnd(long int interval){
 
 	int livesLeft = 0;
 	for (PlayerShPtr player : Player::all) {
@@ -225,7 +229,12 @@ void Logic::checkEnd(){
 	}
 
 	if(livesLeft <= 0){
-		GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
-		eventManager->fireEvent(gameStateChangedEvent);
+		WARN << "endcount is " << endCount << std::endl;
+		if(endCount > 1000000){ /* Delay end for a bit */
+			GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
+			eventManager->fireEvent(gameStateChangedEvent);
+		}
+		WARN << "adding " << interval << " to endCount" << std::endl;
+		endCount += interval;
 	}
 }

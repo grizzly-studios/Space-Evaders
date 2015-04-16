@@ -56,6 +56,8 @@ private:
 	double advanceUntil;
 	bool startAdvance;
 	bool advancing;
+
+	int endCount;
 	
 	//Subroutines
 	void advancePlayers();
@@ -64,7 +66,7 @@ private:
 
 	void startNewGame();
 	void gameEnd();
-	void checkEnd();
+	void checkEnd(long int interval);
 	
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
