@@ -11,12 +11,13 @@
 namespace gs {
 
 enum GameState {
-	IN_GAME, //0
-	PAUSED,  //1
-	LOADING, //2
-	MENU,    //3
-	INTRO,   //4
-	GAMEOVER //5
+	IN_GAME,  //0
+	PAUSED,   //1
+	LOADING,  //2
+	MENU,     //3
+	INTRO,    //4
+	GAMEOVER, //5
+	GAMEWON   //6
 };
 
 }
