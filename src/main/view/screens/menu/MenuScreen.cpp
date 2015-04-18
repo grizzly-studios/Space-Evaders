@@ -56,14 +56,10 @@ ScreensEnum MenuScreen::getType() const {
 }
 
 void MenuScreen::render(RenderWindowShPtr window) {
-	//Don't know why this bit is needed ---
-	sf::Font font;
-	font = styleManager->getFont();
-	// --- Don't know why this bit is needed 
 	sf::Text text;
 	sf::RectangleShape textBorder;
 	textBorder.setFillColor(sf::Color::Black);
-	text.setFont(font);
+	text.setFont(styleManager->getFont());
 	text.setCharacterSize(24);
 	text.setColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold);

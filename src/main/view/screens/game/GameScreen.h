@@ -1,6 +1,6 @@
 /* 
  * File:   GameScreen.h
- * Author: williampoynter
+ * Author: Will Poynter
  *
  * Created on October 10, 2014, 5:14 PM
  */
@@ -10,19 +10,55 @@
 
 #include "IGameScreen.h"
 
+#include <map>
+#include <list>
+
+#include <SFML/Graphics/Text.hpp>
+
+#include "SpriteFactory.h"
+#include "../../IStyleManager.h"
+#include "../../../event/IEventManager.hpp"
+
+#include "../../../event/EntityCreatedEvent.hpp"
+#include "../../../event/EntityDeletedEvent.hpp"
+#include "../../../event/EntityMovedEvent.hpp"
+
 namespace gs {
 
-class GameScreen :public IGameScreen {
+typedef std::map<short, sf::Sprite> SpriteMap;
+typedef std::list<sf::Sprite> SpriteList;
+
+class GameScreen :public IGameScreen, public IEventListener {
 public:
-	GameScreen();
+	GameScreen(IStyleManagerShPtr, ISpriteFactoryShPtr);
 	virtual ~GameScreen();
 	
 	void update();
 	void render(RenderWindowShPtr);
+	virtual void onEvent(Event& event);
 	
 	virtual ScreensEnum getType() const;
-private:
 
+private:
+	void initHud();
+
+	void onEntityCreated(EntityCreatedEvent& event);
+	void onEntityMoved(EntityMovedEvent& event);
+	void onEntityDeleted(EntityDeletedEvent& event);
+	void onGameEnd();
+
+	// Draw grid (for debugging)
+	void drawGrid(RenderWindowShPtr window);
+
+	IStyleManagerShPtr styleManager;
+	ISpriteFactoryShPtr spriteFactory;
+
+	SpriteMap spriteMap;
+	SpriteList hudSprites;
+	sf::Text levelText;
+	sf::Text waveText;
+	sf::Text scoreText;
+	sf::Text multiText;
 };
 
 }

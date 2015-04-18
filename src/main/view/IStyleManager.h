@@ -16,14 +16,19 @@
 
 namespace gs {
 
+enum class StyleGroup {DEFAULT, HUD};
+
 class IStyleManager {
 public:
 	virtual short getWidth() =0;
 	virtual short getHeight() =0;
 	
-	virtual void setFont(std::string) =0;
-	virtual void setFont(sf::Font) =0;
-	virtual sf::Font getFont() =0;
+	virtual std::string getAssetPath() =0;
+	virtual std::string getAssetPath(std::string) =0;
+
+	virtual void setFont(StyleGroup, std::string) =0;
+	virtual void setFont(StyleGroup, sf::Font) =0;
+	virtual sf::Font& getFont(StyleGroup = StyleGroup::DEFAULT) =0;
 };
 
 typedef std::shared_ptr<IStyleManager> IStyleManagerShPtr;

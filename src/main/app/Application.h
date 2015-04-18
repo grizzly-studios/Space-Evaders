@@ -20,9 +20,6 @@
 #include "../logic/Logic.h"
 
 #include "../view/View.h"
-#include "../view/KeyboardListener.h"
-#include "../view/UserInput.h"
-#include "../view/SpriteFactory.h"
 
 namespace gs {
 
