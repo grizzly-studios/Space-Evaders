@@ -8,6 +8,7 @@
 #include "screens/paused/PausedScreen.h"
 #include "screens/loading/LoadingScreen.h"
 #include "screens/intro/IntroScreen.h"
+#include "screens/gameover/GameOverScreen.h"
 #include "screens/credits/CreditsScreen.h"
 
 namespace gs {

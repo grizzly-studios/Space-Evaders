@@ -1,5 +1,5 @@
 /* 
- * File:   LoadingScreen.cpp
+ * File:   IntroScreen.cpp
  * Author: Rob Parker
  * 
  * Created on October 13, 2014, 23:11 PM

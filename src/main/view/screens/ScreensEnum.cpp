@@ -10,6 +10,7 @@ const char* ScreensEnumText[] = {
 	"MENU",
 	"OPTIONS",
 	"PAUSED",
-0};
+	"GAMEOVER"
+};
 
 }

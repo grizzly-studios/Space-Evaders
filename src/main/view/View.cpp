@@ -115,6 +115,9 @@ void View::render() {
 		case INTRO:
 			screens[INTRO_SCREEN]->render(window);
 			break;
+		case GAMEOVER:
+			screens[GAMEOVER_SCREEN]->render(window);
+			break;
 	}
 	//Now display
 	window->display();
@@ -181,6 +184,7 @@ void View::onEvent(Event& event) {
 			onEntityDeleted(entityDeletedEvent);
 			break;
 		}
+
 		default: {
 		    ERR << "Un-Handled: " << event << std::endl;
 			break;

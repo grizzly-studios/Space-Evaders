@@ -12,6 +12,11 @@
 
 namespace gs {
 
+class Bullets;
+
+typedef std::shared_ptr<Bullets> BulletsShPtr;
+typedef std::list<BulletsShPtr> BulletsList;
+
 class Bullets : public MobileEntity {
 public:
 	Bullets();
@@ -19,12 +24,19 @@ public:
 	Bullets(const Bullets& orig);
 	virtual ~Bullets();
 
+	virtual void tick(const long int &deltaTime);
+
+	using MobileEntity::isOutOfBounds;
 	Direction isOutOfBounds();
+
+	static BulletsShPtr create();
+	static BulletsShPtr create(sf::Vector2f velocity);
+	static void destroy(unsigned int _ID);
+	virtual void destroy();
+	static std::list<BulletsShPtr> all;
+
 private:
 };
-
-typedef std::shared_ptr<Bullets> BulletsShPtr;
-
 }
 
 #endif	/* BULLETS_H */

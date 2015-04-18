@@ -9,12 +9,16 @@
 #define	MOBILEENTITY_H
 
 #include "Entity.h"
-#include <list>
-#include "../app/Globals.h"
 
+#include <list>
+#include <cmath>
 #include <functional>
 
+#include "../app/Globals.h"
+
 namespace gs {
+
+class MobileEntity;
 	
 enum Direction {NONE, UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT, ALL, DIRCOUNT};
 
@@ -37,6 +41,10 @@ sf::Vector2f DefaultAccelerator(
 		sf::Vector2f,			//friction
 		sf::Vector2f			//force
 );
+
+typedef std::shared_ptr<MobileEntity> MobileEntityShPtr;
+typedef std::list<MobileEntityShPtr> MobileEntityList;
+
 /**
  * Base class for all moving objects
  */
@@ -52,6 +60,8 @@ public:
 	 */
 	MobileEntity(const MobileEntity& orig);
 	virtual ~MobileEntity();
+
+	virtual void tick(const long int &deltaTime);
 
 	float getMaxSpeed() const;
 	void setMaxSpeed(float _max_speed);
@@ -69,11 +79,11 @@ public:
 	sf::Vector2f getFriction() const;
 	void setFriction(const sf::Vector2f &_friction);
 	
+	sf::Vector2f getPrevPosition();
 	void setPosition(const sf::Vector2f &pos);
 	void setPosition(float x, float y);
 	void setGeo(const sf::FloatRect &_geo);
 	void setGeo(float x, float y, float w, float h);
-	virtual Direction isOutOfBounds() = 0; /* Returns if out of bounds and the direction it is out of bounds */
 	bool hasMoved();
 	virtual sf::Vector2f getVector(const Direction &dir, const float &mag) const;
 	virtual void stop(Direction blockDir = ALL);
@@ -99,6 +109,12 @@ public:
 	static void seth(const double &_h) {h = _h;}
 	static double geth() {return h;}
 	void setAccelerationFunc(AccelerationFunc fn);
+
+	static MobileEntityShPtr create();
+	static void destroy(unsigned int _ID);
+	virtual void destroy();
+	static std::list<MobileEntityShPtr> all;
+
 protected:
 	float max_speed;			// unit: pixel/microseconds
 	sf::Vector2f velocity;		// unit: pixel/microseconds
@@ -107,15 +123,15 @@ protected:
 	sf::Vector2f force;			// unit: ermmmm
 	sf::Vector2f state[3];
 	std::list<Direction> disabledDirections;
+	sf::Vector2f prevPosition;
 	
-	static double h;
+	long int accumulator;
+	static long int h;
 	
 	AccelerationFunc acceleration;
 
 	Direction shortToDirection(short dir);
 };
-
-typedef std::shared_ptr<MobileEntity> MobileEntityShPtr;
 	
 }
 

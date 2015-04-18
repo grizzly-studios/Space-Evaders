@@ -46,6 +46,7 @@ private:
 	void pausedUpdate();
 	void loadingUpdate();
 	void menuUpdate();
+	void gameOverUpdate();
 };
 
 }
