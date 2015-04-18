@@ -228,7 +228,7 @@ void Logic::checkEnd(){
 		livesLeft += player->livesLeft();
 		if (player->getPosition().y < GBL::WIN_HEIGHT) {
 			DBG << "Player has won!" << std::endl;
-			GameStateChangedEvent gameStateChangedEvent(GAME_WON);
+			GameStateChangedEvent gameStateChangedEvent(GAMEWON);
 			eventManager->fireEvent(gameStateChangedEvent);
 			break;
 		}
