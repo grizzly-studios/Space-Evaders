@@ -73,10 +73,9 @@ void Logic::update(long int elapsed) {
 
 		nextBulletSpawn -= interval;
 
-		checkWin();
 		cleanUp();
 		spawn();
-		checkEnd(interval);
+		checkEnd();
 	}
 }
 
@@ -102,10 +101,6 @@ void Logic::onEvent(Event& event) {
 		    ERR << ss.str() << std::endl;
 			break;
 	}
-}
-
-void Logic::checkWin() {
-
 }
 
 void Logic::cleanUp() {
@@ -226,20 +221,22 @@ void Logic::gameEnd(){
 	Entity::all.clear();
 }
 
-void Logic::checkEnd(long int interval){
+void Logic::checkEnd(){
 
 	int livesLeft = 0;
 	for (PlayerShPtr player : Player::all) {
 		livesLeft += player->livesLeft();
+		if (player->getPosition().y < GBL::WIN_HEIGHT) {
+			DBG << "Player has won!" << std::endl;
+			GameStateChangedEvent gameStateChangedEvent(GAME_WON);
+			eventManager->fireEvent(gameStateChangedEvent);
+			break;
+		}
 	}
 
 	if(livesLeft <= 0){
-		WARN << "endcount is " << endCount << std::endl;
-		if(endCount > 1000000){ /* Delay end for a bit */
-			GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
-			eventManager->fireEvent(gameStateChangedEvent);
-		}
-		WARN << "adding " << interval << " to endCount" << std::endl;
-		endCount += interval;
+		DBG << "All players are dead" << std::endl;
+		GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
+		eventManager->fireEvent(gameStateChangedEvent);
 	}
 }

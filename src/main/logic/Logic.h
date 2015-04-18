@@ -61,13 +61,12 @@ private:
 	
 	//Subroutines
 	void advancePlayers();
-	void checkWin();
 	void cleanUp();
 	void spawn();
 
 	void startNewGame();
 	void gameEnd();
-	void checkEnd(long int interval);
+	void checkEnd();
 	
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
