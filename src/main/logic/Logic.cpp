@@ -57,6 +57,7 @@ void Logic::update(long int elapsed) {
 		collisionDetection();
 		boundsCheck();
 		advancePlayers();
+		checkWin();
 		cleanUp();
 		spawn();
 	}
@@ -181,6 +182,10 @@ void Logic::advancePlayers() {
 			}
 		}
 	}
+}
+
+void Logic::checkWin() {
+
 }
 
 void Logic::cleanUp() {

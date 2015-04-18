@@ -73,6 +73,7 @@ private:
 	void collisionDetection();
 	void boundsCheck();
 	void advancePlayers();
+	void checkWin();
 	void cleanUp();
 	void spawn();
 
