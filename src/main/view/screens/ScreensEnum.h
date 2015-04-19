@@ -21,7 +21,8 @@ enum ScreensEnum {
 	MENU_SCREEN,
 	OPTIONS_SCREEN,
 	PAUSED_SCREEN,
-	GAMEOVER_SCREEN
+	GAMEOVER_SCREEN,
+	GAMEWON_SCREEN
 };
 
 extern const char* ScreensEnumText[];
