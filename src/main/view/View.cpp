@@ -190,7 +190,11 @@ void View::onEvent(Event& event) {
 			onEntityDeleted(entityDeletedEvent);
 			break;
 		}
-
+		case SCORE_CHANGED_EVENT: {
+			ScoreChangedEvent& scoreChangedEvent = (ScoreChangedEvent&) event;
+			onScoreChanged(scoreChangedEvent);
+			break;
+		}
 		default: {
 		    ERR << "Un-Handled: " << event << std::endl;
 			break;
@@ -323,6 +327,12 @@ void View::onEntityMoved(EntityMovedEvent& event) {
 	} else {
 		WARN << "No sprite for this id" << std::endl;
 	}
+}
+
+void View::onScoreChanged(ScoreChangedEvent& event) {
+	std::stringstream ss;
+	ss << SCORE_TEXT << ": " << event.getScore();
+	scoreText.setString(ss.str());
 }
 
 void View::drawGrid() {

@@ -12,6 +12,7 @@
 #include "../event/EntityMovedEvent.hpp"
 #include "../event/GameStateChangedEvent.h"
 #include "../event/GameStartEvent.h"
+#include "../event/ScoreChangedEvent.hpp"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 #include "../util/RandomNumberGenerator.h"
@@ -46,6 +47,7 @@ private:
 	void onEntityMoved(EntityMovedEvent& event);
 	void onEntityDeleted(EntityDeletedEvent& event);
 	void onGameStateChanged(GameStateChangedEvent& event);
+	void onScoreChanged(ScoreChangedEvent& event);
 	void moveMenuPointer(MenuActionEvent &event);
 	void moveMenuBack();
 	void selectMenuItem();
