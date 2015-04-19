@@ -68,6 +68,8 @@ void View::init() {
 	multiText.setCharacterSize(TEXT_SIZE);
 	multiText.setPosition(rightTextX, lowerTextY);
 
+	winLinePoints[0] =sf::Vertex(sf::Vector2f(GBL::SCREEN_SPRITE_WIDTH, GBL::WIN_HEIGHT), sf::Color::Red);
+	winLinePoints[1] =sf::Vertex(sf::Vector2f(width - GBL::SCREEN_SPRITE_WIDTH, GBL::WIN_HEIGHT), sf::Color::Red);
 }
 
 void View::update(long int elapsed) {
@@ -139,8 +141,9 @@ void View::inGameRender(){
 	window->draw(waveText);
 	window->draw(scoreText);
 	window->draw(multiText);
+	window->draw(winLinePoints, 2, sf::Lines);
 
-	drawGrid();
+	//drawGrid();
 
 	window->display();
 }

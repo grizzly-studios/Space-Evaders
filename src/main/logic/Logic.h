@@ -66,7 +66,7 @@ private:
 
 	void startNewGame();
 	void gameEnd();
-	void checkEnd(long int interval);
+	void checkEnd();
 	
 	void onChangePlayerDirection(ChangePlayerDirectionEvent &event);
 	void onGameStateChange(GameStateChangedEvent &event);
