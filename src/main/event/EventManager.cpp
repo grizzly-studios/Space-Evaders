@@ -54,6 +54,7 @@ bool EventManager::fireEvent(Event& event) {
 				auto ptr = listIt->lock();
 				if (ptr) {
 					ptr->onEvent(event);
+					success = true;
 				} else {
 					ERR << event << " has found an expired listener." << std::endl;
 					deadPointer = true;
@@ -62,7 +63,6 @@ bool EventManager::fireEvent(Event& event) {
 			if (deadPointer) {
 				clearExpired(event.getType());
 			}
-			success = true;
 		}
 	}
 
