@@ -36,6 +36,7 @@ void KeyboardListener::update() {
 			menuUpdate();
 			break;
 		case GAMEOVER:
+		case GAMEWON:
 			gameOverUpdate();
 			break;
 	}

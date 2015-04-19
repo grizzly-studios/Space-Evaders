@@ -99,6 +99,7 @@ void Application::init() {
 	ILoadingScreenShPtr loadingScreen(new LoadingScreen(styleManager));
 	IIntroScreenShPtr introScreen(new IntroScreen(styleManager, eventManager));
 	IGameOverScreenShPtr gameOverScreen(new GameOverScreen(styleManager, eventManager));
+	IGameWonScreenShPtr gameWonScreen(new GameWonScreen(styleManager));
 	ICreditsScreenShPtr creditsScreen(new CreditsScreen(styleManager));
 
 	/* Menu Screens */
@@ -108,6 +109,7 @@ void Application::init() {
 	/* In Game Screens */
 	view->addScreen(pausedScreen);
 	view->addScreen(gameOverScreen);
+	view->addScreen(gameWonScreen);
 	
 	/* Other Screens */
 	view->addScreen(loadingScreen);
