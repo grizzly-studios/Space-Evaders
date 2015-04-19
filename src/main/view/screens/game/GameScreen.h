@@ -59,6 +59,7 @@ private:
 	sf::Text waveText;
 	sf::Text scoreText;
 	sf::Text multiText;
+	sf::Vertex winLinePoints[2];
 };
 
 }

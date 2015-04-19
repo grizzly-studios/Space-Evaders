@@ -11,6 +11,7 @@
 #include "screens/loading/LoadingScreen.h"
 #include "screens/intro/IntroScreen.h"
 #include "screens/gameover/GameOverScreen.h"
+#include "screens/gamewon/GameWonScreen.h"
 #include "screens/credits/CreditsScreen.h"
 #include "screens/game/GameScreen.h"
 
@@ -59,6 +60,9 @@ private:
 	int height;
 
 	RectShapeList stars;
+
+	// Draw grid (for debugging)
+	void drawGrid();
 
 	GameState gameState;
 	

@@ -45,6 +45,17 @@ GameScreen::GameScreen(
 	multiText.setPosition(rightTextX, lowerTextY);
 
 	initHud();
+
+	winLinePoints[0] =sf::Vertex(
+			sf::Vector2f(
+					GBL::SCREEN_SPRITE_WIDTH,
+					GBL::WIN_HEIGHT),
+			sf::Color::Red);
+	winLinePoints[1] =sf::Vertex(
+			sf::Vector2f(
+					styleManager->getWidth() - GBL::SCREEN_SPRITE_WIDTH,
+					GBL::WIN_HEIGHT),
+			sf::Color::Red);
 }
 
 GameScreen::~GameScreen() {
@@ -74,8 +85,9 @@ void GameScreen::render(RenderWindowShPtr window) {
 	window->draw(waveText);
 	window->draw(scoreText);
 	window->draw(multiText);
+	window->draw(winLinePoints, 2, sf::Lines);
 
-	drawGrid(window);
+	//drawGrid(window);
 
 	window->display();
 }

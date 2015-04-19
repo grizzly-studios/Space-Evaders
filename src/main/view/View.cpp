@@ -79,6 +79,9 @@ void View::render() {
 		case GAMEOVER:
 			screens[GAMEOVER_SCREEN]->render(window);
 			break;
+		case GAMEWON:
+			screens[GAMEWON_SCREEN]->render(window);
+			break;
 	}
 	//Now display
 	window->display();
