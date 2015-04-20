@@ -156,6 +156,10 @@ void Player::scoreUp(int value){
 		WARN << "Tried to raise score using zero or negative number (" << value <<"). Use scoreDown instead!" << std::endl;
 	}
 }
+
+int Player::getScore() const {
+	return score;
+}
 	
 void Player::scoreDown(int value){
  	if(value > 0){
