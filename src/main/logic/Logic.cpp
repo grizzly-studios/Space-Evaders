@@ -216,6 +216,8 @@ void Logic::startNewGame(){
 	GameStateChangedEvent gameStateChangedEvent2(IN_GAME);
 	eventManager->fireEvent(gameStateChangedEvent2);
 
+	ScoreChangedEvent scoreChangedEvent(0);
+	eventManager->fireEvent(scoreChangedEvent);
 }
 
 void Logic::gameEnd(){
