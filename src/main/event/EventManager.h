@@ -35,8 +35,13 @@ public:
 	 * @param event Event to fire
 	 * @return True if the event was successfully forwarded to its registered listeners
 	 */
-	virtual bool fireEvent(Event& event) const;
+	virtual bool fireEvent(Event& event);
 private:
+	/**
+	 * Clear expired weak_ptrs from map
+	 * @param eventType Type of event to associate with the listener
+	 */
+	void clearExpired(EventEnum eventType);
 	/** Map of listeners */
 	EventListenerMap listeners;
 };

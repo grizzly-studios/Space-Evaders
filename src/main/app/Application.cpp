@@ -89,16 +89,16 @@ void Application::init() {
 	IKeyboardListenerShrPtr keyboard(new KeyboardListener(eventManager));
 	IUserInputShPtr userInput(new UserInput(eventManager,keyboard));
 	ISpriteFactoryShPtr spriteFactory(new SpriteFactory());
-	view = IViewPtr(new View(eventManager, window, userInput, spriteFactory));
+	view = IViewPtr(new View(eventManager, window, userInput));
 
 	/* Create everything for view */
 	IStyleManagerShPtr styleManager(new StyleManager());
-	styleManager->setFont("assets/arial.ttf");
+	IGameScreenShPtr gameScreen(new GameScreen(styleManager, spriteFactory));
 	IMenuScreenShPtr menuScreen(new MenuScreen(styleManager));
 	IPausedScreenShPtr pausedScreen(new PausedScreen(styleManager));
 	ILoadingScreenShPtr loadingScreen(new LoadingScreen(styleManager));
 	IIntroScreenShPtr introScreen(new IntroScreen(styleManager, eventManager));
-	IGameOverScreenShPtr gameOverScreen(new GameOverScreen(styleManager, eventManager));
+	IGameOverScreenShPtr gameOverScreen(new GameOverScreen(styleManager));
 	IGameWonScreenShPtr gameWonScreen(new GameWonScreen(styleManager));
 	ICreditsScreenShPtr creditsScreen(new CreditsScreen(styleManager));
 
@@ -107,6 +107,7 @@ void Application::init() {
 	view->addScreen(creditsScreen);
 
 	/* In Game Screens */
+	view->addScreen(gameScreen);
 	view->addScreen(pausedScreen);
 	view->addScreen(gameOverScreen);
 	view->addScreen(gameWonScreen);
@@ -119,15 +120,15 @@ void Application::init() {
 	view->init();
 
 	/* Setup the event listeners */
-	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(view));
-	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(view));
-	eventManager->addListener(ENTITY_DELETED_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(ENTITY_MOVED_EVENT, MAKE_EVENT_LISTENER(gameScreen));
+	eventManager->addListener(ENTITY_CREATED_EVENT, MAKE_EVENT_LISTENER(gameScreen));
+	eventManager->addListener(ENTITY_DELETED_EVENT, MAKE_EVENT_LISTENER(gameScreen));
 	eventManager->addListener(CHANGE_PLAYER_DIRECTION_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_STATE_CHANGED_EVENT, MAKE_EVENT_LISTENER(view));
 	eventManager->addListener(GAME_START_EVENT, MAKE_EVENT_LISTENER(logic));
 	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(logic));
-	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(view));
+	eventManager->addListener(GAME_END_EVENT, MAKE_EVENT_LISTENER(gameScreen));
 	eventManager->addListener(MENU_ACTION_EVENT, MAKE_EVENT_LISTENER(view));
 
 	INFO << "Ending init" << std::endl;

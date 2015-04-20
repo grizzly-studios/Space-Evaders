@@ -11,6 +11,7 @@
 #include "IStyleManager.h"
 
 #include <string>
+#include <map>
 
 namespace gs {
 
@@ -22,14 +23,19 @@ public:
 	short getWidth();
 	short getHeight();
 	
-	void setFont(std::string);
-	void setFont(sf::Font);
-	sf::Font getFont();
+	std::string getAssetPath();
+	std::string getAssetPath(std::string file);
+
+	void setFont(StyleGroup styleGroup, std::string);
+	void setFont(StyleGroup styleGroup, sf::Font);
+	sf::Font& getFont(StyleGroup styleGroup = StyleGroup::DEFAULT);
 private:
 	static const short WIDTH = 480;
 	static const short HEIGHT = 640;
 	
-	sf::Font font;
+	static const std::string assetPath;
+
+	std::map<StyleGroup, sf::Font> fonts;
 };
 
 }
