@@ -41,7 +41,7 @@ private:
 	 * Clear expired weak_ptrs from map
 	 * @param eventType Type of event to associate with the listener
 	 */
-	virtual void clearExpired(EventEnum eventType);
+	void clearExpired(EventEnum eventType);
 	/** Map of listeners */
 	EventListenerMap listeners;
 };
