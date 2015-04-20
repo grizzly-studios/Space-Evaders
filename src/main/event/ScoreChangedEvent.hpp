@@ -1,5 +1,5 @@
 #ifndef SCORE_CHANGED_EVENT_HPP
-#define	SCORE_CHANGED_EVENT_HPP
+#define SCORE_CHANGED_EVENT_HPP
 
 #include "Event.hpp"
 
@@ -12,7 +12,7 @@ class ScoreChangedEvent : public Event {
 public:
 	/**
 	 * Constructor
-	 * @param _entityId Entity id
+	 * @param _score New score
 	 */
 	ScoreChangedEvent(int _score) : score(_score)
 	{}
@@ -26,15 +26,15 @@ public:
 	}
 
 	/**
-	 * Get the entity id
-	 * @return Entity id
+	 * Get the new score
+	 * @return score
 	 */
 	int getScore() const {
 		return score;
 	}
 
 private:
-	/** Screen score */
+	/** New score */
 	int score;
 };
 
