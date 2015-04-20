@@ -14,10 +14,12 @@
 
 #include "../../StyleManager.h"
 
+#include "../../../event/IEventListener.hpp"
+
 
 namespace gs {
 
-class GameWonScreen : public IGameWonScreen {
+class GameWonScreen : public IGameWonScreen, public IEventListener {
 public:
 	GameWonScreen(IStyleManagerShPtr);
 	virtual ~GameWonScreen();
@@ -27,9 +29,13 @@ public:
 	void setScore(int newScore);
 	
 	virtual ScreensEnum getType() const;
-	
+
+	virtual void onEvent(Event& event);
+
 private:
 	IStyleManagerShPtr styleManager;
+
+	int score;
 };
 
 }

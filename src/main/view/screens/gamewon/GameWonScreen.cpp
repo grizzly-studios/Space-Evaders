@@ -7,11 +7,15 @@
 
 #include "GameWonScreen.h"
 
+#include <sstream>
+#include <string>
+
+#include "../../../event/ScoreChangedEvent.hpp"
 
 using namespace gs;
 
 GameWonScreen::GameWonScreen(IStyleManagerShPtr _styleManager) :
-	styleManager(_styleManager)
+	styleManager(_styleManager), score(0)
 {}
 
 GameWonScreen::~GameWonScreen() {
@@ -49,10 +53,13 @@ void GameWonScreen::render(RenderWindowShPtr window) {
 	window->draw(textBorder);
 	window->draw(text);
 
+	std::stringstream scoreText;
+	scoreText << "Score:  " << score;
+
 	text.setCharacterSize(24);
 	textBorder.setSize(sf::Vector2f(120, 22));
 	textBorder.setPosition(180,285);
-	text.setString("Score:  ");
+	text.setString(scoreText.str());
 	text.setPosition(180,280);
 	window->draw(textBorder);
 	window->draw(text);
@@ -64,4 +71,11 @@ void GameWonScreen::render(RenderWindowShPtr window) {
 	text.setPosition(125,400);
 	window->draw(textBorder);
 	window->draw(text);
+}
+
+void GameWonScreen::onEvent(Event& event) {
+	if (event.getType() == SCORE_CHANGED_EVENT) {
+		ScoreChangedEvent& scoreChangedEvent = (ScoreChangedEvent&) event;
+		score = scoreChangedEvent.getScore();
+	}
 }

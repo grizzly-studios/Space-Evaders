@@ -12,17 +12,13 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
-#include "../../../util/Logger.h"
 #include "../../StyleManager.h"
-
-#include "../../../app/GameState.h"
-#include "../../../event/GameStateChangedEvent.h"
-#include "../../../event/IEventManager.hpp"
+#include "../../../event/IEventListener.hpp"
 
 
 namespace gs {
 
-class GameOverScreen : public IGameOverScreen {
+class GameOverScreen : public IGameOverScreen, public IEventListener {
 public:
 	GameOverScreen(IStyleManagerShPtr);
 	virtual ~GameOverScreen();
@@ -32,9 +28,13 @@ public:
 	void setScore(int newScore);
 	
 	virtual ScreensEnum getType() const;
+
+	virtual void onEvent(Event& event);
 	
 private:
 	IStyleManagerShPtr styleManager;
+
+	int score;
 };
 
 }

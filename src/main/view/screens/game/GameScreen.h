@@ -22,7 +22,7 @@
 #include "../../../event/EntityCreatedEvent.hpp"
 #include "../../../event/EntityDeletedEvent.hpp"
 #include "../../../event/EntityMovedEvent.hpp"
- #include "../../../event/ScoreChangedEvent.hpp"
+#include "../../../event/ScoreChangedEvent.hpp"
 
 namespace gs {
 
