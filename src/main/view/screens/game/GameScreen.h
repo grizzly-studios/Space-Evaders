@@ -49,6 +49,8 @@ private:
 	void onScoreChanged(ScoreChangedEvent& event);
 	void onGameEnd();
 
+	void setScore(int score);
+
 	// Draw grid (for debugging)
 	void drawGrid(RenderWindowShPtr window);
 

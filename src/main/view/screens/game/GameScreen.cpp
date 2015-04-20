@@ -9,7 +9,7 @@
 
 #include "../../../app/Globals.h"
 
-#define SCORE_TEXT "SCORE"
+#define SCORE_TEXT "SCORE: "
 
 using namespace gs;
 
@@ -37,7 +37,6 @@ GameScreen::GameScreen(
 	waveText.setPosition(rightTextX, upperTextY);
 
 	scoreText.setFont(styleManager->getFont(StyleGroup::HUD));
-	scoreText.setString(SCORE_TEXT);
 	scoreText.setCharacterSize(textSize);
 	scoreText.setPosition(GBL::SCREEN_SPRITE_WIDTH, lowerTextY);
 
@@ -47,6 +46,7 @@ GameScreen::GameScreen(
 	multiText.setPosition(rightTextX, lowerTextY);
 
 	initHud();
+	setScore(0);
 
 	winLinePoints[0] =sf::Vertex(
 			sf::Vector2f(
@@ -181,9 +181,7 @@ void GameScreen::onEntityDeleted(EntityDeletedEvent& event) {
 }
 
 void GameScreen::onScoreChanged(ScoreChangedEvent& event) {
-	std::stringstream ss;
-	ss << SCORE_TEXT << ": " << event.getScore();
-	scoreText.setString(ss.str());
+	setScore(event.getScore());
 }
 
 void GameScreen::onEntityMoved(EntityMovedEvent& event) {
@@ -201,6 +199,12 @@ void GameScreen::onEntityMoved(EntityMovedEvent& event) {
 
 void GameScreen::onGameEnd(){
 	spriteMap.clear();
+}
+
+void GameScreen::setScore(int score) {
+	std::stringstream ss;
+	ss << SCORE_TEXT << score;
+	scoreText.setString(ss.str());
 }
 
 void GameScreen::initHud() {
