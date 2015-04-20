@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 
-#include "../util/Logger.h"
+#include "../../../util/Logger.h"
 
 #define SPRITE_SHEET "assets/sprites.png"
 

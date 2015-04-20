@@ -34,7 +34,7 @@ public:
 	 * @param event Event to fire
 	 * @return True if the event was successfully forwarded to its registered listeners
 	 */
-	virtual bool fireEvent(Event& event) const = 0;
+	virtual bool fireEvent(Event& event) = 0;
 };
 
 typedef std::shared_ptr<IEventManager> IEventManagerPtr;

@@ -31,11 +31,8 @@ ScreensEnum CreditsScreen::getType() const {
 }
 
 void CreditsScreen::render(RenderWindowShPtr window) {
-	sf::Font font;
-	font = styleManager->getFont();
-
 	sf::Text text;
-	text.setFont(font);
+	text.setFont(styleManager->getFont());
 	text.setCharacterSize(24);
 	text.setColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold);

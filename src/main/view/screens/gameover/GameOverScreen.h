@@ -24,7 +24,7 @@ namespace gs {
 
 class GameOverScreen : public IGameOverScreen {
 public:
-	GameOverScreen(IStyleManagerShPtr, IEventManagerPtr);
+	GameOverScreen(IStyleManagerShPtr);
 	virtual ~GameOverScreen();
 	
 	void update();
@@ -35,7 +35,6 @@ public:
 	
 private:
 	IStyleManagerShPtr styleManager;
-	IEventManagerPtr eventManager;
 };
 
 }

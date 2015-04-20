@@ -37,7 +37,7 @@ bool EventManager::addListener(EventEnum eventType, IEventListenerPtr listener) 
 	return success;
 }
 
-bool EventManager::fireEvent(Event& event) const {
+bool EventManager::fireEvent(Event& event) {
 	bool success = false;
 	// TODO: Check for NULL pointers (assert/log?)
 
@@ -47,12 +47,22 @@ bool EventManager::fireEvent(Event& event) const {
 		const EventListenerList& listenerList = mapIt->second;
 
 		if (!listenerList.empty()) {
+			bool deadPointer = false;
 			// Execute each listener, passing the event
 			for (EventListenerList::const_iterator listIt = listenerList.begin();
 				listIt != listenerList.end(); ++listIt) {
-				listIt->lock()->onEvent(event);
+				auto ptr = listIt->lock();
+				if (ptr) {
+					ptr->onEvent(event);
+					success = true;
+				} else {
+					ERR << event << " has found an expired listener." << std::endl;
+					deadPointer = true;
+				}
 			}
-			success = true;
+			if (deadPointer) {
+				clearExpired(event.getType());
+			}
 		}
 	}
 
@@ -61,4 +71,9 @@ bool EventManager::fireEvent(Event& event) const {
 	}
 
 	return success;
+}
+
+void EventManager::clearExpired(EventEnum eventType) {
+	struct removeExpired { bool operator()(const IEventListenerPtr& ptr) {return ptr.expired(); }};
+	listeners[eventType].remove_if(removeExpired());
 }

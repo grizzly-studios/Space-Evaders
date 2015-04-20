@@ -1,6 +1,7 @@
 #ifndef SPRITE_FACTORY_H
 #define SPRITE_FACTORY_H
 
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
 #include "ISpriteFactory.hpp"
