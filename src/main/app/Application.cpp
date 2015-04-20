@@ -161,8 +161,14 @@ void Application::run() {
 			}
 		}
 		sf::Time elapsed = clock->restart();
-		view->update(elapsed.asMicroseconds());
-		logic->update(elapsed.asMicroseconds());
+		long int microSeconds = elapsed.asMicroseconds();
+		while (microSeconds < 8333) {
+			sf::sleep(sf::milliseconds(1));
+			elapsed = clock->restart();
+			microSeconds += elapsed.asMicroseconds();
+		}
+		view->update(microSeconds);
+		logic->update(microSeconds);
 		view->render();
 	}
 }
