@@ -59,9 +59,12 @@ void Logic::update(long int elapsed) {
 			}
 		}
 
+		int totalScore = 0;
+		bool updateScreenScore = false;
 		for (PlayerShPtr player : Player::all) {
 			for (BulletsShPtr bullets : Bullets::all) {
-				player->advancer(bullets);
+				bool passedBullet = player->advancer(bullets);
+				updateScreenScore = updateScreenScore || passedBullet;
 			}
 			if (player->hasBeenHit()) {
 				if(player->livesLeft() <= 0){
@@ -69,6 +72,11 @@ void Logic::update(long int elapsed) {
 				}
 				//fireEvent of player hit to view
 			}
+			totalScore += player->getScore();
+		}
+		if (updateScreenScore) {
+			ScoreChangedEvent scoreChangedEvent(totalScore);
+			eventManager->fireEvent(scoreChangedEvent);
 		}
 
 		nextBulletSpawn -= interval;

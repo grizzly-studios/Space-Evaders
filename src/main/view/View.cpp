@@ -107,6 +107,7 @@ void View::onEvent(Event& event) {
 			}
 			break;
 		}
+
 		default: {
 		    ERR << "Un-Handled: " << event << std::endl;
 			break;

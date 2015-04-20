@@ -22,6 +22,7 @@
 #include "../../../event/EntityCreatedEvent.hpp"
 #include "../../../event/EntityDeletedEvent.hpp"
 #include "../../../event/EntityMovedEvent.hpp"
+ #include "../../../event/ScoreChangedEvent.hpp"
 
 namespace gs {
 
@@ -45,7 +46,10 @@ private:
 	void onEntityCreated(EntityCreatedEvent& event);
 	void onEntityMoved(EntityMovedEvent& event);
 	void onEntityDeleted(EntityDeletedEvent& event);
+	void onScoreChanged(ScoreChangedEvent& event);
 	void onGameEnd();
+
+	void setScore(int score);
 
 	// Draw grid (for debugging)
 	void drawGrid(RenderWindowShPtr window);

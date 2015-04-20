@@ -36,7 +36,7 @@ public:
 	bool hasBeenHit(bool reset = true);
 
 	virtual void integrate();
-	virtual void advancer(MobileEntityShPtr bullets);
+	virtual bool advancer(MobileEntityShPtr bullets);
 
 	void scoreUp(int value);
 	void scoreDown(int value);

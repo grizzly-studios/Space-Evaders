@@ -75,7 +75,7 @@ Direction Bullets::isOutOfBounds(){
 	sf::FloatRect pos = getGeo();
 
 	/* No Top, Left or Right check as Bullets only move down */
-	if((pos.top + pos.height) >= (GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH + 2))){
+	if(pos.top >= (GBL::HEIGHT - (GBL::SCREEN_SPRITE_WIDTH + 2))){
 		//Too far down
 		return DOWN;
 	} else{

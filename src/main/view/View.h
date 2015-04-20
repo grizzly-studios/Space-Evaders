@@ -17,6 +17,7 @@
 
 #include "../event/GameStateChangedEvent.h"
 #include "../event/GameStartEvent.h"
+#include "../event/ScoreChangedEvent.hpp"
 #include "../event/IEventListener.hpp"
 #include "../event/IEventManager.hpp"
 #include "../util/RandomNumberGenerator.h"
@@ -43,6 +44,7 @@ public:
 private:
 	void initBackground();
 	void onGameStateChanged(GameStateChangedEvent& event);
+	void onScoreChanged(ScoreChangedEvent& event);
 	void moveMenuPointer(MenuActionEvent &event);
 	void moveMenuBack();
 	void selectMenuItem();

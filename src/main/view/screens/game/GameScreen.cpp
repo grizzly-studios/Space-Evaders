@@ -9,6 +9,8 @@
 
 #include "../../../app/Globals.h"
 
+#define SCORE_TEXT "SCORE: "
+
 using namespace gs;
 
 GameScreen::GameScreen(
@@ -35,7 +37,6 @@ GameScreen::GameScreen(
 	waveText.setPosition(rightTextX, upperTextY);
 
 	scoreText.setFont(styleManager->getFont(StyleGroup::HUD));
-	scoreText.setString("SCORE");
 	scoreText.setCharacterSize(textSize);
 	scoreText.setPosition(GBL::SCREEN_SPRITE_WIDTH, lowerTextY);
 
@@ -45,6 +46,7 @@ GameScreen::GameScreen(
 	multiText.setPosition(rightTextX, lowerTextY);
 
 	initHud();
+	setScore(0);
 
 	winLinePoints[0] =sf::Vertex(
 			sf::Vector2f(
@@ -112,6 +114,11 @@ void GameScreen::onEvent(Event& event) {
 			onEntityDeleted(entityDeletedEvent);
 			break;
 		}
+		case SCORE_CHANGED_EVENT: {
+			ScoreChangedEvent& scoreChangedEvent = (ScoreChangedEvent&) event;
+			onScoreChanged(scoreChangedEvent);
+			break;
+		}
 		case GAME_END_EVENT: {
 			onGameEnd();
 			break;
@@ -173,6 +180,10 @@ void GameScreen::onEntityDeleted(EntityDeletedEvent& event) {
 	spriteMap.erase(event.getEntityId());
 }
 
+void GameScreen::onScoreChanged(ScoreChangedEvent& event) {
+	setScore(event.getScore());
+}
+
 void GameScreen::onEntityMoved(EntityMovedEvent& event) {
 	const short entityId = event.getEntityId();
 	INFO << "Entity moved with id: " << entityId << std::endl;
@@ -188,6 +199,12 @@ void GameScreen::onEntityMoved(EntityMovedEvent& event) {
 
 void GameScreen::onGameEnd(){
 	spriteMap.clear();
+}
+
+void GameScreen::setScore(int score) {
+	std::stringstream ss;
+	ss << SCORE_TEXT << score;
+	scoreText.setString(ss.str());
 }
 
 void GameScreen::initHud() {
