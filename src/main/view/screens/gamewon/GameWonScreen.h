@@ -1,27 +1,28 @@
 /* 
- * File:   GameOverScreen.h
- * Author: Rob Parker
+ * File:   GameWonScreen.h
+ * Author: Al Lambert
  *
- * Created on April 05 2015 12:50
+ * Created on April 18 2015 11:50
  */
 
-#ifndef GAMEOVERSCREEN_H
-#define	GAMEOVERSCREEN_H
+#ifndef GAMEWONSCREEN_H
+#define	GAMEWONSCREEN_H
 
-#include "IGameOverScreen.h"
+#include "IGameWonScreen.h"
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
 #include "../../StyleManager.h"
+
 #include "../../../event/IEventListener.hpp"
 
 
 namespace gs {
 
-class GameOverScreen : public IGameOverScreen, public IEventListener {
+class GameWonScreen : public IGameWonScreen, public IEventListener {
 public:
-	GameOverScreen(IStyleManagerShPtr);
-	virtual ~GameOverScreen();
+	GameWonScreen(IStyleManagerShPtr);
+	virtual ~GameWonScreen();
 	
 	void update();
 	void render(RenderWindowShPtr);
@@ -30,7 +31,7 @@ public:
 	virtual ScreensEnum getType() const;
 
 	virtual void onEvent(Event& event);
-	
+
 private:
 	IStyleManagerShPtr styleManager;
 
@@ -39,5 +40,5 @@ private:
 
 }
 
-#endif	/* GAMEOVERSCREEN_H */
+#endif	/* GAMEWONSCREEN_H */
 

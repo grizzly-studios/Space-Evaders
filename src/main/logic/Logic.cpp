@@ -59,9 +59,12 @@ void Logic::update(long int elapsed) {
 			}
 		}
 
+		int totalScore = 0;
+		bool updateScreenScore = false;
 		for (PlayerShPtr player : Player::all) {
 			for (BulletsShPtr bullets : Bullets::all) {
-				player->advancer(bullets);
+				bool passedBullet = player->advancer(bullets);
+				updateScreenScore = updateScreenScore || passedBullet;
 			}
 			if (player->hasBeenHit()) {
 				if(player->livesLeft() <= 0){
@@ -69,13 +72,18 @@ void Logic::update(long int elapsed) {
 				}
 				//fireEvent of player hit to view
 			}
+			totalScore += player->getScore();
+		}
+		if (updateScreenScore) {
+			ScoreChangedEvent scoreChangedEvent(totalScore);
+			eventManager->fireEvent(scoreChangedEvent);
 		}
 
 		nextBulletSpawn -= interval;
 
 		cleanUp();
 		spawn();
-		checkEnd(interval);
+		checkEnd();
 	}
 }
 
@@ -208,6 +216,8 @@ void Logic::startNewGame(){
 	GameStateChangedEvent gameStateChangedEvent2(IN_GAME);
 	eventManager->fireEvent(gameStateChangedEvent2);
 
+	ScoreChangedEvent scoreChangedEvent(0);
+	eventManager->fireEvent(scoreChangedEvent);
 }
 
 void Logic::gameEnd(){
@@ -221,20 +231,22 @@ void Logic::gameEnd(){
 	Entity::all.clear();
 }
 
-void Logic::checkEnd(long int interval){
+void Logic::checkEnd(){
 
 	int livesLeft = 0;
 	for (PlayerShPtr player : Player::all) {
 		livesLeft += player->livesLeft();
+		if (player->getPosition().y < GBL::WIN_HEIGHT) {
+			DBG << "Player has won!" << std::endl;
+			GameStateChangedEvent gameStateChangedEvent(GAMEWON);
+			eventManager->fireEvent(gameStateChangedEvent);
+			break;
+		}
 	}
 
 	if(livesLeft <= 0){
-		WARN << "endcount is " << endCount << std::endl;
-		if(endCount > 1000000){ /* Delay end for a bit */
-			GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
-			eventManager->fireEvent(gameStateChangedEvent);
-		}
-		WARN << "adding " << interval << " to endCount" << std::endl;
-		endCount += interval;
+		DBG << "All players are dead" << std::endl;
+		GameStateChangedEvent gameStateChangedEvent(GAMEOVER);
+		eventManager->fireEvent(gameStateChangedEvent);
 	}
 }

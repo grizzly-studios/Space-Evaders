@@ -1,35 +1,34 @@
 /* 
- * File:   GameOverScreen.cpp
- * Author: Rob Parker
- * 
- * Created on April 05 2015 12:50
+ * File:   GameWonScreen.cpp
+ * Author: Al Lambert
+ *
+ * Created on April 18 2015 11:50
  */
 
-#include "GameOverScreen.h"
+#include "GameWonScreen.h"
 
 #include <sstream>
 #include <string>
 
 #include "../../../event/ScoreChangedEvent.hpp"
 
-
 using namespace gs;
 
-GameOverScreen::GameOverScreen(IStyleManagerShPtr _styleManager) :
+GameWonScreen::GameWonScreen(IStyleManagerShPtr _styleManager) :
 	styleManager(_styleManager), score(0)
 {}
 
-GameOverScreen::~GameOverScreen() {
+GameWonScreen::~GameWonScreen() {
 }
 
-void GameOverScreen::update() {
+void GameWonScreen::update() {
 }
 
-ScreensEnum GameOverScreen::getType() const {
-	return GAMEOVER_SCREEN;
+ScreensEnum GameWonScreen::getType() const {
+	return GAMEWON_SCREEN;
 }
 
-void GameOverScreen::render(RenderWindowShPtr window) {
+void GameWonScreen::render(RenderWindowShPtr window) {
 	sf::Font font;
 	font = styleManager->getFont();
 	sf::Text text;
@@ -41,15 +40,15 @@ void GameOverScreen::render(RenderWindowShPtr window) {
 	text.setStyle(sf::Text::Bold);
 
 	textBorder.setSize(sf::Vector2f(215, 65));
-	textBorder.setPosition(125,115);
-	text.setString("GAME");
-	text.setPosition(125,100);	
+	textBorder.setPosition(145,115);
+	text.setString("YOU");
+	text.setPosition(145,100);	
 	window->draw(textBorder);
 	window->draw(text);
 
 	textBorder.setPosition(133,180);
 	textBorder.setSize(sf::Vector2f(210, 58));
-	text.setString("OVER");
+	text.setString("WON!");
 	text.setPosition(133,165);
 	window->draw(textBorder);
 	window->draw(text);
@@ -74,7 +73,7 @@ void GameOverScreen::render(RenderWindowShPtr window) {
 	window->draw(text);
 }
 
-void GameOverScreen::onEvent(Event& event) {
+void GameWonScreen::onEvent(Event& event) {
 	if (event.getType() == SCORE_CHANGED_EVENT) {
 		ScoreChangedEvent& scoreChangedEvent = (ScoreChangedEvent&) event;
 		score = scoreChangedEvent.getScore();

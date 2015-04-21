@@ -116,10 +116,13 @@ void Player::integrate() {
 	velocity.y = (state[2].y - state[0].y)/ (2 * h);
 }
 
-void Player::advancer(MobileEntityShPtr bullets) {
+bool Player::advancer(MobileEntityShPtr bullets) {
 	if (prevPosition.y >= bullets->getPrevPosition().y && geo.top < bullets->getPosition().y) {
 		effects.push_back(newForceShPtr(this, 300000, sf::Vector2f(0,-0.000005f)));
+		scoreUp(10);
+		return true;
 	}
+	return false;
 }
 
 void Player::lifeUp(){
@@ -152,6 +155,10 @@ void Player::scoreUp(int value){
 	} else {
 		WARN << "Tried to raise score using zero or negative number (" << value <<"). Use scoreDown instead!" << std::endl;
 	}
+}
+
+int Player::getScore() const {
+	return score;
 }
 	
 void Player::scoreDown(int value){

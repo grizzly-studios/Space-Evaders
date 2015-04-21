@@ -13,6 +13,8 @@ namespace GBL {
 	static const int HEIGHT = 640;
 	static const int SCREEN_SPRITE_WIDTH = 32;
 
+	static const int WIN_HEIGHT = 200;
+
 	static const int TILE_WIDTH = 32;						// tile width & height
 	static const int COLS = 13;								// tilemap dimensions
 	static const int ROWS = 20;

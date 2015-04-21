@@ -24,11 +24,11 @@ IntroScreen::IntroScreen(IStyleManagerShPtr _styleManager, IEventManagerPtr _eve
 	clock(),
 	firstRender(true)
 {
-	if(!logoSound.loadFromFile("assets/logoPLACEHOLDER.ogg")){
+	if(!logoSound.loadFromFile(styleManager->getAssetPath("logoPLACEHOLDER.ogg"))){
 		ERR << "Unable to open assets/logoPLACEHOLDER.ogg" << std::endl;
 	}
 
-	if(!logoTex.loadFromFile("assets/logo.png")){
+	if(!logoTex.loadFromFile(styleManager->getAssetPath("logo.png"))){
 		ERR << "Unable to open assets/logo.png" << std::endl;
 	} else {
 		logoTex.setRepeated(false);		
