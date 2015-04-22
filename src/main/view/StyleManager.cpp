@@ -17,7 +17,7 @@
 
 using namespace gs;
 
-const std::string StyleManager::assetPath = "/assets/";
+const std::string StyleManager::assetPath = "assets/";
 
 namespace {
 
@@ -36,7 +36,7 @@ std::string getExecutablePath() {
 		execPath = std::string(lengthStringPath, 0);
 		WideCharToMultiByte(CP_UTF8, 0, path, lengthWcharPath, &execPath[0], lengthStringPath, NULL, NULL);
 		std::replace(execPath.begin(), execPath.end(), '\\', '/');
-		execPath = execPath.substr(0, execPath.find_last_of("/"));
+		execPath = execPath.substr(0, execPath.find_last_of("/") + 1);
 	#endif
 
 	return execPath;
