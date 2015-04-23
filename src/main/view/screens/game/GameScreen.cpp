@@ -18,7 +18,7 @@ GameScreen::GameScreen(
 		ISpriteFactoryShPtr _spriteFactory) :
 	styleManager(_styleManager),
 	spriteFactory(_spriteFactory) {
-	spriteFactory->init();
+	spriteFactory->init(styleManager->getAssetPath("sprites.png"));
 
 	const int upperTextY = GBL::SCREEN_SPRITE_WIDTH + 5;
 	const int lowerTextY = styleManager->getHeight() - 58;
