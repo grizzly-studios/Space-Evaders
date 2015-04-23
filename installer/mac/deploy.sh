@@ -10,7 +10,7 @@ SCRIPTDIR=`dirname $0`
 #Build
 xcodebuild -configuration Release -scheme 'Space Evaders' -project $SCRIPTDIR/Space\ Evaders.xcodeproj
 #Move to src dir
-cd /Users/williampoynter/Documents/Personal/Coding/C++/Space\ Evaders/bin/Release
+cd $SCRIPTDIR/../../bin/Release
 #Create DMG directory
 mkdir DMG
 #Copy bundle to DMG
