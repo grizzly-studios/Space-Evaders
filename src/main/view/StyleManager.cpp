@@ -7,6 +7,10 @@
 
 #include "StyleManager.h"
 
+#if defined(__APPLE__) && not defined(DEBUG)
+#include "../../../installer/mac/ResourcePath.hpp"
+#endif
+
 using namespace gs;
 
 const std::string StyleManager::assetPath = "assets/";
@@ -28,11 +32,19 @@ short StyleManager::getHeight() {
 }
 
 std::string StyleManager::getAssetPath() {
+#if defined(__APPLE__) && not defined(DEBUG)
+	return resourcePath();
+#else
 	return assetPath;
+#endif
 }
 
 std::string StyleManager::getAssetPath(std::string file) {
+#if defined(__APPLE__) && not defined(DEBUG)
+	return resourcePath() + file;
+#else
 	return assetPath + file;
+#endif
 }
 
 void StyleManager::setFont(StyleGroup styleGroup, std::string fontFilePath) {
