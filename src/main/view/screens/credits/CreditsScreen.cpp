@@ -19,7 +19,7 @@ CreditsScreen::CreditsScreen()
 CreditsScreen::CreditsScreen(IStyleManagerShPtr _styleManager) :
 	styleManager(_styleManager)
 {
-	if(!logoTex.loadFromFile("assets/logo.png")){
+	if(!logoTex.loadFromFile(styleManager->getAssetPath("logo.png"))){
 		ERR << "Unable to open assets/logo.png" << std::endl;
 	} else {
 		logoTex.setRepeated(false);		
