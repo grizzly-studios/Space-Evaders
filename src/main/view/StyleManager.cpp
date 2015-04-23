@@ -9,6 +9,12 @@
 
 #include <algorithm>
 
+#if defined(__APPLE__) && not defined(DEBUG)
+//Apple release specific code
+#include "../../../installer/mac/ResourcePath.hpp"
+//End Apple release specific code
+#endif
+
 #if defined(_WIN64) || defined(_WIN32)
 //Windows specific code
 #include <windows.h>
@@ -61,7 +67,11 @@ short StyleManager::getHeight() {
 }
 
 std::string StyleManager::getAssetPath() {
+#if defined(__APPLE__) && not defined(DEBUG)
+	return resourcePath();
+#else
 	return getExecutablePath() + assetPath;
+#endif
 }
 
 std::string StyleManager::getAssetPath(std::string file) {
