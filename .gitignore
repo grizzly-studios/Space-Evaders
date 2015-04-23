@@ -1,6 +1,7 @@
 /nbproject/
 /dist/
 /bin/
+/build/
 
 Makefile.config
 

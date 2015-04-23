@@ -6,17 +6,15 @@
 
 #include "../../../util/Logger.h"
 
-#define SPRITE_SHEET "assets/sprites.png"
-
 using namespace gs;
 
 SpriteFactory::~SpriteFactory() {
 	DBG << "Destroyed" << std::endl;
 }
 
-void SpriteFactory::init() {
-	if (!texture.loadFromFile(SPRITE_SHEET)) {
-		ERR << "Failed to load texture: " << std::string(SPRITE_SHEET) << std::endl;
+void SpriteFactory::init(std::string spriteSheetPath) {
+	if (!texture.loadFromFile(spriteSheetPath)) {
+		ERR << "Failed to load texture: " << spriteSheetPath << std::endl;
 	}
 }
 

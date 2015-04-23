@@ -28,7 +28,7 @@ else
 	mode = debug
 	OBJDIR := $(OBJDIR)Debug/
 	OUT := $(OUT)Debug/
-	CXXFLAGS += -g
+	CXXFLAGS += -g -DDEBUG
 endif
 
 SOURCES := $(call rwildcard,src/,*.cpp)
