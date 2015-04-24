@@ -27,6 +27,7 @@
 #include "../../../app/GameState.h"
 #include "../../../event/GameStateChangedEvent.h"
 #include "../../../event/IEventManager.hpp"
+#include "../../../app/Globals.h"
 
 
 namespace gs {

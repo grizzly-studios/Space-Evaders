@@ -10,8 +10,6 @@
 #include <cmath>
 
  // TODO: Refactor (duplicate constants in application layer)
-#define WIDTH 480
-#define HEIGHT 640
 
 using namespace gs;
 
@@ -83,7 +81,7 @@ void IntroScreen::render(RenderWindowShPtr window) {
 
 	logo.setTexture(logoTex);
 	logo.setOrigin(sf::Vector2f(logo.getGlobalBounds().width/2,logo.getGlobalBounds().height/2));
-	logo.setPosition(WIDTH/2,HEIGHT/2);
+	logo.setPosition(GBL::WIDTH/2,GBL::HEIGHT/2);
 	logo.scale(sf::Vector2f(1.5f, 1.5f));
 	window->draw(logo);
 }

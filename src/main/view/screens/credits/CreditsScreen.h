@@ -12,6 +12,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
@@ -26,6 +27,7 @@
 #include "../../../event/GameStateChangedEvent.h"
 #include "../../../event/IEventManager.hpp"
 #include "ICreditsScreen.h"
+#include "../../../app/Globals.h"
 
 
 namespace gs {
@@ -43,6 +45,15 @@ public:
 	
 private:
 	IStyleManagerShPtr styleManager;
+	sf::Texture logoTex;
+	sf::Image logoImg;
+
+	//Screen objects
+	sf::Sprite logo;
+	std::list<sf::Text> nameTexts;
+	std::list<sf::Text> titleTexts;
+	std::list<sf::RectangleShape> nameBorders;
+	std::list<sf::RectangleShape> titleBorders;
 };
 
 }
