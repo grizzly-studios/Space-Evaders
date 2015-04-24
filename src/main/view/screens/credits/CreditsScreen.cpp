@@ -9,8 +9,6 @@
 
 #include <cmath>
 
-#include <SFML/Graphics/Text.hpp>
-
 using namespace gs;
 
 CreditsScreen::CreditsScreen()
@@ -24,6 +22,98 @@ CreditsScreen::CreditsScreen(IStyleManagerShPtr _styleManager) :
 	} else {
 		logoTex.setRepeated(false);		
 	}
+
+	logo.setTexture(logoTex);
+	logo.setOrigin(sf::Vector2f(logo.getGlobalBounds().width/2,logo.getGlobalBounds().height/2));
+	logo.setPosition(GBL::WIDTH/2,logo.getGlobalBounds().height);
+	logo.scale(sf::Vector2f(1.0f, 1.0f));
+
+	sf::Text genericNameText;
+	genericNameText.setFont(styleManager->getFont());
+	genericNameText.setCharacterSize(24);
+	genericNameText.setColor(sf::Color::Red);
+	genericNameText.setStyle(sf::Text::Bold);
+	sf::Text genericTitleText;
+	genericTitleText.setFont(styleManager->getFont());
+	genericTitleText.setCharacterSize(20);
+	genericTitleText.setColor(sf::Color::White);
+	genericTitleText.setStyle(sf::Text::Underlined);
+	sf::RectangleShape genericNameBorder;
+	genericNameBorder.setFillColor(sf::Color::Black);
+	sf::RectangleShape genericTitleBorder;
+	genericTitleBorder.setFillColor(sf::Color::Black);
+
+	titleBorders.push_back(sf::RectangleShape(genericTitleBorder));
+	titleBorders.back().setSize(sf::Vector2f(330, 22));
+	titleBorders.back().setOrigin(sf::Vector2f(titleBorders.back().getGlobalBounds().width/2, 0));
+	titleBorders.back().setPosition(styleManager->getWidth()/2,222);
+	titleTexts.push_back(sf::Text(genericTitleText));
+	titleTexts.back().setString("Development & Deployment Director");
+	titleTexts.back().setOrigin(sf::Vector2f(titleTexts.back().getGlobalBounds().width/2,0));
+	titleTexts.back().setPosition(styleManager->getWidth()/2,218);
+
+	nameBorders.push_back(sf::RectangleShape(genericNameBorder));
+	nameBorders.back().setSize(sf::Vector2f(170, 22));
+	nameBorders.back().setOrigin(sf::Vector2f(nameBorders.back().getGlobalBounds().width/2, 0));
+	nameBorders.back().setPosition(styleManager->getWidth()/2,245);
+	nameTexts.push_back(sf::Text(genericNameText));
+	nameTexts.back().setString("AL LAMBERT");
+	nameTexts.back().setOrigin(sf::Vector2f(nameTexts.back().getGlobalBounds().width/2,0));
+	nameTexts.back().setPosition(styleManager->getWidth()/2,241);
+
+	titleBorders.push_back(sf::RectangleShape(genericTitleBorder));
+	titleBorders.back().setSize(sf::Vector2f(170, 22));
+	titleBorders.back().setOrigin(sf::Vector2f(titleBorders.back().getGlobalBounds().width/2, 0));
+	titleBorders.back().setPosition(styleManager->getWidth()/2,297);
+	titleTexts.push_back(sf::Text(genericTitleText));
+	titleTexts.back().setString("Creative Director");
+	titleTexts.back().setOrigin(sf::Vector2f(titleTexts.back().getGlobalBounds().width/2,0));
+	titleTexts.back().setPosition(styleManager->getWidth()/2,295);
+
+	nameBorders.push_back(sf::RectangleShape(genericNameBorder));
+	nameBorders.back().setSize(sf::Vector2f(280, 22));
+	nameBorders.back().setOrigin(sf::Vector2f(nameBorders.back().getGlobalBounds().width/2, 0));
+	nameBorders.back().setPosition(styleManager->getWidth()/2,320);
+	nameTexts.push_back(sf::Text(genericNameText));
+	nameTexts.back().setString("CHRIS REEVE-MATES");
+	nameTexts.back().setOrigin(sf::Vector2f(nameTexts.back().getGlobalBounds().width/2,0));
+	nameTexts.back().setPosition(styleManager->getWidth()/2,318);
+
+	titleBorders.push_back(sf::RectangleShape(genericTitleBorder));
+	titleBorders.back().setSize(sf::Vector2f(190, 22));
+	titleBorders.back().setOrigin(sf::Vector2f(titleBorders.back().getGlobalBounds().width/2, 0));
+	titleBorders.back().setPosition(styleManager->getWidth()/2,372);
+	titleTexts.push_back(sf::Text(genericTitleText));
+	titleTexts.back().setString("Operations Director");
+	titleTexts.back().setOrigin(sf::Vector2f(titleTexts.back().getGlobalBounds().width/2,0));
+	titleTexts.back().setPosition(styleManager->getWidth()/2,368);
+
+	nameBorders.push_back(sf::RectangleShape(genericNameBorder));
+	nameBorders.back().setSize(sf::Vector2f(180, 22));
+	nameBorders.back().setOrigin(sf::Vector2f(nameBorders.back().getGlobalBounds().width/2, 0));
+	nameBorders.back().setPosition(styleManager->getWidth()/2,395);
+	nameTexts.push_back(sf::Text(genericNameText));
+	nameTexts.back().setString("ROB PARKER");
+	nameTexts.back().setOrigin(sf::Vector2f(nameTexts.back().getGlobalBounds().width/2,0));
+	nameTexts.back().setPosition(styleManager->getWidth()/2,391);
+
+	titleBorders.push_back(sf::RectangleShape(genericTitleBorder));
+	titleBorders.back().setSize(sf::Vector2f(190, 22));
+	titleBorders.back().setOrigin(sf::Vector2f(titleBorders.back().getGlobalBounds().width/2, 0));
+	titleBorders.back().setPosition(styleManager->getWidth()/2,447);
+	titleTexts.push_back(sf::Text(genericTitleText));
+	titleTexts.back().setString("Managing Director");
+	titleTexts.back().setOrigin(sf::Vector2f(titleTexts.back().getGlobalBounds().width/2,0));
+	titleTexts.back().setPosition(styleManager->getWidth()/2,445);
+
+	nameBorders.push_back(sf::RectangleShape(genericNameBorder));
+	nameBorders.back().setSize(sf::Vector2f(200, 22));
+	nameBorders.back().setOrigin(sf::Vector2f(nameBorders.back().getGlobalBounds().width/2, 0));
+	nameBorders.back().setPosition(styleManager->getWidth()/2,470);
+	nameTexts.push_back(sf::Text(genericNameText));
+	nameTexts.back().setString("WILL POYNTER");
+	nameTexts.back().setOrigin(sf::Vector2f(nameTexts.back().getGlobalBounds().width/2,0));
+	nameTexts.back().setPosition(styleManager->getWidth()/2,468);
 }
 
 CreditsScreen::~CreditsScreen() {
@@ -37,109 +127,21 @@ ScreensEnum CreditsScreen::getType() const {
 }
 
 void CreditsScreen::render(RenderWindowShPtr window) {
-	sf::Sprite logo;
 
-	logo.setTexture(logoTex);
-	logo.setOrigin(sf::Vector2f(logo.getGlobalBounds().width/2,logo.getGlobalBounds().height/2));
-	logo.setPosition(GBL::WIDTH/2,logo.getGlobalBounds().height);
-	logo.scale(sf::Vector2f(1.0f, 1.0f));
 	window->draw(logo);
 
-	sf::Font font;
-	font = styleManager->getFont();
-
-	sf::Text nameText;
-	nameText.setFont(font);
-	nameText.setCharacterSize(24);
-	nameText.setColor(sf::Color::Red);
-	nameText.setStyle(sf::Text::Bold);
-
-	sf::Text titleText;
-	titleText.setFont(font);
-	titleText.setCharacterSize(20);
-	titleText.setColor(sf::Color::White);
-	titleText.setStyle(sf::Text::Underlined);
-
-
-	sf::RectangleShape nameBorder;
-	nameBorder.setFillColor(sf::Color::Black);
-
-	sf::RectangleShape titleBorder;
-	titleBorder.setFillColor(sf::Color::Black);
-
-	titleBorder.setSize(sf::Vector2f(330, 22));
-	titleBorder.setOrigin(sf::Vector2f(titleBorder.getGlobalBounds().width/2, 0));
-	titleBorder.setPosition(styleManager->getWidth()/2,222);
-	titleText.setString("Development & Deployment Director");
-	titleText.setOrigin(sf::Vector2f(titleText.getGlobalBounds().width/2,0));
-	titleText.setPosition(styleManager->getWidth()/2,218);
-	window->draw(titleBorder);
-	window->draw(titleText);
-
-
-	nameBorder.setSize(sf::Vector2f(170, 22));
-	nameBorder.setOrigin(sf::Vector2f(nameBorder.getGlobalBounds().width/2, 0));
-	nameBorder.setPosition(styleManager->getWidth()/2,245);
-	nameText.setString("AL LAMBERT");
-	nameText.setOrigin(sf::Vector2f(nameText.getGlobalBounds().width/2,0));
-	nameText.setPosition(styleManager->getWidth()/2,241);
-	window->draw(nameBorder);
-	window->draw(nameText);
-
-	titleBorder.setSize(sf::Vector2f(170, 22));
-	titleBorder.setOrigin(sf::Vector2f(titleBorder.getGlobalBounds().width/2, 0));
-	titleBorder.setPosition(styleManager->getWidth()/2,297);
-	titleText.setString("Creative Director");
-	titleText.setOrigin(sf::Vector2f(titleText.getGlobalBounds().width/2,0));
-	titleText.setPosition(styleManager->getWidth()/2,295);
-	window->draw(titleBorder);
-	window->draw(titleText);
-
-
-	nameBorder.setSize(sf::Vector2f(280, 22));
-	nameBorder.setOrigin(sf::Vector2f(nameBorder.getGlobalBounds().width/2, 0));
-	nameBorder.setPosition(styleManager->getWidth()/2,320);
-	nameText.setString("CHRIS REEVE-MATES");
-	nameText.setOrigin(sf::Vector2f(nameText.getGlobalBounds().width/2,0));
-	nameText.setPosition(styleManager->getWidth()/2,318);
-	window->draw(nameBorder);
-	window->draw(nameText);
-
-	titleBorder.setSize(sf::Vector2f(190, 22));
-	titleBorder.setOrigin(sf::Vector2f(titleBorder.getGlobalBounds().width/2, 0));
-	titleBorder.setPosition(styleManager->getWidth()/2,372);
-	titleText.setString("Operations Director");
-	titleText.setOrigin(sf::Vector2f(titleText.getGlobalBounds().width/2,0));
-	titleText.setPosition(styleManager->getWidth()/2,368);
-	window->draw(titleBorder);
-	window->draw(titleText);
-
-	nameBorder.setSize(sf::Vector2f(180, 22));
-	nameBorder.setOrigin(sf::Vector2f(nameBorder.getGlobalBounds().width/2, 0));
-	nameBorder.setPosition(styleManager->getWidth()/2,395);
-	nameText.setString("ROB PARKER");
-	nameText.setOrigin(sf::Vector2f(nameText.getGlobalBounds().width/2,0));
-	nameText.setPosition(styleManager->getWidth()/2,391);
-	window->draw(nameBorder);
-	window->draw(nameText);
-
-	titleBorder.setSize(sf::Vector2f(190, 22));
-	titleBorder.setOrigin(sf::Vector2f(titleBorder.getGlobalBounds().width/2, 0));
-	titleBorder.setPosition(styleManager->getWidth()/2,447);
-	titleText.setString("Managing Director");
-	titleText.setOrigin(sf::Vector2f(titleText.getGlobalBounds().width/2,0));
-	titleText.setPosition(styleManager->getWidth()/2,445);
-	window->draw(titleBorder);
-	window->draw(titleText);
-
-	nameBorder.setSize(sf::Vector2f(200, 22));
-	nameBorder.setOrigin(sf::Vector2f(nameBorder.getGlobalBounds().width/2, 0));
-	nameBorder.setPosition(styleManager->getWidth()/2,470);
-	nameText.setString("WILL POYNTER");
-	nameText.setOrigin(sf::Vector2f(nameText.getGlobalBounds().width/2,0));
-	nameText.setPosition(styleManager->getWidth()/2,468);
-	window->draw(nameBorder);
-	window->draw(nameText);
+	for (sf::RectangleShape& nameBorder: nameBorders) {
+		window->draw(nameBorder);
+	}
+	for (sf::RectangleShape& titleBorder: titleBorders) {
+		window->draw(titleBorder);
+	}
+	for (sf::Text& nameText: nameTexts) {
+		window->draw(nameText);
+	}
+	for (sf::Text& titleText: titleTexts) {
+		window->draw(titleText);
+	}
 }
 
 
