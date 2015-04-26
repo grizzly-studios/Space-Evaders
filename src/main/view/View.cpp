@@ -56,7 +56,9 @@ void View::render() {
 			screens[GAME_SCREEN]->render(window);
 			break;
 		case PAUSED:
-			screens[PAUSED_SCREEN]->render(window);
+			/* Must be in this order otherwise paused flickers */
+			screens[PAUSED_SCREEN]->render(window); 
+			screens[GAME_SCREEN]->render(window);
 			break;
 		case LOADING:
 			screens[LOADING_SCREEN]->render(window);
