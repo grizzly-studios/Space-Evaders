@@ -90,8 +90,6 @@ void GameScreen::render(RenderWindowShPtr window) {
 	window->draw(winLinePoints, 2, sf::Lines);
 
 	//drawGrid(window);
-
-	window->display();
 }
 
 void GameScreen::onEvent(Event& event) {
