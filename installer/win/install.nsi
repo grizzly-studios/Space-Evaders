@@ -27,6 +27,8 @@ Section
     File ${MINGW_BIN}\libstdc++-6.dll
     File ${MINGW_BIN}\libgcc_s_dw2-1.dll
 
+    File ${PROJECT_ROOT}\installer\win\evaders.ico
+
     SetOutPath "$INSTDIR\assets"
 
     File /r "${PROJECT_ROOT}\assets\*"
@@ -34,7 +36,7 @@ Section
     WriteUninstaller "$INSTDIR\Uninstall.exe"
 
     CreateDirectory "$SMPROGRAMS\SpaceEvaders"
-    CreateShortCut "$SMPROGRAMS\SpaceEvaders\SpaceEvaders.lnk" "$INSTDIR\SpaceEvaders.exe"
+    CreateShortCut "$SMPROGRAMS\SpaceEvaders\SpaceEvaders.lnk" "$INSTDIR\SpaceEvaders.exe" "" "$INSTDIR\evaders.ico"
     CreateShortCut "$SMPROGRAMS\SpaceEvaders\Uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 SectionEnd
@@ -49,6 +51,8 @@ Section "uninstall"
     Delete $INSTDIR\libsndfile-1.dll
     Delete $INSTDIR\libstdc++-6.dll
     Delete $INSTDIR\libgcc_s_dw2-1.dll
+
+    Delete $INSTDIR\evaders.ico
 
     RMDir /r $INSTDIR\assets
 
