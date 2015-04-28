@@ -18,6 +18,6 @@ cp -r Space\ Evaders.app DMG/.
 #Add application shortcut
 ln -s /Applications DMG/Applications
 #Create DMG
-hdiutil create -ov Space-Evaders.$1.dmg -volname "Space Evaders" -srcfolder DMG/
+hdiutil create -ov Space-Evaders-$1.dmg -volname "Space Evaders" -srcfolder DMG/
 #Clean up DMG folder
 rm -r DMG
